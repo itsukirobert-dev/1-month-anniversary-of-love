@@ -19,7 +19,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="preview.css?v=11">
+  <link rel="stylesheet" href="preview.css?v=12">
 </head>
 
 <body>
@@ -118,10 +118,16 @@
         <!-- Canvas hạt bụi sáng lơ lửng bồng bềnh -->
         <canvas id="dustCanvas" class="dust-motes-canvas"></canvas>
 
-        <!-- Gợi ý tương tác cành hoa nhẹ nhàng (tự ẩn sau khi click) -->
+        <!-- Canvas làn sương hương thơm mỹ phẩm (Fragrance Mist Canvas) -->
+        <canvas id="fragranceCanvas" class="fragrance-mist-canvas"></canvas>
+
+        <!-- Container chứa các thẻ chữ bay bổng của mùi hương -->
+        <div id="fragranceTextContainer" class="fragrance-text-container" aria-hidden="true"></div>
+
+        <!-- Gợi ý tương tác cành hoa & hương thơm nhẹ nhàng (tự ẩn sau khi click) -->
         <div class="flower-touch-hint" id="flowerTouchHint">
           <span class="hint-icon">🌿</span>
-          <span class="hint-text">Chạm vào hoa để đón cành rơi...</span>
+          <span class="hint-text">Chạm vào hoa hoặc chai mỹ phẩm...</span>
         </div>
       </div>
 
@@ -214,7 +220,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=11"></script>
+  <script src="script.js?v=12"></script>
 </body>
 
 </html>
