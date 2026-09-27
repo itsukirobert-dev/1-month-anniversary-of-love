@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cá Sudo ♡ Khây Ti | Kỷ Niệm Tình Yêu (C1M)</title>
+
+  <!-- Favicon Logo Cá Vương Miện -->
+  <link rel="icon" href="assets/images/logo_fish.jpg?v=2">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="preview.css?v=11">
+</head>
+
+<body>
+
+  <!-- Background Music Audio Tag -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="assets/music/romantic_moment.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ============================================================
+       1. THANH MENU (HEADER & NAVBAR) VỚI LOGO CÁ
+       ============================================================ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+
+      <!-- Logo Cá Sudo Vương Miện (Itsuki Robert) -->
+      <a href="#" class="brand-logo">
+        <div class="logo-image-wrapper">
+          <img src="assets/images/logo_fish.jpg?v=2" alt="Logo Cá Sudo Itsuki" class="logo-fish-img">
+        </div>
+        <div class="brand-text-group">
+          <span class="brand-name">Cá Sudo <span class="heart-icon">♡</span> Khây Ti</span>
+          <span class="brand-tagline">Itsuki &amp; Kim Thanh • C1M</span>
+        </div>
+      </a>
+
+      <!-- Menu Điều Hướng Chính -->
+      <nav class="main-navigation" id="mainNav">
+        <ul class="nav-menu">
+          <li><a href="#" class="nav-link active"><i class="fa-solid fa-house"></i> Trang Chủ</a></li>
+          <li><a href="#footer" class="nav-link"><i class="fa-solid fa-clock"></i> Cột Mốc</a></li>
+          <li><a href="#footer" class="nav-link"><i class="fa-solid fa-heart"></i> Lời Chúc</a></li>
+        </ul>
+      </nav>
+
+      <!-- Music Player Button in Navbar -->
+      <div class="header-action-group">
+        <button class="music-toggle-btn" id="musicToggleBtn" title="Bật/Tắt Nhạc Nền">
+          <span class="music-icon" id="musicIcon"><i class="fa-solid fa-music"></i></span>
+          <span class="music-label" id="musicLabel">Bật Nhạc</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button (Hamburger) -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Mở menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       PHẦN THÂN: CĂN PHÒNG SỐNG ĐỘNG (LIVING ROOM SCENE)
+       - Hoa & lá đung đưa trong gió
+       - Vải lụa hồng gợn sóng nhẹ
+       - Ánh sáng trên chai lọ chuyển đổi chậm
+       - Hạt bụi sáng lơ lửng trong ánh nắng
+       - Phản chiếu trên mặt bàn đá marble
+       ============================================================ -->
+  <main class="site-main" id="mainContent">
+    <!-- Nền ambient hòa sắc thái nhẹ nhàng -->
+    <div class="main-ambient-bg"></div>
+
+    <!-- SVG filter mô phỏng gió nhẹ lay động hoa và lụa -->
+    <svg class="wind-svg-filter" aria-hidden="true">
+      <defs>
+        <filter id="gentle-breeze" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" result="windNoise" seed="7">
+            <animate attributeName="baseFrequency" dur="14s" values="0.010 0.016; 0.016 0.024; 0.012 0.018; 0.010 0.016"
+              repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="windNoise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Khung cảnh căn phòng chuyển động hữu cơ -->
+    <div class="living-scene-wrapper">
+      <div class="living-frame" id="livingFrame">
+        <!-- Bức ảnh mỹ phẩm hoa đậu biếc sắc nét 100% không bị cắt -->
+        <img src="assets/images/background.jpg" alt="Hoa đậu biếc &amp; Mỹ phẩm Khây Ti"
+          class="main-uncut-image living-photo">
+
+        <!-- Hiệu ứng ánh nắng sớm chiếu qua khung cửa sổ -->
+        <div class="sunlight-caustic-layer"></div>
+
+        <!-- Vệt ánh sáng lướt chậm trên bề mặt chai lọ & nắp kim loại -->
+        <div class="bottle-sheen-layer"></div>
+
+        <!-- Gợn sóng phản chiếu chuyển động nhẹ trên mặt bàn -->
+        <div class="table-reflection-layer"></div>
+
+        <!-- Đốm nắng ấm áp dịu dàng -->
+        <div class="warm-sun-glow"></div>
+
+        <!-- Canvas hạt bụi sáng lơ lửng bồng bềnh -->
+        <canvas id="dustCanvas" class="dust-motes-canvas"></canvas>
+
+        <!-- Gợi ý tương tác cành hoa nhẹ nhàng (tự ẩn sau khi click) -->
+        <div class="flower-touch-hint" id="flowerTouchHint">
+          <span class="hint-icon">🌿</span>
+          <span class="hint-text">Chạm vào hoa để đón cành rơi...</span>
+        </div>
+      </div>
+
+      <!-- Layer chứa cành hoa đậu biếc rơi tự do ra ngoài khung cảnh -->
+      <div id="flowerBranchLayer" class="flower-branch-layer" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <!-- ============================================================
+       PHẦN CUỐI: FOOTER ĐẦY ĐỦ 4 CỘT (LƯỚT LÊN MỚI THẤY, CỐ ĐỊNH Ở ĐÁY)
+       ============================================================ -->
+  <footer class="site-footer" id="footer">
+    <div class="container footer-content-grid">
+
+      <!-- Cột 1: Thông tin thương hiệu tình yêu & Logo Cá -->
+      <div class="footer-column brand-col">
+        <div class="footer-brand-header">
+          <img src="assets/images/logo_fish.jpg?v=2" alt="Logo Cá Sudo" class="footer-logo-fish">
+          <span class="footer-brand-title">Cá Sudo ♡ Khây Ti</span>
+        </div>
+        <p class="footer-brand-desc">
+          Trang web kỷ niệm tình yêu được thiết kế riêng dành tặng Khây Ti (Kim Thanh). Đánh dấu cột mốc tròn 1 tháng
+          (C1M) và mở ra hành trình dài lâu phía trước.
+        </p>
+        <div class="footer-date-tag">
+          <i class="fa-regular fa-calendar-heart"></i> Khởi đầu: 13:30 • 30.08.2026
+        </div>
+      </div>
+
+      <!-- Cột 2: Các Mục Chính Trên Trang Web -->
+      <div class="footer-column">
+        <h4 class="footer-col-title">Mục Chính Trang Web</h4>
+        <ul class="footer-nav-list">
+          <li><a href="#"><i class="fa-solid fa-angle-right"></i> Trang Đầu &amp; Lời Chào</a></li>
+          <li><a href="#footer"><i class="fa-solid fa-angle-right"></i> Đồng Hồ Đếm Ngày Yêu</a></li>
+          <li><a href="#footer"><i class="fa-solid fa-angle-right"></i> Câu Chuyện Tỏ Tình SQL</a></li>
+          <li><a href="#footer"><i class="fa-solid fa-angle-right"></i> Album Khoảnh Khắc</a></li>
+          <li><a href="#footer"><i class="fa-solid fa-angle-right"></i> Bức Tâm Thư Gửi Em</a></li>
+        </ul>
+      </div>
+
+      <!-- Cột 3: Cột Mốc Thời Gian Kỷ Niệm -->
+      <div class="footer-column">
+        <h4 class="footer-col-title">Cột Mốc Kỷ Niệm</h4>
+        <ul class="footer-milestone-list">
+          <li>
+            <strong>30.08.2026 (13:30)</strong>
+            <span>Lời đồng ý ngọt ngào &amp; chính thức yêu nhau</span>
+          </li>
+          <li>
+            <strong>Tuần Thứ 1 - 2</strong>
+            <span>Những buổi hẹn đầu tiên &amp; nụ cười nàng thơ</span>
+          </li>
+          <li>
+            <strong>30.09.2026</strong>
+            <span>Kỷ niệm tròn 1 tháng bên nhau (C1M)</span>
+          </li>
+          <li>
+            <strong>Tương Lai</strong>
+            <span>Cùng nhau đón 1 năm, 5 năm và mãi mãi</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Cột 4: Lời Chúc & Âm Nhạc -->
+      <div class="footer-column">
+        <h4 class="footer-col-title">Dành Riêng Cho Em</h4>
+        <p class="footer-soft-note">
+          “Mong rằng mỗi sớm mai thức dậy, người đầu tiên em nghĩ đến và người cuối cùng chúc em ngủ ngon luôn là chị.”
+        </p>
+        <div class="footer-music-box">
+          <span class="music-note-icon">🎵</span>
+          <div class="music-note-info">
+            <strong>Our Song</strong>
+            <small>Giai điệu tình yêu của hai đứa</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Thanh Dưới Cùng Của Footer -->
+    <div class="footer-bottom-bar">
+      <div class="container bottom-bar-inner">
+        <p class="copyright-text">
+          Designed with all my love for <strong>Kim Thanh</strong> • By <strong>Cá Sudo (Itsuki)</strong>
+        </p>
+        <p class="version-tag">C1M Anniversary Edition • 2026</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js?v=11"></script>
+</body>
+
+</html>

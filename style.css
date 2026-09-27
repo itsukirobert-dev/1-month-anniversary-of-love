@@ -1,0 +1,1591 @@
+/* ============================================================
+   CÃ SUDO â™¡ KHÃ‚Y TI â€” Ká»¶ NIá»†M 1 THÃNG (C1M)
+   Phong cÃ¡ch: Tinh táº¿, Hiá»‡n Ä‘áº¡i, Nháº¹ nhÃ ng & Sang trá»ng
+   Layout linh Ä‘á»™ng 100% Responsive giá»¯a MÃ¡y TÃ­nh vÃ  Äiá»‡n Thoáº¡i
+   ============================================================ */
+
+:root {
+  /* Báº£ng mÃ u chÃ­nh: Xanh Sapphire (CÃ¡ Sudo) káº¿t há»£p Há»“ng Dá»‹u DÃ ng (KhÃ¢y Ti) */
+  --color-primary: #0284c7;
+  /* Xanh Sapphire chá»§ Ä‘áº¡o */
+  --color-primary-dark: #0369a1;
+  /* Xanh Ä‘áº­m nháº¥n */
+  --color-primary-light: #e0f2fe;
+  /* Xanh nháº¡t ná»n */
+
+  --color-rose: #e11d48;
+  /* Há»“ng hoa Ä‘áº­u biáº¿c / hoa há»“ng */
+  --color-rose-light: #fff1f2;
+  /* Há»“ng kem dá»‹u máº¯t */
+  --color-gold: #d97706;
+  /* VÃ ng áº¥m hoÃ ng hÃ´n */
+
+  --bg-page: #fafbfc;
+  /* Tráº¯ng sá»© thanh lá»‹ch */
+  --bg-white: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-subtle: #f8fafc;
+  --bg-footer: #0f172a;
+  /* ÄÃªm xanh tháº«m cho footer */
+
+  --text-title: #0f172a;
+  /* Chá»¯ tiÃªu Ä‘á» sáº¯c nÃ©t */
+  --text-body: #334155;
+  /* Chá»¯ ná»™i dung dá»… Ä‘á»c */
+  --text-muted: #64748b;
+  /* Chá»¯ phá»¥ má» nháº¹ */
+
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+  --shadow-blue: 0 8px 25px rgba(2, 132, 199, 0.2);
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-handwriting: 'Caveat', cursive;
+
+  --transition-fast: all 0.2s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* CSS Reset & CÆ¡ Báº£n */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  scroll-snap-type: y proximity;
+}
+
+body {
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  background-color: #fafbfc;
+  color: var(--text-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   PHáº¦N THÃ‚N: HÃŒNH Ná»€N HIá»‚N THá»Š 100% TRá»ŒN Váº¸N (KHÃ”NG Bá»Š Cáº®T)
+   ============================================================ */
+.site-main {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  scroll-snap-align: start;
+  background: #f7e1e3;
+}
+
+/* Lá»›p ná»n má» ambient lan tá»a theo mÃ u áº£nh */
+.main-ambient-bg {
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  right: -40px;
+  bottom: -40px;
+  background-image: url('assets/images/background.jpg');
+  background-size: cover;
+  background-position: center center;
+  filter: blur(32px) brightness(0.92) saturate(1.1);
+  opacity: 0.65;
+  z-index: 1;
+  transform: scale(1.08);
+  animation: ambient-drift 22s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-drift {
+  0% {
+    transform: scale(1.06) translate(0, 0);
+  }
+
+  50% {
+    transform: scale(1.10) translate(-8px, 6px);
+  }
+
+  100% {
+    transform: scale(1.07) translate(8px, -6px);
+  }
+}
+
+/* Khung hiá»ƒn thá»‹ áº£nh sáº¯c nÃ©t 100% khÃ´ng bá»‹ cáº¯t báº¥t ká»³ gÃ³c nÃ o */
+/* SVG filter ẩn để trình duyệt nạp bộ lọc gió */
+.wind-svg-filter {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Wrapper định vị trung tâm màn hình, bảo toàn tỉ lệ ảnh */
+.living-scene-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  box-sizing: border-box;
+}
+
+/* Khung viền ôm khít bức ảnh để các lớp hiệu ứng chuẩn xác 100% */
+.living-frame {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: calc(100vh - 96px);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 0 6px 18px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+/* Bức ảnh mỹ phẩm hoa đậu biếc: KHÔNG BỊ CẮT BẤT KỲ GÓC NÀO + THỞ NHẸ THEO GIÓ */
+.main-uncut-image.living-photo {
+  max-width: 100%;
+  max-height: calc(100vh - 96px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 18px;
+  filter: url(#gentle-breeze);
+  animation: gentle-room-breath 14s ease-in-out infinite;
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+
+/* 1. Lớp vệt nắng sớm chiếu xiên qua cửa sổ */
+.sunlight-caustic-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 18px;
+  background: radial-gradient(ellipse 75% 65% at 28% 22%,
+      rgba(255, 255, 240, 0.22) 0%,
+      rgba(255, 245, 215, 0.1) 40%,
+      rgba(255, 255, 255, 0) 75%);
+  mix-blend-mode: soft-light;
+  animation: sunlight-slow-drift 16s ease-in-out infinite alternate;
+}
+
+@keyframes sunlight-slow-drift {
+  0% {
+    transform: translate(-1.5%, -1%) scale(0.98);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translate(2%, 1.5%) scale(1.03);
+    opacity: 0.95;
+  }
+
+  100% {
+    transform: translate(0.5%, -1%) scale(1.0);
+    opacity: 0.7;
+  }
+}
+
+/* 2. Ánh sáng trên thân chai lọ & nắp kim loại lướt qua rất chậm */
+.bottle-sheen-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 18px;
+  background: linear-gradient(120deg,
+      transparent 15%,
+      rgba(255, 255, 255, 0.04) 30%,
+      rgba(255, 250, 220, 0.28) 45%,
+      rgba(255, 255, 255, 0.42) 50%,
+      rgba(255, 240, 200, 0.25) 55%,
+      rgba(255, 255, 255, 0.04) 68%,
+      transparent 85%);
+  background-size: 260% 260%;
+  mix-blend-mode: overlay;
+  animation: bottle-sheen-sweep 13s ease-in-out infinite alternate;
+}
+
+@keyframes bottle-sheen-sweep {
+  0% {
+    background-position: 0% 15%;
+    opacity: 0.3;
+  }
+
+  45% {
+    opacity: 0.85;
+  }
+
+  100% {
+    background-position: 100% 85%;
+    opacity: 0.35;
+  }
+}
+
+/* 3. Phản chiếu trên mặt bàn đá hoa cương gợn sóng nhẹ */
+.table-reflection-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  pointer-events: none;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(215, 235, 255, 0.12) 60%,
+      rgba(255, 225, 238, 0.08) 85%,
+      transparent 100%);
+  mix-blend-mode: overlay;
+  animation: table-reflection-ripple 9s ease-in-out infinite alternate;
+}
+
+@keyframes table-reflection-ripple {
+  0% {
+    transform: scaleY(0.97) translateY(2px);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scaleY(1.03) translateY(-1.5px);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: scaleY(0.99) translateY(1px);
+    opacity: 0.55;
+  }
+}
+
+/* 4. Quầng ấm áp của tia nắng sớm */
+.warm-sun-glow {
+  position: absolute;
+  top: 6%;
+  right: 10%;
+  width: 55%;
+  height: 65%;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(255, 235, 205, 0.15) 0%,
+      rgba(255, 215, 200, 0.05) 55%,
+      transparent 78%);
+  mix-blend-mode: screen;
+  animation: warm-sun-breathe 11s ease-in-out infinite alternate;
+}
+
+@keyframes warm-sun-breathe {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+
+  100% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+/* 5. Canvas hạt bụi nắng sáng lơ lửng */
+.dust-motes-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: 18px;
+  z-index: 6;
+}
+
+/* ============================================================
+   6. CÀNH HOA ĐẬU BIẾC TÁCH KHỎI BỐ CỤC & RƠI UỐN LƯỢN (FALLING BRANCH)
+   ============================================================ */
+.flower-branch-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+  overflow: visible;
+}
+
+/* Cành hoa nguyên vẹn đang bay */
+.falling-branch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform-origin: 38% 42%;
+  will-change: transform, opacity;
+  z-index: 998;
+}
+
+/* Phần tử con chứa ảnh cành hoa: uốn cong mềm theo đường bay (flex) */
+.branch-inner {
+  display: block;
+  transform-origin: 35% 45%;
+  will-change: transform;
+  filter: drop-shadow(0 16px 28px rgba(15, 23, 42, 0.35)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.20));
+}
+
+.branch-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Cánh hoa nhỏ tách rời khỏi cành khi bay */
+.detached-petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.28)) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
+  z-index: 997;
+}
+
+.petal-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Đốm sáng nắng lấp lánh khi cành & cánh hoa tách ra */
+.branch-sparkle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 999;
+}
+
+/* Gợi ý tương tác cành hoa trên bức ảnh */
+.flower-touch-hint {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(225, 29, 72, 0.2);
+  color: #334155;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  pointer-events: none;
+  z-index: 12;
+  animation: hint-float-glow 3.5s ease-in-out infinite;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.flower-touch-hint .hint-icon {
+  font-size: 1rem;
+}
+
+.flower-touch-hint.fade-out {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  pointer-events: none;
+}
+
+@keyframes hint-float-glow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.18);
+  }
+
+  50% {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(225, 29, 72, 0.25);
+  }
+}
+
+@media (max-width: 768px) {
+  .falling-branch {
+    width: 120px;
+    height: 120px;
+  }
+
+  .detached-petal {
+    width: 22px;
+    height: 22px;
+  }
+
+  .flower-touch-hint {
+    bottom: 16px;
+    right: 16px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Hiệu ứng nhịp thở siêu nhẹ của căn phòng */
+@keyframes gentle-room-breath {
+  0% {
+    transform: scale(1.0) translate(0, 0) rotate(0deg);
+  }
+
+  30% {
+    transform: scale(1.006) translate(1px, -1px) rotate(0.06deg);
+  }
+
+  65% {
+    transform: scale(1.003) translate(-1px, 0.6px) rotate(-0.05deg);
+  }
+
+  100% {
+    transform: scale(1.0) translate(0, 0) rotate(0deg);
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-fast);
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   1. THANH MENU (HEADER & NAVBAR) Vá»šI LOGO CÃ
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 12px 0;
+  transition: var(--transition-smooth);
+}
+
+.site-header.scrolled {
+  padding: 8px 0;
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand Logo CÃ¡ Sudo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-image-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-blue);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover .logo-image-wrapper {
+  transform: rotate(8deg) scale(1.06);
+}
+
+.logo-fish-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--text-title);
+  line-height: 1.2;
+}
+
+.brand-name .heart-icon {
+  color: var(--color-rose);
+  display: inline-block;
+  font-size: 0.95em;
+  animation: heart-beat 1.6s infinite;
+}
+
+.brand-tagline {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Nav Menu Desktop */
+.main-navigation {
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 2px;
+  position: relative;
+}
+
+.nav-link i {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-primary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  transition: width 0.25s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Header Actions */
+.header-action-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.music-toggle-btn {
+  background: var(--color-primary-light);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  color: var(--color-primary-dark);
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-fast);
+}
+
+.music-toggle-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-blue);
+}
+
+.music-toggle-btn.playing {
+  background: var(--color-rose-light);
+  border-color: rgba(225, 29, 72, 0.25);
+  color: var(--color-rose);
+}
+
+.music-toggle-btn.playing:hover {
+  background: var(--color-rose);
+  color: #fff;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.35rem;
+  color: var(--text-title);
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ============================================================
+   2. HERO SECTION
+   ============================================================ */
+.hero-section {
+  padding: 65px 0 50px;
+  background: radial-gradient(circle at 80% 20%, rgba(2, 132, 199, 0.05) 0%, transparent 60%),
+    radial-gradient(circle at 10% 80%, rgba(225, 29, 72, 0.04) 0%, transparent 50%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-rose-light);
+  border: 1px solid rgba(225, 29, 72, 0.2);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-rose);
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.dot-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-rose);
+  box-shadow: 0 0 8px var(--color-rose);
+}
+
+.hero-main-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.3rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--text-title);
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-rose) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 26px;
+}
+
+.hero-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 30px;
+  width: fit-content;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 0.95rem;
+  color: var(--text-title);
+  font-weight: 700;
+}
+
+.meta-divider {
+  width: 1px;
+  height: 32px;
+  background: #e2e8f0;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: var(--radius-pill);
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  box-shadow: var(--shadow-blue);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--text-body);
+  border: 1.5px solid #cbd5e1;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+/* Cá»™t áº¢nh Ná»•i Báº­t */
+.featured-image-card {
+  position: relative;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.image-inner {
+  border-radius: calc(var(--radius-lg) - 8px);
+  overflow: hidden;
+  aspect-ratio: 4 / 3.2;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featured-image-card:hover .hero-img {
+  transform: scale(1.03);
+}
+
+.card-caption-floating {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.88);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   SHARED SECTION STYLES
+   ============================================================ */
+.section-container {
+  padding: 80px 0;
+}
+
+.section-title-wrap {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 50px;
+}
+
+.section-tag {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 10px;
+}
+
+.section-subheading {
+  font-size: 0.96rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   3. COUNTER SECTION (Äá»’NG Há»’ Äáº¾M NGÃ€Y)
+   ============================================================ */
+.counter-section {
+  background-color: var(--bg-subtle);
+}
+
+.counter-display-card {
+  max-width: 740px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 36px 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.timer-digits-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.timer-digit-box {
+  flex: 1;
+  background: var(--color-primary-light);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: var(--radius-md);
+  padding: 18px 8px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.timer-digit-box:hover {
+  transform: translateY(-3px);
+}
+
+.digit-number {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  line-height: 1;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.digit-unit {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.timer-colon {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: -16px;
+}
+
+.counter-card-bottom {
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.bottom-info {
+  color: var(--color-rose);
+  font-weight: 600;
+}
+
+.bottom-stats {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ============================================================
+   4. STORY SECTION
+   ============================================================ */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.story-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 30px 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-light);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+.card-icon.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.card-icon.pink {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.card-icon.gold {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 12px;
+}
+
+.card-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.code-snippet-box {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.quote-snippet-box {
+  background: var(--color-rose-light);
+  border-left: 3px solid var(--color-rose);
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: var(--color-rose);
+  font-size: 0.88rem;
+}
+
+.status-snippet-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   5. GALLERY / MOMENTS SECTION
+   ============================================================ */
+.moments-section {
+  background-color: var(--bg-subtle);
+}
+
+.gallery-layout-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.gallery-item-card {
+  position: relative;
+  background: #ffffff;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 4 / 3.4;
+  transition: var(--transition-smooth);
+}
+
+.gallery-item-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius-md) - 6px);
+  transition: transform 0.4s ease;
+}
+
+.gallery-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.gallery-item-card:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-item-overlay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+
+.gallery-item-card:hover .gallery-item-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   6. LOVE LETTER SECTION
+   ============================================================ */
+.letter-card-container {
+  max-width: 760px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 45px 40px;
+  box-shadow: var(--shadow-md);
+}
+
+.letter-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.letter-stamp-badge {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-rose);
+  background: var(--color-rose-light);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.letter-receiver {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.letter-body-text {
+  font-family: var(--font-handwriting);
+  font-size: 1.5rem;
+  line-height: 1.7;
+  color: var(--text-title);
+}
+
+.letter-body-text p {
+  margin-bottom: 18px;
+}
+
+.letter-signature-block {
+  text-align: right;
+  margin-top: 28px;
+  font-size: 1.6rem;
+}
+
+.letter-signature-block strong {
+  color: var(--color-primary-dark);
+  display: block;
+}
+
+/* ============================================================
+   7. FOOTER GIỚI THIỆU PHÂN MỤC RÕ RÀNG & ĐẦY ĐỦ
+   ============================================================ */
+.site-footer {
+  position: relative;
+  background-color: var(--bg-footer);
+  color: #94a3b8;
+  padding-top: 60px;
+  scroll-snap-align: end;
+  z-index: 10;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.footer-content-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+  gap: 40px;
+  padding-bottom: 50px;
+}
+
+/* Cột 1: Brand Col */
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.footer-logo-fish {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  object-fit: cover;
+}
+
+.footer-brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.footer-brand-desc {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+.footer-date-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+/* Cột Tiêu Đề Chung */
+.footer-col-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.footer-col-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+}
+
+/* Cột 2: Nav List */
+.footer-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-nav-list a {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-nav-list a:hover {
+  color: #38bdf8;
+  transform: translateX(4px);
+}
+
+.footer-nav-list a i {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+}
+
+/* Cột 3: Milestone List */
+.footer-milestone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-milestone-list li {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.footer-milestone-list strong {
+  font-size: 0.82rem;
+  color: #e2e8f0;
+}
+
+.footer-milestone-list span {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* Cột 4: Soft Note & Music Box */
+.footer-soft-note {
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.footer-music-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.music-note-icon {
+  font-size: 1.4rem;
+}
+
+.music-note-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.music-note-info strong {
+  font-size: 0.82rem;
+  color: #f8fafc;
+}
+
+.music-note-info small {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+/* Footer Bottom Bar */
+.footer-bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 22px 0;
+}
+
+.bottom-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.bottom-bar-inner strong {
+  color: #e2e8f0;
+}
+
+/* ============================================================
+   LIGHTBOX MODAL
+   ============================================================ */
+.lightbox-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 20000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.lightbox-modal.active {
+  display: flex;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-size: 2.2rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  text-align: center;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 75vh;
+  margin: 0 auto;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-caption {
+  color: #fff;
+  font-size: 0.95rem;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   ANIMATION KEYFRAMES
+   ============================================================ */
+@keyframes heart-beat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.22);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN (CHO MÃY TÃNH & MOBILE LINH HOáº T)
+   ============================================================ */
+
+/* Tablet (DÆ°á»›i 992px) */
+@media (max-width: 992px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .hero-meta-row {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta-row {
+    justify-content: center;
+  }
+
+  .featured-image-card {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .story-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-layout-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-content-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px;
+  }
+}
+
+/* Mobile (DÆ°á»›i 768px) */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .main-navigation {
+    position: fixed;
+    top: 69px;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-md);
+    padding: 24px;
+    transform: translateY(-150%);
+    transition: transform 0.35s ease;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .main-navigation.open {
+    transform: translateY(0);
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .nav-link {
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .timer-digits-grid {
+    gap: 8px;
+  }
+
+  .timer-digit-box {
+    padding: 12px 4px;
+  }
+
+  .digit-number {
+    font-size: 2rem;
+  }
+
+  .timer-colon {
+    font-size: 1.6rem;
+  }
+
+  .story-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .letter-card-container {
+    padding: 30px 20px;
+  }
+
+  .letter-body-text {
+    font-size: 1.35rem;
+  }
+
+  .footer-content-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .bottom-bar-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
