@@ -550,6 +550,7 @@ body {
     transform: translate(-50%, -60%) translateY(0);
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16), 0 0 25px rgba(147, 197, 253, 0.40);
   }
+
   100% {
     transform: translate(-50%, -60%) translateY(-6px);
     box-shadow: 0 16px 36px rgba(15, 23, 42, 0.20), 0 0 32px rgba(199, 210, 254, 0.55);
@@ -583,6 +584,7 @@ body {
     transform: scale(0.85) rotate(-8deg);
     opacity: 0.7;
   }
+
   100% {
     transform: scale(1.2) rotate(12deg);
     opacity: 1;
@@ -642,10 +644,12 @@ body {
     transform: translate(-50%, -50%) scale(0.2);
     opacity: 1;
   }
+
   60% {
     transform: translate(-50%, -50%) scale(1.6);
     opacity: 0.85;
   }
+
   100% {
     transform: translate(-50%, -50%) scale(2.2);
     opacity: 0;
@@ -661,12 +665,15 @@ body {
     padding: 8px 16px;
     border-radius: 16px;
   }
+
   .fragrance-title {
     font-size: 0.98rem;
   }
+
   .fragrance-subtitle {
     font-size: 0.76rem;
   }
+
   .fragrance-product-tag {
     font-size: 0.62rem;
     padding: 1px 8px;
@@ -759,24 +766,31 @@ body {
   0% {
     transform: scale(1.02) translate(0, 0) rotate(0deg);
   }
+
   15% {
     transform: scale(1.03) translate(-3px, -1.5px) rotate(-1.5deg);
   }
+
   30% {
     transform: scale(1.03) translate(3px, 1.5px) rotate(1.5deg);
   }
+
   45% {
     transform: scale(1.025) translate(-2.5px, 1px) rotate(-1deg);
   }
+
   60% {
     transform: scale(1.02) translate(2px, -1px) rotate(0.8deg);
   }
+
   75% {
     transform: scale(1.015) translate(-1px, 0.5px) rotate(-0.4deg);
   }
+
   90% {
     transform: scale(1.01) translate(0.5px, -0.5px) rotate(0.2deg);
   }
+
   100% {
     transform: scale(1.01) translate(0, 0) rotate(0deg);
   }
@@ -788,13 +802,11 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(
-    115deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.55) 50%,
-    rgba(147, 197, 253, 0.45) 54%,
-    transparent 65%
-  );
+  background: linear-gradient(115deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.55) 50%,
+      rgba(147, 197, 253, 0.45) 54%,
+      transparent 65%);
   transform: translateX(-100%) rotate(25deg);
   animation: bottle-shine-gleam 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   pointer-events: none;
@@ -805,9 +817,11 @@ body {
     transform: translateX(-100%) rotate(25deg);
     opacity: 0;
   }
+
   30% {
     opacity: 1;
   }
+
   100% {
     transform: translateX(100%) rotate(25deg);
     opacity: 0;
@@ -898,6 +912,7 @@ body {
     transform: scale(0.9) rotate(-10deg);
     filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
   }
+
   100% {
     transform: scale(1.25) rotate(15deg);
     filter: drop-shadow(0 0 16px rgba(14, 165, 233, 1));
@@ -1012,17 +1027,21 @@ body {
     max-width: 320px;
     padding: 26px 20px 22px;
   }
+
   .world-brand-title {
     font-size: 1.22rem;
   }
+
   .world-product-name {
     font-size: 0.98rem;
     margin-bottom: 14px;
   }
+
   .world-message {
     font-size: 0.96rem;
     margin-bottom: 20px;
   }
+
   .world-close-btn {
     padding: 7px 24px;
     font-size: 0.88rem;

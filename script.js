@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       osc.start();
       osc.stop(ctx.currentTime + 0.7);
-    } catch (_) {}
+    } catch (_) { }
   }
 
   // ============================================================
@@ -786,261 +786,261 @@ document.addEventListener('DOMContentLoaded', () => {
         br.el.remove();
         activeBranches.splice(i, 1);
       }
+      requestAnimationFrame(updateFlowerBranchPhysics);
+    }
+
     requestAnimationFrame(updateFlowerBranchPhysics);
-  }
 
-  requestAnimationFrame(updateFlowerBranchPhysics);
+    // ============================================================
+    // 7. HIỆU ỨNG THỊ GIÁC "MÙI HƯƠNG" (FRAGRANCE MIST & RIBBON)
+    // - Diễn đạt mùi hương hoa đậu biếc bằng hình ảnh thị giác lung linh
+    // - Khi người dùng click vào chai nước hoa/mỹ phẩm:
+    //   + Lớp sương cực mịn bay lên với độ mờ dịu (opacity thấp)
+    //   + Chuyển động dạng ribbon uốn lượn hình sóng sin mềm mại
+    //   + Hạt sáng nhỏ, đốm sao lấp lánh (sparkles & stardust)
+    //   + Quầng sáng glow xanh ngọc đậu biếc & trắng ngọc trai
+    //   + Thẻ chữ bay bổng:
+    //       ✨  ·  ✨
+    //       Butterfly Pea
+    //       A gentle floral moment...
+    //   + Sau vài giây tự động tan biến êm đềm vào không khí
+    // ============================================================
+    const fragranceCanvas = document.getElementById('fragranceCanvas');
+    const fragranceTextContainer = document.getElementById('fragranceTextContainer');
 
-  // ============================================================
-  // 7. HIỆU ỨNG THỊ GIÁC "MÙI HƯƠNG" (FRAGRANCE MIST & RIBBON)
-  // - Diễn đạt mùi hương hoa đậu biếc bằng hình ảnh thị giác lung linh
-  // - Khi người dùng click vào chai nước hoa/mỹ phẩm:
-  //   + Lớp sương cực mịn bay lên với độ mờ dịu (opacity thấp)
-  //   + Chuyển động dạng ribbon uốn lượn hình sóng sin mềm mại
-  //   + Hạt sáng nhỏ, đốm sao lấp lánh (sparkles & stardust)
-  //   + Quầng sáng glow xanh ngọc đậu biếc & trắng ngọc trai
-  //   + Thẻ chữ bay bổng:
-  //       ✨  ·  ✨
-  //       Butterfly Pea
-  //       A gentle floral moment...
-  //   + Sau vài giây tự động tan biến êm đềm vào không khí
-  // ============================================================
-  const fragranceCanvas = document.getElementById('fragranceCanvas');
-  const fragranceTextContainer = document.getElementById('fragranceTextContainer');
+    let fCtx = null;
+    let fWidth = 0;
+    let fHeight = 0;
+    const activeFragranceBursts = [];
+    let isFragranceLoopActive = false;
 
-  let fCtx = null;
-  let fWidth = 0;
-  let fHeight = 0;
-  const activeFragranceBursts = [];
-  let isFragranceLoopActive = false;
+    const fragranceBottles = [
+      {
+        id: 'serum',
+        brand: 'Butterfly Pea',
+        name: 'Rejuvenating Serum',
+        subtitle: 'Một khoảnh khắc dịu dàng dành cho em.',
+        tag: 'Serum Dưỡng Trẻ Hóa',
+        message: 'Một khoảnh khắc\ndịu dàng dành cho em.',
+        nozzle: { x: 0.211, y: 0.372 },
+        bounds: { minX: 0.135, maxX: 0.28, minY: 0.31, maxY: 0.83 },
+        ribbonColor: { r: 147, g: 197, b: 253 }, // Blue sapphire
+        sprayAngle: -0.06
+      },
+      {
+        id: 'cream',
+        brand: 'Butterfly Pea',
+        name: 'Radiance Cream',
+        subtitle: 'Nâng niu từng nét rạng rỡ của em.',
+        tag: 'Kem Dưỡng Sáng Mịn',
+        message: 'Nâng niu từng nét rạng rỡ,\nvỗ về giấc mơ êm đềm của em.',
+        nozzle: { x: 0.344, y: 0.620 },
+        bounds: { minX: 0.27, maxX: 0.43, minY: 0.54, maxY: 0.86 },
+        ribbonColor: { r: 199, g: 210, b: 254 }, // Lavender pearl
+        sprayAngle: -0.03
+      },
+      {
+        id: 'toner',
+        brand: 'Butterfly Pea',
+        name: 'Hydrating Toner',
+        subtitle: 'Từng giọt sương mát lành ban mai...',
+        tag: 'Toner Cấp Ẩm Tươi Mát',
+        message: 'Từng giọt sương mát lành,\nđánh thức sự tươi mới và nét cười em.',
+        nozzle: { x: 0.600, y: 0.357 },
+        bounds: { minX: 0.54, maxX: 0.66, minY: 0.31, maxY: 0.85 },
+        ribbonColor: { r: 147, g: 197, b: 253 },
+        sprayAngle: 0.04
+      },
+      {
+        id: 'essence',
+        brand: 'Butterfly Pea',
+        name: 'Soothing Essence',
+        subtitle: 'Làn sương thơm dịu ngọt vấn vương...',
+        tag: 'Nước Hoa & Tinh Chất Xịt',
+        message: 'Làn sương thơm dịu ngọt,\nvấn vương chở che em qua từng ngày dài.',
+        nozzle: { x: 0.729, y: 0.430 },
+        bounds: { minX: 0.68, maxX: 0.79, minY: 0.38, maxY: 0.86 },
+        ribbonColor: { r: 125, g: 211, b: 252 }, // Sky blue mist
+        sprayAngle: 0.08
+      },
+      {
+        id: 'lipbalm',
+        brand: 'Butterfly Pea',
+        name: 'Lip Balm Nourish & Glow',
+        subtitle: 'Gửi chút ngọt ngào vương nhẹ...',
+        tag: 'Son Dưỡng Căng Mọng',
+        message: 'Gửi chút ngọt ngào vương nhẹ,\ncho đôi môi em luôn hé nụ cười tươi.',
+        nozzle: { x: 0.667, y: 0.758 },
+        bounds: { minX: 0.60, maxX: 0.74, minY: 0.71, maxY: 0.93 },
+        ribbonColor: { r: 244, g: 208, b: 234 }, // Pink-violet
+        sprayAngle: 0.02
+      },
+      {
+        id: 'liptube',
+        brand: 'Butterfly Pea',
+        name: 'Lip Balm Tube',
+        subtitle: 'Sự chăm sóc ân cần bên em...',
+        tag: 'Tuýp Son Đậu Biếc',
+        message: 'Sự chăm sóc ân cần,\nluôn bên em từ những điều nhỏ bé nhất.',
+        nozzle: { x: 0.813, y: 0.583 },
+        bounds: { minX: 0.77, maxX: 0.88, minY: 0.51, maxY: 0.91 },
+        ribbonColor: { r: 249, g: 168, b: 212 },
+        sprayAngle: 0.06
+      },
+      {
+        id: 'flower_vase',
+        brand: 'Butterfly Pea',
+        name: 'Botanical Blossom',
+        subtitle: 'Sắc biếc hoa thủy chung...',
+        tag: 'Bình Hoa Đậu Biếc',
+        message: 'Sắc biếc hoa thủy chung,\nthay ngàn lời yêu gửi trọn đến em.',
+        nozzle: { x: 0.500, y: 0.220 },
+        bounds: { minX: 0.28, maxX: 0.72, minY: 0.04, maxY: 0.38 },
+        ribbonColor: { r: 147, g: 197, b: 253 },
+        sprayAngle: 0.0
+      }
+    ];
 
-  const fragranceBottles = [
-    {
-      id: 'serum',
-      brand: 'Butterfly Pea',
-      name: 'Rejuvenating Serum',
-      subtitle: 'Một khoảnh khắc dịu dàng dành cho em.',
-      tag: 'Serum Dưỡng Trẻ Hóa',
-      message: 'Một khoảnh khắc\ndịu dàng dành cho em.',
-      nozzle: { x: 0.211, y: 0.372 },
-      bounds: { minX: 0.135, maxX: 0.28, minY: 0.31, maxY: 0.83 },
-      ribbonColor: { r: 147, g: 197, b: 253 }, // Blue sapphire
-      sprayAngle: -0.06
-    },
-    {
-      id: 'cream',
-      brand: 'Butterfly Pea',
-      name: 'Radiance Cream',
-      subtitle: 'Nâng niu từng nét rạng rỡ của em.',
-      tag: 'Kem Dưỡng Sáng Mịn',
-      message: 'Nâng niu từng nét rạng rỡ,\nvỗ về giấc mơ êm đềm của em.',
-      nozzle: { x: 0.344, y: 0.620 },
-      bounds: { minX: 0.27, maxX: 0.43, minY: 0.54, maxY: 0.86 },
-      ribbonColor: { r: 199, g: 210, b: 254 }, // Lavender pearl
-      sprayAngle: -0.03
-    },
-    {
-      id: 'toner',
-      brand: 'Butterfly Pea',
-      name: 'Hydrating Toner',
-      subtitle: 'Từng giọt sương mát lành ban mai...',
-      tag: 'Toner Cấp Ẩm Tươi Mát',
-      message: 'Từng giọt sương mát lành,\nđánh thức sự tươi mới và nét cười em.',
-      nozzle: { x: 0.600, y: 0.357 },
-      bounds: { minX: 0.54, maxX: 0.66, minY: 0.31, maxY: 0.85 },
-      ribbonColor: { r: 147, g: 197, b: 253 },
-      sprayAngle: 0.04
-    },
-    {
-      id: 'essence',
-      brand: 'Butterfly Pea',
-      name: 'Soothing Essence',
-      subtitle: 'Làn sương thơm dịu ngọt vấn vương...',
-      tag: 'Nước Hoa & Tinh Chất Xịt',
-      message: 'Làn sương thơm dịu ngọt,\nvấn vương chở che em qua từng ngày dài.',
-      nozzle: { x: 0.729, y: 0.430 },
-      bounds: { minX: 0.68, maxX: 0.79, minY: 0.38, maxY: 0.86 },
-      ribbonColor: { r: 125, g: 211, b: 252 }, // Sky blue mist
-      sprayAngle: 0.08
-    },
-    {
-      id: 'lipbalm',
-      brand: 'Butterfly Pea',
-      name: 'Lip Balm Nourish & Glow',
-      subtitle: 'Gửi chút ngọt ngào vương nhẹ...',
-      tag: 'Son Dưỡng Căng Mọng',
-      message: 'Gửi chút ngọt ngào vương nhẹ,\ncho đôi môi em luôn hé nụ cười tươi.',
-      nozzle: { x: 0.667, y: 0.758 },
-      bounds: { minX: 0.60, maxX: 0.74, minY: 0.71, maxY: 0.93 },
-      ribbonColor: { r: 244, g: 208, b: 234 }, // Pink-violet
-      sprayAngle: 0.02
-    },
-    {
-      id: 'liptube',
-      brand: 'Butterfly Pea',
-      name: 'Lip Balm Tube',
-      subtitle: 'Sự chăm sóc ân cần bên em...',
-      tag: 'Tuýp Son Đậu Biếc',
-      message: 'Sự chăm sóc ân cần,\nluôn bên em từ những điều nhỏ bé nhất.',
-      nozzle: { x: 0.813, y: 0.583 },
-      bounds: { minX: 0.77, maxX: 0.88, minY: 0.51, maxY: 0.91 },
-      ribbonColor: { r: 249, g: 168, b: 212 },
-      sprayAngle: 0.06
-    },
-    {
-      id: 'flower_vase',
-      brand: 'Butterfly Pea',
-      name: 'Botanical Blossom',
-      subtitle: 'Sắc biếc hoa thủy chung...',
-      tag: 'Bình Hoa Đậu Biếc',
-      message: 'Sắc biếc hoa thủy chung,\nthay ngàn lời yêu gửi trọn đến em.',
-      nozzle: { x: 0.500, y: 0.220 },
-      bounds: { minX: 0.28, maxX: 0.72, minY: 0.04, maxY: 0.38 },
-      ribbonColor: { r: 147, g: 197, b: 253 },
-      sprayAngle: 0.0
+    function getBottleAtRel(relX, relY) {
+      // Chỉ các chai lọ mỹ phẩm mới mở thế giới riêng (không chặn click vào hoa)
+      for (let i = 0; i < fragranceBottles.length; i++) {
+        const b = fragranceBottles[i];
+        if (b.id === 'flower_vase') continue;
+        if (
+          relX >= b.bounds.minX && relX <= b.bounds.maxX &&
+          relY >= b.bounds.minY && relY <= b.bounds.maxY
+        ) {
+          return b;
+        }
+      }
+      return null;
     }
-  ];
 
-  function getBottleAtRel(relX, relY) {
-    // Chỉ các chai lọ mỹ phẩm mới mở thế giới riêng (không chặn click vào hoa)
-    for (let i = 0; i < fragranceBottles.length; i++) {
-      const b = fragranceBottles[i];
-      if (b.id === 'flower_vase') continue;
-      if (
-        relX >= b.bounds.minX && relX <= b.bounds.maxX &&
-        relY >= b.bounds.minY && relY <= b.bounds.maxY
-      ) {
-        return b;
+    function getNearestBottle(relX, relY) {
+      let closest = null;
+      let minDist = Infinity;
+      for (let i = 0; i < fragranceBottles.length; i++) {
+        const b = fragranceBottles[i];
+        if (b.id === 'flower_vase') continue;
+        const dx = (relX - b.nozzle.x) * 1.35;
+        const dy = relY - b.nozzle.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = b;
+        }
+      }
+      return closest;
+    }
+
+    function resizeFragranceCanvas() {
+      if (!fragranceCanvas || !livingFrameEl) return;
+      const rect = livingFrameEl.getBoundingClientRect();
+      fWidth = rect.width;
+      fHeight = rect.height;
+      if (fWidth === 0 || fHeight === 0) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      fragranceCanvas.width = fWidth * dpr;
+      fragranceCanvas.height = fHeight * dpr;
+      if (fCtx) {
+        fCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
     }
-    return null;
-  }
 
-  function getNearestBottle(relX, relY) {
-    let closest = null;
-    let minDist = Infinity;
-    for (let i = 0; i < fragranceBottles.length; i++) {
-      const b = fragranceBottles[i];
-      if (b.id === 'flower_vase') continue;
-      const dx = (relX - b.nozzle.x) * 1.35;
-      const dy = relY - b.nozzle.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = b;
+    if (fragranceCanvas && livingFrameEl) {
+      fCtx = fragranceCanvas.getContext('2d');
+      resizeFragranceCanvas();
+
+      if (window.ResizeObserver) {
+        const roF = new ResizeObserver(() => resizeFragranceCanvas());
+        roF.observe(livingFrameEl);
+      }
+      window.addEventListener('resize', resizeFragranceCanvas);
+      if (livingPhotoEl) {
+        if (livingPhotoEl.complete) resizeFragranceCanvas();
+        else livingPhotoEl.addEventListener('load', resizeFragranceCanvas);
       }
     }
-    return closest;
-  }
 
-  function resizeFragranceCanvas() {
-    if (!fragranceCanvas || !livingFrameEl) return;
-    const rect = livingFrameEl.getBoundingClientRect();
-    fWidth = rect.width;
-    fHeight = rect.height;
-    if (fWidth === 0 || fHeight === 0) return;
+    // Âm thanh xịt sương dịu êm qua Web Audio API (thanh khiết, không chói tai)
+    function playFragranceSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const actx = new AudioCtx();
+        if (actx.state === 'suspended') {
+          actx.resume();
+        }
 
-    const dpr = window.devicePixelRatio || 1;
-    fragranceCanvas.width = fWidth * dpr;
-    fragranceCanvas.height = fHeight * dpr;
-    if (fCtx) {
-      fCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const bufferSize = Math.floor(actx.sampleRate * 0.42);
+        const buffer = actx.createBuffer(1, bufferSize, actx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.45));
+        }
+
+        const noise = actx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = actx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(3400, actx.currentTime);
+        filter.Q.setValueAtTime(1.6, actx.currentTime);
+
+        const gain = actx.createGain();
+        gain.gain.setValueAtTime(0.001, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.040, actx.currentTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.38);
+
+        const osc = actx.createOscillator();
+        const oscGain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1567.98, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(2093.00, actx.currentTime + 0.35);
+        oscGain.gain.setValueAtTime(0.012, actx.currentTime);
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.42);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(actx.destination);
+
+        osc.connect(oscGain);
+        oscGain.connect(actx.destination);
+
+        noise.start();
+        osc.start();
+        noise.stop(actx.currentTime + 0.40);
+        osc.stop(actx.currentTime + 0.44);
+      } catch (e) {
+        // Bỏ qua nếu audio bị chặn
+      }
     }
-  }
 
-  if (fragranceCanvas && livingFrameEl) {
-    fCtx = fragranceCanvas.getContext('2d');
-    resizeFragranceCanvas();
+    // Hiển thị thẻ chữ bay bổng "Butterfly Pea / A gentle floral moment..."
+    function showFragranceCard(bottle, nozzleX, nozzleY) {
+      if (!fragranceTextContainer) return;
 
-    if (window.ResizeObserver) {
-      const roF = new ResizeObserver(() => resizeFragranceCanvas());
-      roF.observe(livingFrameEl);
-    }
-    window.addEventListener('resize', resizeFragranceCanvas);
-    if (livingPhotoEl) {
-      if (livingPhotoEl.complete) resizeFragranceCanvas();
-      else livingPhotoEl.addEventListener('load', resizeFragranceCanvas);
-    }
-  }
-
-  // Âm thanh xịt sương dịu êm qua Web Audio API (thanh khiết, không chói tai)
-  function playFragranceSound() {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const actx = new AudioCtx();
-      if (actx.state === 'suspended') {
-        actx.resume();
+      // Xóa thẻ cũ của cùng chai lọ nếu đang hiển thị
+      const existing = fragranceTextContainer.querySelector(`[data-bottle-id="${bottle.id}"]`);
+      if (existing) {
+        existing.classList.remove('active');
+        existing.classList.add('dissolving');
+        setTimeout(() => existing.remove(), 600);
       }
 
-      const bufferSize = Math.floor(actx.sampleRate * 0.42);
-      const buffer = actx.createBuffer(1, bufferSize, actx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.45));
-      }
+      const card = document.createElement('div');
+      card.className = 'fragrance-moment-card';
+      card.setAttribute('data-bottle-id', bottle.id);
 
-      const noise = actx.createBufferSource();
-      noise.buffer = buffer;
+      // Canh chỉnh vị trí thẻ chữ: nằm ngay phía trên chai, giới hạn không tràn khung hình
+      const cardX = Math.max(110, Math.min(fWidth - 110, nozzleX));
+      const cardY = Math.max(65, nozzleY - 60);
 
-      const filter = actx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(3400, actx.currentTime);
-      filter.Q.setValueAtTime(1.6, actx.currentTime);
+      card.style.left = `${cardX}px`;
+      card.style.top = `${cardY}px`;
 
-      const gain = actx.createGain();
-      gain.gain.setValueAtTime(0.001, actx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.040, actx.currentTime + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.38);
-
-      const osc = actx.createOscillator();
-      const oscGain = actx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1567.98, actx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(2093.00, actx.currentTime + 0.35);
-      oscGain.gain.setValueAtTime(0.012, actx.currentTime);
-      oscGain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.42);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(actx.destination);
-
-      osc.connect(oscGain);
-      oscGain.connect(actx.destination);
-
-      noise.start();
-      osc.start();
-      noise.stop(actx.currentTime + 0.40);
-      osc.stop(actx.currentTime + 0.44);
-    } catch (e) {
-      // Bỏ qua nếu audio bị chặn
-    }
-  }
-
-  // Hiển thị thẻ chữ bay bổng "Butterfly Pea / A gentle floral moment..."
-  function showFragranceCard(bottle, nozzleX, nozzleY) {
-    if (!fragranceTextContainer) return;
-
-    // Xóa thẻ cũ của cùng chai lọ nếu đang hiển thị
-    const existing = fragranceTextContainer.querySelector(`[data-bottle-id="${bottle.id}"]`);
-    if (existing) {
-      existing.classList.remove('active');
-      existing.classList.add('dissolving');
-      setTimeout(() => existing.remove(), 600);
-    }
-
-    const card = document.createElement('div');
-    card.className = 'fragrance-moment-card';
-    card.setAttribute('data-bottle-id', bottle.id);
-
-    // Canh chỉnh vị trí thẻ chữ: nằm ngay phía trên chai, giới hạn không tràn khung hình
-    const cardX = Math.max(110, Math.min(fWidth - 110, nozzleX));
-    const cardY = Math.max(65, nozzleY - 60);
-
-    card.style.left = `${cardX}px`;
-    card.style.top = `${cardY}px`;
-
-    card.innerHTML = `
+      card.innerHTML = `
       <div class="fragrance-sparkle-row">
         <span class="f-star">✨</span>
         <span class="f-dot">·</span>
@@ -1051,187 +1051,187 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="fragrance-product-tag">${bottle.name}</div>
     `;
 
-    fragranceTextContainer.appendChild(card);
+      fragranceTextContainer.appendChild(card);
 
-    // Kích hoạt animation xuất hiện
-    requestAnimationFrame(() => {
-      card.classList.add('active');
-    });
+      // Kích hoạt animation xuất hiện
+      requestAnimationFrame(() => {
+        card.classList.add('active');
+      });
 
-    // Sau 3.3s bắt đầu mờ tan biến
-    setTimeout(() => {
-      if (card.parentElement) {
-        card.classList.remove('active');
-        card.classList.add('dissolving');
-      }
-    }, 3300);
-
-    // Sau 4.3s gỡ bỏ hoàn toàn khỏi DOM
-    setTimeout(() => {
-      if (card.parentElement) {
-        card.remove();
-      }
-    }, 4300);
-  }
-
-  // ============================================================
-  // THẾ GIỚI RIÊNG KHI CLICK VÀO TỪNG MÓN MỸ PHẨM (PRODUCT WORLDS)
-  // 1️⃣ Chai rung nhẹ (haptic shake + focus aura)
-  // 2️⃣ Cành hoa xung quanh bắt đầu bay
-  // 3️⃣ Ánh sáng lóe nhẹ trên chai
-  // 4️⃣ Hương thơm xuất hiện (làn sương ribbon & âm thanh)
-  // 5️⃣ Thông tin hiện ra (người dùng tự đóng, không timeout)
-  // ============================================================
-  function activateProductWorld(bottle) {
-    if (!bottle) return;
-    dismissTouchHint();
-
-    // 0. Đóng modal hiện tại nếu có
-    const currentModal = document.getElementById('productWorldModal');
-    if (currentModal) {
-      currentModal.remove();
-    }
-    const oldShaker = livingFrameEl ? livingFrameEl.querySelector('.bottle-shaker-element') : null;
-    if (oldShaker) oldShaker.remove();
-
-    if (!fCtx || fWidth === 0 || fHeight === 0) {
-      resizeFragranceCanvas();
-    }
-
-    const targetImg = livingPhotoEl || (livingFrameEl ? livingFrameEl.querySelector('img') : null);
-    const fRect = livingFrameEl ? livingFrameEl.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
-    const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
-
-    const bottleBox = {
-      left: bottle.bounds.minX * iRect.width + (iRect.left - fRect.left),
-      top: bottle.bounds.minY * iRect.height + (iRect.top - fRect.top),
-      width: (bottle.bounds.maxX - bottle.bounds.minX) * iRect.width,
-      height: (bottle.bounds.maxY - bottle.bounds.minY) * iRect.height
-    };
-
-    const nozzleX = bottle.nozzle.x * fWidth;
-    const nozzleY = bottle.nozzle.y * fHeight;
-    const absNozzleX = fRect.left + nozzleX;
-    const absNozzleY = fRect.top + nozzleY;
-
-    // ==========================================
-    // 1️⃣ CHAI RUNG NHẸ (0ms)
-    // ==========================================
-    // Haptic vibration cho thiết bị di động
-    if (window.navigator && window.navigator.vibrate) {
-      try {
-        window.navigator.vibrate([28, 35, 28]);
-      } catch (err) { }
-    }
-
-    // Tách lớp phần tử chai thực tế và rung nhẹ tự nhiên
-    if (targetImg && targetImg.complete && targetImg.naturalWidth > 0 && livingFrameEl && bottle.id !== 'flower_vase') {
-      const shakerEl = document.createElement('div');
-      shakerEl.className = 'bottle-shaker-element bottle-shaking';
-      shakerEl.style.left = `${bottleBox.left}px`;
-      shakerEl.style.top = `${bottleBox.top}px`;
-      shakerEl.style.width = `${bottleBox.width}px`;
-      shakerEl.style.height = `${bottleBox.height}px`;
-
-      const shakerCanvas = document.createElement('canvas');
-      const dpr = window.devicePixelRatio || 1;
-      shakerCanvas.width = Math.max(1, Math.round(bottleBox.width * dpr));
-      shakerCanvas.height = Math.max(1, Math.round(bottleBox.height * dpr));
-      shakerCanvas.style.width = '100%';
-      shakerCanvas.style.height = '100%';
-
-      const sCtx = shakerCanvas.getContext('2d');
-      sCtx.scale(dpr, dpr);
-
-      const sx = bottle.bounds.minX * targetImg.naturalWidth;
-      const sy = bottle.bounds.minY * targetImg.naturalHeight;
-      const sw = (bottle.bounds.maxX - bottle.bounds.minX) * targetImg.naturalWidth;
-      const sh = (bottle.bounds.maxY - bottle.bounds.minY) * targetImg.naturalHeight;
-
-      sCtx.drawImage(targetImg, sx, sy, sw, sh, 0, 0, bottleBox.width, bottleBox.height);
-
-      const shineEl = document.createElement('div');
-      shineEl.className = 'bottle-shaker-shine';
-
-      shakerEl.appendChild(shakerCanvas);
-      shakerEl.appendChild(shineEl);
-      livingFrameEl.appendChild(shakerEl);
-
+      // Sau 3.3s bắt đầu mờ tan biến
       setTimeout(() => {
-        shakerEl.classList.remove('bottle-shaking');
-        shakerEl.classList.add('bottle-focused');
-      }, 500);
+        if (card.parentElement) {
+          card.classList.remove('active');
+          card.classList.add('dissolving');
+        }
+      }, 3300);
+
+      // Sau 4.3s gỡ bỏ hoàn toàn khỏi DOM
+      setTimeout(() => {
+        if (card.parentElement) {
+          card.remove();
+        }
+      }, 4300);
     }
 
-    // ==========================================
-    // 2️⃣ CÀNH HOA XUNG QUANH BẮT ĐẦU BAY (60ms)
-    // ==========================================
-    setTimeout(() => {
-      // 2 cành hoa bay từ 2 hướng trái phải xung quanh chai
-      const bOriginX1 = fRect.left + bottleBox.left + bottleBox.width * 0.15;
-      const bOriginY1 = fRect.top + bottleBox.top + bottleBox.height * 0.2;
-      launchFlowerBranch(bOriginX1, bOriginY1, -1.1);
+    // ============================================================
+    // THẾ GIỚI RIÊNG KHI CLICK VÀO TỪNG MÓN MỸ PHẨM (PRODUCT WORLDS)
+    // 1️⃣ Chai rung nhẹ (haptic shake + focus aura)
+    // 2️⃣ Cành hoa xung quanh bắt đầu bay
+    // 3️⃣ Ánh sáng lóe nhẹ trên chai
+    // 4️⃣ Hương thơm xuất hiện (làn sương ribbon & âm thanh)
+    // 5️⃣ Thông tin hiện ra (người dùng tự đóng, không timeout)
+    // ============================================================
+    function activateProductWorld(bottle) {
+      if (!bottle) return;
+      dismissTouchHint();
 
+      // 0. Đóng modal hiện tại nếu có
+      const currentModal = document.getElementById('productWorldModal');
+      if (currentModal) {
+        currentModal.remove();
+      }
+      const oldShaker = livingFrameEl ? livingFrameEl.querySelector('.bottle-shaker-element') : null;
+      if (oldShaker) oldShaker.remove();
+
+      if (!fCtx || fWidth === 0 || fHeight === 0) {
+        resizeFragranceCanvas();
+      }
+
+      const targetImg = livingPhotoEl || (livingFrameEl ? livingFrameEl.querySelector('img') : null);
+      const fRect = livingFrameEl ? livingFrameEl.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+      const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+      const bottleBox = {
+        left: bottle.bounds.minX * iRect.width + (iRect.left - fRect.left),
+        top: bottle.bounds.minY * iRect.height + (iRect.top - fRect.top),
+        width: (bottle.bounds.maxX - bottle.bounds.minX) * iRect.width,
+        height: (bottle.bounds.maxY - bottle.bounds.minY) * iRect.height
+      };
+
+      const nozzleX = bottle.nozzle.x * fWidth;
+      const nozzleY = bottle.nozzle.y * fHeight;
+      const absNozzleX = fRect.left + nozzleX;
+      const absNozzleY = fRect.top + nozzleY;
+
+      // ==========================================
+      // 1️⃣ CHAI RUNG NHẸ (0ms)
+      // ==========================================
+      // Haptic vibration cho thiết bị di động
+      if (window.navigator && window.navigator.vibrate) {
+        try {
+          window.navigator.vibrate([28, 35, 28]);
+        } catch (err) { }
+      }
+
+      // Tách lớp phần tử chai thực tế và rung nhẹ tự nhiên
+      if (targetImg && targetImg.complete && targetImg.naturalWidth > 0 && livingFrameEl && bottle.id !== 'flower_vase') {
+        const shakerEl = document.createElement('div');
+        shakerEl.className = 'bottle-shaker-element bottle-shaking';
+        shakerEl.style.left = `${bottleBox.left}px`;
+        shakerEl.style.top = `${bottleBox.top}px`;
+        shakerEl.style.width = `${bottleBox.width}px`;
+        shakerEl.style.height = `${bottleBox.height}px`;
+
+        const shakerCanvas = document.createElement('canvas');
+        const dpr = window.devicePixelRatio || 1;
+        shakerCanvas.width = Math.max(1, Math.round(bottleBox.width * dpr));
+        shakerCanvas.height = Math.max(1, Math.round(bottleBox.height * dpr));
+        shakerCanvas.style.width = '100%';
+        shakerCanvas.style.height = '100%';
+
+        const sCtx = shakerCanvas.getContext('2d');
+        sCtx.scale(dpr, dpr);
+
+        const sx = bottle.bounds.minX * targetImg.naturalWidth;
+        const sy = bottle.bounds.minY * targetImg.naturalHeight;
+        const sw = (bottle.bounds.maxX - bottle.bounds.minX) * targetImg.naturalWidth;
+        const sh = (bottle.bounds.maxY - bottle.bounds.minY) * targetImg.naturalHeight;
+
+        sCtx.drawImage(targetImg, sx, sy, sw, sh, 0, 0, bottleBox.width, bottleBox.height);
+
+        const shineEl = document.createElement('div');
+        shineEl.className = 'bottle-shaker-shine';
+
+        shakerEl.appendChild(shakerCanvas);
+        shakerEl.appendChild(shineEl);
+        livingFrameEl.appendChild(shakerEl);
+
+        setTimeout(() => {
+          shakerEl.classList.remove('bottle-shaking');
+          shakerEl.classList.add('bottle-focused');
+        }, 500);
+      }
+
+      // ==========================================
+      // 2️⃣ CÀNH HOA XUNG QUANH BẮT ĐẦU BAY (60ms)
+      // ==========================================
       setTimeout(() => {
-        const bOriginX2 = fRect.left + bottleBox.left + bottleBox.width * 0.85;
-        const bOriginY2 = fRect.top + bottleBox.top + bottleBox.height * 0.15;
-        launchFlowerBranch(bOriginX2, bOriginY2, 1.15);
-      }, 90);
-    }, 60);
+        // 2 cành hoa bay từ 2 hướng trái phải xung quanh chai
+        const bOriginX1 = fRect.left + bottleBox.left + bottleBox.width * 0.15;
+        const bOriginY1 = fRect.top + bottleBox.top + bottleBox.height * 0.2;
+        launchFlowerBranch(bOriginX1, bOriginY1, -1.1);
 
-    // ==========================================
-    // 3️⃣ ÁNH SÁNG LÓE NHẸ TRÊN CHAI (140ms)
-    // ==========================================
-    setTimeout(() => {
-      const flashEl = document.createElement('div');
-      flashEl.className = 'bottle-spray-flash';
-      flashEl.style.left = `${nozzleX}px`;
-      flashEl.style.top = `${nozzleY}px`;
-      if (livingFrameEl) {
-        livingFrameEl.appendChild(flashEl);
-        setTimeout(() => flashEl.remove(), 750);
-      }
+        setTimeout(() => {
+          const bOriginX2 = fRect.left + bottleBox.left + bottleBox.width * 0.85;
+          const bOriginY2 = fRect.top + bottleBox.top + bottleBox.height * 0.15;
+          launchFlowerBranch(bOriginX2, bOriginY2, 1.15);
+        }, 90);
+      }, 60);
 
-      for (let s = 0; s < 5; s++) {
-        const sx = absNozzleX + (Math.random() - 0.5) * 35;
-        const sy = absNozzleY + (Math.random() - 0.5) * 30;
-        createSparkle(sx, sy);
-      }
-    }, 140);
+      // ==========================================
+      // 3️⃣ ÁNH SÁNG LÓE NHẸ TRÊN CHAI (140ms)
+      // ==========================================
+      setTimeout(() => {
+        const flashEl = document.createElement('div');
+        flashEl.className = 'bottle-spray-flash';
+        flashEl.style.left = `${nozzleX}px`;
+        flashEl.style.top = `${nozzleY}px`;
+        if (livingFrameEl) {
+          livingFrameEl.appendChild(flashEl);
+          setTimeout(() => flashEl.remove(), 750);
+        }
 
-    // ==========================================
-    // 4️⃣ HƯƠNG THƠM XUẤT HIỆN (220ms)
-    // ==========================================
-    setTimeout(() => {
-      launchFragranceMist(bottle, false);
-    }, 220);
+        for (let s = 0; s < 5; s++) {
+          const sx = absNozzleX + (Math.random() - 0.5) * 35;
+          const sy = absNozzleY + (Math.random() - 0.5) * 30;
+          createSparkle(sx, sy);
+        }
+      }, 140);
 
-    // ==========================================
-    // 5️⃣ THÔNG TIN HIỆN RA (480ms)
-    // (Người dùng tự đóng, không ép timeout)
-    // ==========================================
-    setTimeout(() => {
-      renderProductWorldModal(bottle);
-    }, 480);
-  }
+      // ==========================================
+      // 4️⃣ HƯƠNG THƠM XUẤT HIỆN (220ms)
+      // ==========================================
+      setTimeout(() => {
+        launchFragranceMist(bottle, false);
+      }, 220);
 
-  // Hiển thị thẻ thông tin "Thế giới riêng" với nút [ Đóng ]
-  function renderProductWorldModal(bottle) {
-    if (!livingFrameEl) return;
+      // ==========================================
+      // 5️⃣ THÔNG TIN HIỆN RA (480ms)
+      // (Người dùng tự đóng, không ép timeout)
+      // ==========================================
+      setTimeout(() => {
+        renderProductWorldModal(bottle);
+      }, 480);
+    }
 
-    const existing = document.getElementById('productWorldModal');
-    if (existing) existing.remove();
+    // Hiển thị thẻ thông tin "Thế giới riêng" với nút [ Đóng ]
+    function renderProductWorldModal(bottle) {
+      if (!livingFrameEl) return;
 
-    const modal = document.createElement('div');
-    modal.className = 'product-world-modal';
-    modal.id = 'productWorldModal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-label', `${bottle.brand || 'Butterfly Pea'} - ${bottle.name}`);
+      const existing = document.getElementById('productWorldModal');
+      if (existing) existing.remove();
 
-    const formattedMessage = (bottle.message || 'Một khoảnh khắc\ndịu dàng dành cho em.').replace(/\n/g, '<br>');
+      const modal = document.createElement('div');
+      modal.className = 'product-world-modal';
+      modal.id = 'productWorldModal';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-label', `${bottle.brand || 'Butterfly Pea'} - ${bottle.name}`);
 
-    modal.innerHTML = `
+      const formattedMessage = (bottle.message || 'Một khoảnh khắc\ndịu dàng dành cho em.').replace(/\n/g, '<br>');
+
+      modal.innerHTML = `
       <div class="world-card-backdrop" id="worldCardBackdrop"></div>
       <div class="world-card-container">
         <div class="world-sparkle-top">
@@ -1258,529 +1258,529 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    livingFrameEl.appendChild(modal);
+      livingFrameEl.appendChild(modal);
 
-    requestAnimationFrame(() => {
-      modal.classList.add('active');
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        const closeBtn = modal.querySelector('#worldCloseBtn');
+        if (closeBtn) closeBtn.focus();
+      });
+
+      function closeModal() {
+        modal.classList.remove('active');
+        modal.classList.add('closing');
+
+        const shaker = livingFrameEl.querySelector('.bottle-shaker-element');
+        if (shaker) {
+          shaker.classList.add('shaker-fade-out');
+        }
+
+        setTimeout(() => {
+          modal.remove();
+          if (shaker) shaker.remove();
+        }, 420);
+
+        document.removeEventListener('keydown', handleKeydown);
+      }
+
+      function handleKeydown(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      }
+
       const closeBtn = modal.querySelector('#worldCloseBtn');
-      if (closeBtn) closeBtn.focus();
-    });
-
-    function closeModal() {
-      modal.classList.remove('active');
-      modal.classList.add('closing');
-
-      const shaker = livingFrameEl.querySelector('.bottle-shaker-element');
-      if (shaker) {
-        shaker.classList.add('shaker-fade-out');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeModal();
+        });
       }
 
-      setTimeout(() => {
-        modal.remove();
-        if (shaker) shaker.remove();
-      }, 420);
-
-      document.removeEventListener('keydown', handleKeydown);
-    }
-
-    function handleKeydown(e) {
-      if (e.key === 'Escape') {
-        closeModal();
+      const backdrop = modal.querySelector('#worldCardBackdrop');
+      if (backdrop) {
+        backdrop.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeModal();
+        });
       }
+
+      document.addEventListener('keydown', handleKeydown);
     }
 
-    const closeBtn = modal.querySelector('#worldCloseBtn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeModal();
-      });
-    }
+    // Khởi phát làn sương hương thơm mỹ phẩm (Fragrance Mist Launch)
+    function launchFragranceMist(bottle, showCard = true) {
+      dismissTouchHint();
+      playFragranceSound();
 
-    const backdrop = modal.querySelector('#worldCardBackdrop');
-    if (backdrop) {
-      backdrop.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeModal();
-      });
-    }
-
-    document.addEventListener('keydown', handleKeydown);
-  }
-
-  // Khởi phát làn sương hương thơm mỹ phẩm (Fragrance Mist Launch)
-  function launchFragranceMist(bottle, showCard = true) {
-    dismissTouchHint();
-    playFragranceSound();
-
-    if (!fCtx || fWidth === 0 || fHeight === 0) {
-      resizeFragranceCanvas();
-    }
-
-    const nozzleX = bottle.nozzle.x * fWidth;
-    const nozzleY = bottle.nozzle.y * fHeight;
-
-    // 1. Đốm sáng aura lóe lên ngay miệng chai/vòi xịt
-    const flashEl = document.createElement('div');
-    flashEl.className = 'bottle-spray-flash';
-    flashEl.style.left = `${nozzleX}px`;
-    flashEl.style.top = `${nozzleY}px`;
-    if (livingFrameEl) {
-      livingFrameEl.appendChild(flashEl);
-      setTimeout(() => flashEl.remove(), 700);
-    }
-
-    // 2. Thẻ chữ nghệ thuật nổi lên (nếu không dùng modal thế giới riêng)
-    if (showCard) {
-      showFragranceCard(bottle, nozzleX, nozzleY);
-    }
-
-    // 3. Khởi tạo chùm sương (Fragrance Burst)
-    if (activeFragranceBursts.length >= 4) {
-      activeFragranceBursts[0].maxLife = activeFragranceBursts[0].life + 25;
-    }
-
-    const maxRise = Math.min(300, fHeight * 0.44);
-
-    // A. Các dải lụa sương Ribbon
-    const ribbons = [
-      {
-        originX: nozzleX,
-        originY: nozzleY,
-        maxWidth: 28,
-        maxHeight: maxRise,
-        waveFreq1: 0.021,
-        waveAmp1: 18,
-        waveFreq2: 0.045,
-        waveAmp2: 8,
-        phase1: 0,
-        phase2: Math.PI * 0.4,
-        twistFreq: 0.022,
-        twistPhase: 0,
-        driftX: bottle.sprayAngle * 0.28,
-        baseAlpha: 0.42,
-        color: bottle.ribbonColor,
-        life: 0,
-        maxLife: 220
-      },
-      {
-        originX: nozzleX,
-        originY: nozzleY,
-        maxWidth: 22,
-        maxHeight: maxRise * 0.90,
-        waveFreq1: 0.025,
-        waveAmp1: 24,
-        waveFreq2: 0.050,
-        waveAmp2: 10,
-        phase1: -0.9,
-        phase2: 1.1,
-        twistFreq: 0.028,
-        twistPhase: 0.8,
-        driftX: -0.16 + bottle.sprayAngle * 0.2,
-        baseAlpha: 0.32,
-        color: { r: 186, g: 230, b: 253 },
-        life: 0,
-        maxLife: 200
-      },
-      {
-        originX: nozzleX,
-        originY: nozzleY,
-        maxWidth: 24,
-        maxHeight: maxRise * 0.94,
-        waveFreq1: 0.023,
-        waveAmp1: 22,
-        waveFreq2: 0.046,
-        waveAmp2: 9,
-        phase1: 0.8,
-        phase2: -1.3,
-        twistFreq: 0.026,
-        twistPhase: -0.9,
-        driftX: 0.17 + bottle.sprayAngle * 0.2,
-        baseAlpha: 0.34,
-        color: { r: 199, g: 210, b: 254 },
-        life: 0,
-        maxLife: 210
-      },
-      {
-        originX: nozzleX,
-        originY: nozzleY,
-        maxWidth: 15,
-        maxHeight: maxRise * 1.05,
-        waveFreq1: 0.032,
-        waveAmp1: 14,
-        waveFreq2: 0.065,
-        waveAmp2: 6,
-        phase1: 1.4,
-        phase2: 0,
-        twistFreq: 0.038,
-        twistPhase: 2.0,
-        driftX: bottle.sprayAngle * 0.12,
-        baseAlpha: 0.45,
-        color: { r: 255, g: 255, b: 255 },
-        life: 0,
-        maxLife: 230
+      if (!fCtx || fWidth === 0 || fHeight === 0) {
+        resizeFragranceCanvas();
       }
-    ];
 
-    // B. Lớp sương cực mịn (Micro-mist cloud particles)
-    const mistParticles = [];
-    const mistCount = 48;
-    for (let i = 0; i < mistCount; i++) {
-      const spraySpread = (Math.random() - 0.5) * 2.2 + bottle.sprayAngle * 2.5;
-      const initialBurstSpeed = 2.6 + Math.random() * 2.6;
-      mistParticles.push({
-        x: nozzleX + (Math.random() - 0.5) * 8,
-        y: nozzleY - Math.random() * 4,
-        vx: spraySpread,
-        vy: -initialBurstSpeed,
-        drag: 0.945,
-        driftY: -(0.32 + Math.random() * 0.45),
-        swayPhase: Math.random() * Math.PI * 2,
-        swaySpeed: 0.025 + Math.random() * 0.025,
-        swayAmp: 0.35 + Math.random() * 0.65,
-        radius: 4 + Math.random() * 4,
-        maxRadius: 28 + Math.random() * 24,
-        baseAlpha: 0.16 + Math.random() * 0.12,
-        life: 0,
-        maxLife: 170 + Math.random() * 70,
-        color: bottle.ribbonColor
+      const nozzleX = bottle.nozzle.x * fWidth;
+      const nozzleY = bottle.nozzle.y * fHeight;
+
+      // 1. Đốm sáng aura lóe lên ngay miệng chai/vòi xịt
+      const flashEl = document.createElement('div');
+      flashEl.className = 'bottle-spray-flash';
+      flashEl.style.left = `${nozzleX}px`;
+      flashEl.style.top = `${nozzleY}px`;
+      if (livingFrameEl) {
+        livingFrameEl.appendChild(flashEl);
+        setTimeout(() => flashEl.remove(), 700);
+      }
+
+      // 2. Thẻ chữ nghệ thuật nổi lên (nếu không dùng modal thế giới riêng)
+      if (showCard) {
+        showFragranceCard(bottle, nozzleX, nozzleY);
+      }
+
+      // 3. Khởi tạo chùm sương (Fragrance Burst)
+      if (activeFragranceBursts.length >= 4) {
+        activeFragranceBursts[0].maxLife = activeFragranceBursts[0].life + 25;
+      }
+
+      const maxRise = Math.min(300, fHeight * 0.44);
+
+      // A. Các dải lụa sương Ribbon
+      const ribbons = [
+        {
+          originX: nozzleX,
+          originY: nozzleY,
+          maxWidth: 28,
+          maxHeight: maxRise,
+          waveFreq1: 0.021,
+          waveAmp1: 18,
+          waveFreq2: 0.045,
+          waveAmp2: 8,
+          phase1: 0,
+          phase2: Math.PI * 0.4,
+          twistFreq: 0.022,
+          twistPhase: 0,
+          driftX: bottle.sprayAngle * 0.28,
+          baseAlpha: 0.42,
+          color: bottle.ribbonColor,
+          life: 0,
+          maxLife: 220
+        },
+        {
+          originX: nozzleX,
+          originY: nozzleY,
+          maxWidth: 22,
+          maxHeight: maxRise * 0.90,
+          waveFreq1: 0.025,
+          waveAmp1: 24,
+          waveFreq2: 0.050,
+          waveAmp2: 10,
+          phase1: -0.9,
+          phase2: 1.1,
+          twistFreq: 0.028,
+          twistPhase: 0.8,
+          driftX: -0.16 + bottle.sprayAngle * 0.2,
+          baseAlpha: 0.32,
+          color: { r: 186, g: 230, b: 253 },
+          life: 0,
+          maxLife: 200
+        },
+        {
+          originX: nozzleX,
+          originY: nozzleY,
+          maxWidth: 24,
+          maxHeight: maxRise * 0.94,
+          waveFreq1: 0.023,
+          waveAmp1: 22,
+          waveFreq2: 0.046,
+          waveAmp2: 9,
+          phase1: 0.8,
+          phase2: -1.3,
+          twistFreq: 0.026,
+          twistPhase: -0.9,
+          driftX: 0.17 + bottle.sprayAngle * 0.2,
+          baseAlpha: 0.34,
+          color: { r: 199, g: 210, b: 254 },
+          life: 0,
+          maxLife: 210
+        },
+        {
+          originX: nozzleX,
+          originY: nozzleY,
+          maxWidth: 15,
+          maxHeight: maxRise * 1.05,
+          waveFreq1: 0.032,
+          waveAmp1: 14,
+          waveFreq2: 0.065,
+          waveAmp2: 6,
+          phase1: 1.4,
+          phase2: 0,
+          twistFreq: 0.038,
+          twistPhase: 2.0,
+          driftX: bottle.sprayAngle * 0.12,
+          baseAlpha: 0.45,
+          color: { r: 255, g: 255, b: 255 },
+          life: 0,
+          maxLife: 230
+        }
+      ];
+
+      // B. Lớp sương cực mịn (Micro-mist cloud particles)
+      const mistParticles = [];
+      const mistCount = 48;
+      for (let i = 0; i < mistCount; i++) {
+        const spraySpread = (Math.random() - 0.5) * 2.2 + bottle.sprayAngle * 2.5;
+        const initialBurstSpeed = 2.6 + Math.random() * 2.6;
+        mistParticles.push({
+          x: nozzleX + (Math.random() - 0.5) * 8,
+          y: nozzleY - Math.random() * 4,
+          vx: spraySpread,
+          vy: -initialBurstSpeed,
+          drag: 0.945,
+          driftY: -(0.32 + Math.random() * 0.45),
+          swayPhase: Math.random() * Math.PI * 2,
+          swaySpeed: 0.025 + Math.random() * 0.025,
+          swayAmp: 0.35 + Math.random() * 0.65,
+          radius: 4 + Math.random() * 4,
+          maxRadius: 28 + Math.random() * 24,
+          baseAlpha: 0.16 + Math.random() * 0.12,
+          life: 0,
+          maxLife: 170 + Math.random() * 70,
+          color: bottle.ribbonColor
+        });
+      }
+
+      // C. Hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
+      const sparkles = [];
+      const sparkleCount = 28;
+      for (let i = 0; i < sparkleCount; i++) {
+        const isStar = Math.random() > 0.4;
+        sparkles.push({
+          x: nozzleX + (Math.random() - 0.5) * 14,
+          y: nozzleY - Math.random() * 8,
+          vx: (Math.random() - 0.5) * 1.8 + bottle.sprayAngle * 1.5,
+          vy: -(1.6 + Math.random() * 2.5),
+          drag: 0.965,
+          driftY: -(0.25 + Math.random() * 0.45),
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 4.5,
+          size: isStar ? 3.5 + Math.random() * 4.5 : 1.2 + Math.random() * 1.8,
+          type: isStar ? 'star' : 'dot',
+          twinkleSpeed: 0.05 + Math.random() * 0.08,
+          twinklePhase: Math.random() * Math.PI * 2,
+          baseAlpha: 0.55 + Math.random() * 0.4,
+          life: 0,
+          maxLife: 150 + Math.random() * 80,
+          color: Math.random() > 0.3 ? { r: 255, g: 255, b: 255 } : { r: 186, g: 230, b: 253 }
+        });
+      }
+
+      // D. Vòng sóng aura lan tỏa ở miệng chai
+      const rings = [
+        { x: nozzleX, y: nozzleY, startR: 4, maxR: 30, baseAlpha: 0.65, life: 0, maxLife: 32 },
+        { x: nozzleX, y: nozzleY, startR: 2, maxR: 22, baseAlpha: 0.45, life: -6, maxLife: 30 }
+      ];
+
+      activeFragranceBursts.push({
+        id: Date.now() + Math.random(),
+        ribbons,
+        mistParticles,
+        sparkles,
+        rings
       });
-    }
 
-    // C. Hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
-    const sparkles = [];
-    const sparkleCount = 28;
-    for (let i = 0; i < sparkleCount; i++) {
-      const isStar = Math.random() > 0.4;
-      sparkles.push({
-        x: nozzleX + (Math.random() - 0.5) * 14,
-        y: nozzleY - Math.random() * 8,
-        vx: (Math.random() - 0.5) * 1.8 + bottle.sprayAngle * 1.5,
-        vy: -(1.6 + Math.random() * 2.5),
-        drag: 0.965,
-        driftY: -(0.25 + Math.random() * 0.45),
-        rot: Math.random() * 360,
-        rotSpeed: (Math.random() - 0.5) * 4.5,
-        size: isStar ? 3.5 + Math.random() * 4.5 : 1.2 + Math.random() * 1.8,
-        type: isStar ? 'star' : 'dot',
-        twinkleSpeed: 0.05 + Math.random() * 0.08,
-        twinklePhase: Math.random() * Math.PI * 2,
-        baseAlpha: 0.55 + Math.random() * 0.4,
-        life: 0,
-        maxLife: 150 + Math.random() * 80,
-        color: Math.random() > 0.3 ? { r: 255, g: 255, b: 255 } : { r: 186, g: 230, b: 253 }
-      });
-    }
-
-    // D. Vòng sóng aura lan tỏa ở miệng chai
-    const rings = [
-      { x: nozzleX, y: nozzleY, startR: 4, maxR: 30, baseAlpha: 0.65, life: 0, maxLife: 32 },
-      { x: nozzleX, y: nozzleY, startR: 2, maxR: 22, baseAlpha: 0.45, life: -6, maxLife: 30 }
-    ];
-
-    activeFragranceBursts.push({
-      id: Date.now() + Math.random(),
-      ribbons,
-      mistParticles,
-      sparkles,
-      rings
-    });
-
-    if (!isFragranceLoopActive) {
-      isFragranceLoopActive = true;
-      requestAnimationFrame(renderFragranceMist);
-    }
-  }
-
-  // Vòng lặp vẽ làn sương hương thơm (Fragrance Mist Canvas Render Loop)
-  function renderFragranceMist() {
-    if (!fCtx || fWidth === 0 || fHeight === 0) {
-      if (activeFragranceBursts.length > 0) {
+      if (!isFragranceLoopActive) {
+        isFragranceLoopActive = true;
         requestAnimationFrame(renderFragranceMist);
-      } else {
-        isFragranceLoopActive = false;
       }
-      return;
     }
 
-    fCtx.clearRect(0, 0, fWidth, fHeight);
-
-    let totalActiveElements = 0;
-
-    for (let b = activeFragranceBursts.length - 1; b >= 0; b--) {
-      const burst = activeFragranceBursts[b];
-
-      // 1. Vẽ vòng sóng aura miệng chai
-      for (let i = burst.rings.length - 1; i >= 0; i--) {
-        const ring = burst.rings[i];
-        ring.life++;
-        if (ring.life < 0) continue;
-        if (ring.life >= ring.maxLife) {
-          burst.rings.splice(i, 1);
-          continue;
-        }
-        totalActiveElements++;
-        const prog = ring.life / ring.maxLife;
-        const currentR = ring.startR + (ring.maxR - ring.startR) * Math.sqrt(prog);
-        const alpha = ring.baseAlpha * (1 - prog);
-
-        fCtx.save();
-        fCtx.globalCompositeOperation = 'screen';
-        fCtx.beginPath();
-        fCtx.ellipse(ring.x, ring.y, currentR, currentR * 0.45, 0, 0, Math.PI * 2);
-        fCtx.lineWidth = 1.4;
-        fCtx.strokeStyle = `rgba(224, 242, 254, ${alpha.toFixed(3)})`;
-        fCtx.stroke();
-        fCtx.restore();
-      }
-
-      // 2. Vẽ các dải lụa sương Ribbon
-      for (let i = 0; i < burst.ribbons.length; i++) {
-        const strand = burst.ribbons[i];
-        strand.life++;
-        if (strand.life >= strand.maxLife) continue;
-        totalActiveElements++;
-
-        const progress = strand.life / strand.maxLife;
-        const headProgress = Math.min(1, progress / 0.32);
-        const headDist = headProgress * strand.maxHeight;
-        const headY = strand.originY - headDist;
-
-        let tailDist = 0;
-        if (progress > 0.22) {
-          tailDist = ((progress - 0.22) / 0.78) * strand.maxHeight;
-        }
-        const tailY = strand.originY - tailDist;
-
-        const activeHeight = tailY - headY;
-        if (activeHeight <= 4) continue;
-
-        let strandAlpha = 1;
-        if (progress < 0.12) {
-          strandAlpha = progress / 0.12;
-        } else if (progress > 0.52) {
-          strandAlpha = 1 - (progress - 0.52) / 0.48;
-        }
-        strandAlpha *= strand.baseAlpha;
-        if (strandAlpha <= 0.005) continue;
-
-        const steps = 24;
-        const spinePts = [];
-        const leftPts = [];
-        const rightPts = [];
-
-        for (let s = 0; s <= steps; s++) {
-          const tSeg = s / steps;
-          const y = tailY - tSeg * activeHeight;
-          const distFromOrigin = strand.originY - y;
-
-          const wave1 = Math.sin(distFromOrigin * strand.waveFreq1 + strand.phase1 + strand.life * 0.032) * strand.waveAmp1;
-          const wave2 = Math.sin(distFromOrigin * strand.waveFreq2 + strand.phase2 + strand.life * 0.052) * strand.waveAmp2;
-          const growth = Math.min(1.25, distFromOrigin / 65);
-          const x = strand.originX + (wave1 + wave2 + strand.driftX * distFromOrigin) * growth;
-
-          const widthEnvelope = Math.sin(tSeg * Math.PI);
-          const twist = Math.sin(distFromOrigin * strand.twistFreq + strand.twistPhase + strand.life * 0.024);
-          const currentW = Math.max(1.8, strand.maxWidth * widthEnvelope * (0.32 + 0.68 * Math.abs(twist)));
-
-          spinePts.push({ x, y, w: currentW });
-        }
-
-        for (let j = 0; j < spinePts.length; j++) {
-          const pt = spinePts[j];
-          let dx, dy;
-          if (j === 0) {
-            dx = spinePts[1].x - pt.x;
-            dy = spinePts[1].y - pt.y;
-          } else if (j === spinePts.length - 1) {
-            dx = pt.x - spinePts[j - 1].x;
-            dy = pt.y - spinePts[j - 1].y;
-          } else {
-            dx = spinePts[j + 1].x - spinePts[j - 1].x;
-            dy = spinePts[j + 1].y - spinePts[j - 1].y;
-          }
-          const len = Math.hypot(dx, dy) || 1;
-          const nx = -dy / len;
-          const ny = dx / len;
-
-          leftPts.push({ x: pt.x + nx * (pt.w * 0.5), y: pt.y + ny * (pt.w * 0.5) });
-          rightPts.push({ x: pt.x - nx * (pt.w * 0.5), y: pt.y - ny * (pt.w * 0.5) });
-        }
-
-        fCtx.save();
-        fCtx.globalCompositeOperation = 'screen';
-
-        const grad = fCtx.createLinearGradient(0, tailY, 0, headY);
-        const col = strand.color;
-        grad.addColorStop(0, `rgba(255, 255, 255, ${(strandAlpha * 0.55).toFixed(3)})`);
-        grad.addColorStop(0.35, `rgba(${col.r}, ${col.g}, ${col.b}, ${(strandAlpha * 0.38).toFixed(3)})`);
-        grad.addColorStop(0.75, `rgba(${Math.min(255, col.r + 35)}, ${Math.min(255, col.g + 25)}, 255, ${(strandAlpha * 0.18).toFixed(3)})`);
-        grad.addColorStop(1, `rgba(${col.r}, ${col.g}, ${col.b}, 0)`);
-
-        fCtx.beginPath();
-        fCtx.moveTo(leftPts[0].x, leftPts[0].y);
-        for (let k = 1; k < leftPts.length - 1; k++) {
-          const midX = (leftPts[k].x + leftPts[k + 1].x) * 0.5;
-          const midY = (leftPts[k].y + leftPts[k + 1].y) * 0.5;
-          fCtx.quadraticCurveTo(leftPts[k].x, leftPts[k].y, midX, midY);
-        }
-        fCtx.lineTo(leftPts[leftPts.length - 1].x, leftPts[leftPts.length - 1].y);
-        fCtx.lineTo(rightPts[rightPts.length - 1].x, rightPts[rightPts.length - 1].y);
-        for (let k = rightPts.length - 2; k > 0; k--) {
-          const midX = (rightPts[k].x + rightPts[k - 1].x) * 0.5;
-          const midY = (rightPts[k].y + rightPts[k - 1].y) * 0.5;
-          fCtx.quadraticCurveTo(rightPts[k].x, rightPts[k].y, midX, midY);
-        }
-        fCtx.lineTo(rightPts[0].x, rightPts[0].y);
-        fCtx.closePath();
-
-        fCtx.fillStyle = grad;
-        fCtx.fill();
-
-        // Đường sống lụa óng ánh phát sáng ở giữa
-        fCtx.beginPath();
-        fCtx.moveTo(spinePts[0].x, spinePts[0].y);
-        for (let k = 1; k < spinePts.length - 1; k++) {
-          const midX = (spinePts[k].x + spinePts[k + 1].x) * 0.5;
-          const midY = (spinePts[k].y + spinePts[k + 1].y) * 0.5;
-          fCtx.quadraticCurveTo(spinePts[k].x, spinePts[k].y, midX, midY);
-        }
-        fCtx.lineTo(spinePts[spinePts.length - 1].x, spinePts[spinePts.length - 1].y);
-        fCtx.lineWidth = Math.max(1, strand.maxWidth * 0.12);
-        fCtx.strokeStyle = `rgba(255, 255, 255, ${(strandAlpha * 0.65).toFixed(3)})`;
-        fCtx.stroke();
-
-        fCtx.restore();
-      }
-
-      // 3. Vẽ lớp hạt sương cực mịn (Micro-mist cloud particles)
-      for (let i = burst.mistParticles.length - 1; i >= 0; i--) {
-        const p = burst.mistParticles[i];
-        p.life++;
-        if (p.life >= p.maxLife) {
-          burst.mistParticles.splice(i, 1);
-          continue;
-        }
-        totalActiveElements++;
-
-        p.vy *= p.drag;
-        p.vx *= p.drag;
-        p.y += p.vy + p.driftY;
-        p.swayPhase += p.swaySpeed;
-        p.x += p.vx + Math.sin(p.swayPhase) * p.swayAmp;
-
-        const prog = p.life / p.maxLife;
-        const rad = p.radius + (p.maxRadius - p.radius) * prog;
-        let alpha = p.baseAlpha * Math.sin(prog * Math.PI);
-
-        if (alpha <= 0.005) continue;
-
-        const mg = fCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rad);
-        mg.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.72).toFixed(3)})`);
-        mg.addColorStop(0.35, `rgba(186, 230, 253, ${(alpha * 0.42).toFixed(3)})`);
-        mg.addColorStop(0.70, `rgba(96, 165, 250, ${(alpha * 0.16).toFixed(3)})`);
-        mg.addColorStop(1, 'rgba(59, 130, 246, 0)');
-
-        fCtx.save();
-        fCtx.globalCompositeOperation = 'screen';
-        fCtx.beginPath();
-        fCtx.arc(p.x, p.y, rad, 0, Math.PI * 2);
-        fCtx.fillStyle = mg;
-        fCtx.fill();
-        fCtx.restore();
-      }
-
-      // 4. Vẽ hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
-      for (let i = burst.sparkles.length - 1; i >= 0; i--) {
-        const sp = burst.sparkles[i];
-        sp.life++;
-        if (sp.life >= sp.maxLife) {
-          burst.sparkles.splice(i, 1);
-          continue;
-        }
-        totalActiveElements++;
-
-        sp.vy *= sp.drag;
-        sp.vx *= sp.drag;
-        sp.y += sp.vy + sp.driftY;
-        sp.x += sp.vx + Math.sin(sp.twinklePhase) * 0.25;
-        sp.rot += sp.rotSpeed;
-        sp.twinklePhase += sp.twinkleSpeed;
-
-        const prog = sp.life / sp.maxLife;
-        const alpha = sp.baseAlpha * Math.sin(prog * Math.PI) * (0.65 + 0.35 * Math.sin(sp.twinklePhase));
-        if (alpha <= 0.01) continue;
-
-        fCtx.save();
-        fCtx.translate(sp.x, sp.y);
-        fCtx.rotate((sp.rot * Math.PI) / 180);
-
-        if (sp.type === 'star') {
-          const r = sp.size;
-          fCtx.beginPath();
-          fCtx.moveTo(0, -r);
-          fCtx.quadraticCurveTo(0, 0, r, 0);
-          fCtx.quadraticCurveTo(0, 0, 0, r);
-          fCtx.quadraticCurveTo(0, 0, -r, 0);
-          fCtx.quadraticCurveTo(0, 0, 0, -r);
-          fCtx.closePath();
-          fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${alpha.toFixed(3)})`;
-          fCtx.shadowColor = 'rgba(147, 197, 253, 0.85)';
-          fCtx.shadowBlur = 7;
-          fCtx.fill();
-
-          fCtx.beginPath();
-          fCtx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
-          fCtx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`;
-          fCtx.fill();
+    // Vòng lặp vẽ làn sương hương thơm (Fragrance Mist Canvas Render Loop)
+    function renderFragranceMist() {
+      if (!fCtx || fWidth === 0 || fHeight === 0) {
+        if (activeFragranceBursts.length > 0) {
+          requestAnimationFrame(renderFragranceMist);
         } else {
-          fCtx.beginPath();
-          fCtx.arc(0, 0, sp.size, 0, Math.PI * 2);
-          fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${alpha.toFixed(3)})`;
-          fCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-          fCtx.shadowBlur = 5;
-          fCtx.fill();
+          isFragranceLoopActive = false;
         }
-
-        fCtx.restore();
-      }
-
-      // Xóa burst khi toàn bộ thành phần đã tan biến
-      const hasRibbonsAlive = burst.ribbons.some(r => r.life < r.maxLife);
-      if (!hasRibbonsAlive && burst.mistParticles.length === 0 && burst.sparkles.length === 0 && burst.rings.length === 0) {
-        activeFragranceBursts.splice(b, 1);
-      }
-    }
-
-    if (totalActiveElements > 0 && activeFragranceBursts.length > 0) {
-      requestAnimationFrame(renderFragranceMist);
-    } else {
-      fCtx.clearRect(0, 0, fWidth, fHeight);
-      isFragranceLoopActive = false;
-    }
-  }
-
-  // ============================================================
-  // 9. LẮNG NGHE TƯƠNG TÁC CHO CÁC NÚT HOTSPOT TỪNG MÓN
-  // ============================================================
-  const bottleHotspots = document.querySelectorAll('.bottle-hotspot');
-  bottleHotspots.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      const bottleId = btn.getAttribute('data-bottle-id');
-      if (bottleId === 'flower_vase') {
-        const rect = btn.getBoundingClientRect();
-        const startX = rect.left + rect.width * (0.35 + Math.random() * 0.3);
-        const startY = rect.top + rect.height * (0.3 + Math.random() * 0.4);
-        launchFlowerBranch(startX, startY, (Math.random() - 0.5) * 2);
         return;
       }
-      const bottle = fragranceBottles.find(b => b.id === bottleId);
-      if (bottle) {
-        activateProductWorld(bottle);
+
+      fCtx.clearRect(0, 0, fWidth, fHeight);
+
+      let totalActiveElements = 0;
+
+      for (let b = activeFragranceBursts.length - 1; b >= 0; b--) {
+        const burst = activeFragranceBursts[b];
+
+        // 1. Vẽ vòng sóng aura miệng chai
+        for (let i = burst.rings.length - 1; i >= 0; i--) {
+          const ring = burst.rings[i];
+          ring.life++;
+          if (ring.life < 0) continue;
+          if (ring.life >= ring.maxLife) {
+            burst.rings.splice(i, 1);
+            continue;
+          }
+          totalActiveElements++;
+          const prog = ring.life / ring.maxLife;
+          const currentR = ring.startR + (ring.maxR - ring.startR) * Math.sqrt(prog);
+          const alpha = ring.baseAlpha * (1 - prog);
+
+          fCtx.save();
+          fCtx.globalCompositeOperation = 'screen';
+          fCtx.beginPath();
+          fCtx.ellipse(ring.x, ring.y, currentR, currentR * 0.45, 0, 0, Math.PI * 2);
+          fCtx.lineWidth = 1.4;
+          fCtx.strokeStyle = `rgba(224, 242, 254, ${alpha.toFixed(3)})`;
+          fCtx.stroke();
+          fCtx.restore();
+        }
+
+        // 2. Vẽ các dải lụa sương Ribbon
+        for (let i = 0; i < burst.ribbons.length; i++) {
+          const strand = burst.ribbons[i];
+          strand.life++;
+          if (strand.life >= strand.maxLife) continue;
+          totalActiveElements++;
+
+          const progress = strand.life / strand.maxLife;
+          const headProgress = Math.min(1, progress / 0.32);
+          const headDist = headProgress * strand.maxHeight;
+          const headY = strand.originY - headDist;
+
+          let tailDist = 0;
+          if (progress > 0.22) {
+            tailDist = ((progress - 0.22) / 0.78) * strand.maxHeight;
+          }
+          const tailY = strand.originY - tailDist;
+
+          const activeHeight = tailY - headY;
+          if (activeHeight <= 4) continue;
+
+          let strandAlpha = 1;
+          if (progress < 0.12) {
+            strandAlpha = progress / 0.12;
+          } else if (progress > 0.52) {
+            strandAlpha = 1 - (progress - 0.52) / 0.48;
+          }
+          strandAlpha *= strand.baseAlpha;
+          if (strandAlpha <= 0.005) continue;
+
+          const steps = 24;
+          const spinePts = [];
+          const leftPts = [];
+          const rightPts = [];
+
+          for (let s = 0; s <= steps; s++) {
+            const tSeg = s / steps;
+            const y = tailY - tSeg * activeHeight;
+            const distFromOrigin = strand.originY - y;
+
+            const wave1 = Math.sin(distFromOrigin * strand.waveFreq1 + strand.phase1 + strand.life * 0.032) * strand.waveAmp1;
+            const wave2 = Math.sin(distFromOrigin * strand.waveFreq2 + strand.phase2 + strand.life * 0.052) * strand.waveAmp2;
+            const growth = Math.min(1.25, distFromOrigin / 65);
+            const x = strand.originX + (wave1 + wave2 + strand.driftX * distFromOrigin) * growth;
+
+            const widthEnvelope = Math.sin(tSeg * Math.PI);
+            const twist = Math.sin(distFromOrigin * strand.twistFreq + strand.twistPhase + strand.life * 0.024);
+            const currentW = Math.max(1.8, strand.maxWidth * widthEnvelope * (0.32 + 0.68 * Math.abs(twist)));
+
+            spinePts.push({ x, y, w: currentW });
+          }
+
+          for (let j = 0; j < spinePts.length; j++) {
+            const pt = spinePts[j];
+            let dx, dy;
+            if (j === 0) {
+              dx = spinePts[1].x - pt.x;
+              dy = spinePts[1].y - pt.y;
+            } else if (j === spinePts.length - 1) {
+              dx = pt.x - spinePts[j - 1].x;
+              dy = pt.y - spinePts[j - 1].y;
+            } else {
+              dx = spinePts[j + 1].x - spinePts[j - 1].x;
+              dy = spinePts[j + 1].y - spinePts[j - 1].y;
+            }
+            const len = Math.hypot(dx, dy) || 1;
+            const nx = -dy / len;
+            const ny = dx / len;
+
+            leftPts.push({ x: pt.x + nx * (pt.w * 0.5), y: pt.y + ny * (pt.w * 0.5) });
+            rightPts.push({ x: pt.x - nx * (pt.w * 0.5), y: pt.y - ny * (pt.w * 0.5) });
+          }
+
+          fCtx.save();
+          fCtx.globalCompositeOperation = 'screen';
+
+          const grad = fCtx.createLinearGradient(0, tailY, 0, headY);
+          const col = strand.color;
+          grad.addColorStop(0, `rgba(255, 255, 255, ${(strandAlpha * 0.55).toFixed(3)})`);
+          grad.addColorStop(0.35, `rgba(${col.r}, ${col.g}, ${col.b}, ${(strandAlpha * 0.38).toFixed(3)})`);
+          grad.addColorStop(0.75, `rgba(${Math.min(255, col.r + 35)}, ${Math.min(255, col.g + 25)}, 255, ${(strandAlpha * 0.18).toFixed(3)})`);
+          grad.addColorStop(1, `rgba(${col.r}, ${col.g}, ${col.b}, 0)`);
+
+          fCtx.beginPath();
+          fCtx.moveTo(leftPts[0].x, leftPts[0].y);
+          for (let k = 1; k < leftPts.length - 1; k++) {
+            const midX = (leftPts[k].x + leftPts[k + 1].x) * 0.5;
+            const midY = (leftPts[k].y + leftPts[k + 1].y) * 0.5;
+            fCtx.quadraticCurveTo(leftPts[k].x, leftPts[k].y, midX, midY);
+          }
+          fCtx.lineTo(leftPts[leftPts.length - 1].x, leftPts[leftPts.length - 1].y);
+          fCtx.lineTo(rightPts[rightPts.length - 1].x, rightPts[rightPts.length - 1].y);
+          for (let k = rightPts.length - 2; k > 0; k--) {
+            const midX = (rightPts[k].x + rightPts[k - 1].x) * 0.5;
+            const midY = (rightPts[k].y + rightPts[k - 1].y) * 0.5;
+            fCtx.quadraticCurveTo(rightPts[k].x, rightPts[k].y, midX, midY);
+          }
+          fCtx.lineTo(rightPts[0].x, rightPts[0].y);
+          fCtx.closePath();
+
+          fCtx.fillStyle = grad;
+          fCtx.fill();
+
+          // Đường sống lụa óng ánh phát sáng ở giữa
+          fCtx.beginPath();
+          fCtx.moveTo(spinePts[0].x, spinePts[0].y);
+          for (let k = 1; k < spinePts.length - 1; k++) {
+            const midX = (spinePts[k].x + spinePts[k + 1].x) * 0.5;
+            const midY = (spinePts[k].y + spinePts[k + 1].y) * 0.5;
+            fCtx.quadraticCurveTo(spinePts[k].x, spinePts[k].y, midX, midY);
+          }
+          fCtx.lineTo(spinePts[spinePts.length - 1].x, spinePts[spinePts.length - 1].y);
+          fCtx.lineWidth = Math.max(1, strand.maxWidth * 0.12);
+          fCtx.strokeStyle = `rgba(255, 255, 255, ${(strandAlpha * 0.65).toFixed(3)})`;
+          fCtx.stroke();
+
+          fCtx.restore();
+        }
+
+        // 3. Vẽ lớp hạt sương cực mịn (Micro-mist cloud particles)
+        for (let i = burst.mistParticles.length - 1; i >= 0; i--) {
+          const p = burst.mistParticles[i];
+          p.life++;
+          if (p.life >= p.maxLife) {
+            burst.mistParticles.splice(i, 1);
+            continue;
+          }
+          totalActiveElements++;
+
+          p.vy *= p.drag;
+          p.vx *= p.drag;
+          p.y += p.vy + p.driftY;
+          p.swayPhase += p.swaySpeed;
+          p.x += p.vx + Math.sin(p.swayPhase) * p.swayAmp;
+
+          const prog = p.life / p.maxLife;
+          const rad = p.radius + (p.maxRadius - p.radius) * prog;
+          let alpha = p.baseAlpha * Math.sin(prog * Math.PI);
+
+          if (alpha <= 0.005) continue;
+
+          const mg = fCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rad);
+          mg.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.72).toFixed(3)})`);
+          mg.addColorStop(0.35, `rgba(186, 230, 253, ${(alpha * 0.42).toFixed(3)})`);
+          mg.addColorStop(0.70, `rgba(96, 165, 250, ${(alpha * 0.16).toFixed(3)})`);
+          mg.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+          fCtx.save();
+          fCtx.globalCompositeOperation = 'screen';
+          fCtx.beginPath();
+          fCtx.arc(p.x, p.y, rad, 0, Math.PI * 2);
+          fCtx.fillStyle = mg;
+          fCtx.fill();
+          fCtx.restore();
+        }
+
+        // 4. Vẽ hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
+        for (let i = burst.sparkles.length - 1; i >= 0; i--) {
+          const sp = burst.sparkles[i];
+          sp.life++;
+          if (sp.life >= sp.maxLife) {
+            burst.sparkles.splice(i, 1);
+            continue;
+          }
+          totalActiveElements++;
+
+          sp.vy *= sp.drag;
+          sp.vx *= sp.drag;
+          sp.y += sp.vy + sp.driftY;
+          sp.x += sp.vx + Math.sin(sp.twinklePhase) * 0.25;
+          sp.rot += sp.rotSpeed;
+          sp.twinklePhase += sp.twinkleSpeed;
+
+          const prog = sp.life / sp.maxLife;
+          const alpha = sp.baseAlpha * Math.sin(prog * Math.PI) * (0.65 + 0.35 * Math.sin(sp.twinklePhase));
+          if (alpha <= 0.01) continue;
+
+          fCtx.save();
+          fCtx.translate(sp.x, sp.y);
+          fCtx.rotate((sp.rot * Math.PI) / 180);
+
+          if (sp.type === 'star') {
+            const r = sp.size;
+            fCtx.beginPath();
+            fCtx.moveTo(0, -r);
+            fCtx.quadraticCurveTo(0, 0, r, 0);
+            fCtx.quadraticCurveTo(0, 0, 0, r);
+            fCtx.quadraticCurveTo(0, 0, -r, 0);
+            fCtx.quadraticCurveTo(0, 0, 0, -r);
+            fCtx.closePath();
+            fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${alpha.toFixed(3)})`;
+            fCtx.shadowColor = 'rgba(147, 197, 253, 0.85)';
+            fCtx.shadowBlur = 7;
+            fCtx.fill();
+
+            fCtx.beginPath();
+            fCtx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
+            fCtx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`;
+            fCtx.fill();
+          } else {
+            fCtx.beginPath();
+            fCtx.arc(0, 0, sp.size, 0, Math.PI * 2);
+            fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${alpha.toFixed(3)})`;
+            fCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            fCtx.shadowBlur = 5;
+            fCtx.fill();
+          }
+
+          fCtx.restore();
+        }
+
+        // Xóa burst khi toàn bộ thành phần đã tan biến
+        const hasRibbonsAlive = burst.ribbons.some(r => r.life < r.maxLife);
+        if (!hasRibbonsAlive && burst.mistParticles.length === 0 && burst.sparkles.length === 0 && burst.rings.length === 0) {
+          activeFragranceBursts.splice(b, 1);
+        }
       }
+
+      if (totalActiveElements > 0 && activeFragranceBursts.length > 0) {
+        requestAnimationFrame(renderFragranceMist);
+      } else {
+        fCtx.clearRect(0, 0, fWidth, fHeight);
+        isFragranceLoopActive = false;
+      }
+    }
+
+    // ============================================================
+    // 9. LẮNG NGHE TƯƠNG TÁC CHO CÁC NÚT HOTSPOT TỪNG MÓN
+    // ============================================================
+    const bottleHotspots = document.querySelectorAll('.bottle-hotspot');
+    bottleHotspots.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const bottleId = btn.getAttribute('data-bottle-id');
+        if (bottleId === 'flower_vase') {
+          const rect = btn.getBoundingClientRect();
+          const startX = rect.left + rect.width * (0.35 + Math.random() * 0.3);
+          const startY = rect.top + rect.height * (0.3 + Math.random() * 0.4);
+          launchFlowerBranch(startX, startY, (Math.random() - 0.5) * 2);
+          return;
+        }
+        const bottle = fragranceBottles.find(b => b.id === bottleId);
+        if (bottle) {
+          activateProductWorld(bottle);
+        }
+      });
     });
   });
-});
 
