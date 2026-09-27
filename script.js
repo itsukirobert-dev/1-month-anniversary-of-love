@@ -247,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let branchIdSeq = 0;
   const activeBranches = [];
-  const activePetals = [];
   const activeSparkles = [];
   let isHintDismissed = false;
   let hintInterval = null;
@@ -293,44 +292,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4200);
   }
 
-  // --- Danh mục hình ảnh cành hoa và cánh hoa thật (từ hình chụp thực tế) ---
+  // --- Danh mục hình ảnh cành hoa thật (cành + lá + hoa là một khối thực tế) ---
   const branchConfigs = [
     {
+      id: 'branch-1',
       src: 'assets/images/falling_branches/branch_1.png',
       width: 215,
-      height: 146,
-      blossomOffset: { x: 45, y: -20 }
+      height: 146
     },
     {
+      id: 'branch-2',
       src: 'assets/images/falling_branches/branch_2.png',
       width: 155,
-      height: 205,
-      blossomOffset: { x: -25, y: 15 }
+      height: 205
     },
     {
+      id: 'branch-3',
       src: 'assets/images/falling_branches/branch_3.png',
       width: 170,
-      height: 158,
-      blossomOffset: { x: -20, y: -25 }
+      height: 158
     }
   ];
 
-  const petalConfigs = [
-    { src: 'assets/images/falling_branches/petal_1.png', width: 48, height: 50 },
-    { src: 'assets/images/falling_branches/petal_2.png', width: 50, height: 52 },
-    { src: 'assets/images/falling_branches/petal_3.png', width: 52, height: 38 },
-    { src: 'assets/images/falling_branches/petal_4.png', width: 44, height: 33 },
-    { src: 'assets/images/falling_branches/petal_5.png', width: 28, height: 43 },
-    { src: 'assets/images/falling_branches/petal_6.png', width: 36, height: 26 }
-  ];
-
-  // Tải trước toàn bộ ảnh cành & cánh hoa vào bộ nhớ đệm
-  [...branchConfigs.map(b => b.src), ...petalConfigs.map(p => p.src)].forEach(src => {
+  // Tải trước toàn bộ ảnh cành hoa vào bộ nhớ đệm
+  branchConfigs.forEach(b => {
     const preImg = new Image();
-    preImg.src = src;
+    preImg.src = b.src;
   });
 
-  // --- SVG Đốm sáng nắng lấp lánh (Sparkle) ---
+  // --- SVG Đốm sáng nắng lấp lánh (Sparkle) tại điểm tách cành ---
   const sparkleSvg = `
     <svg viewBox="0 0 30 30" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <path d="M 15 0 Q 15 15 30 15 Q 15 15 15 30 Q 15 15 0 15 Q 15 15 15 0 Z" fill="#fff9db"/>
@@ -356,81 +346,233 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Tạo cánh hoa thật tách rời rơi theo gió ---
-  function createDetachedPetal(x, y, parentVx, parentVy) {
-    const pCfg = petalConfigs[Math.floor(Math.random() * petalConfigs.length)];
-    const isMobile = window.innerWidth < 768;
-    const pWidth = Math.round(pCfg.width * (isMobile ? 0.75 : 1));
-    const pHeight = Math.round(pCfg.height * (isMobile ? 0.75 : 1));
+  // Âm thanh gió thoảng lướt nhẹ khi cành hoa tách ra bay (Web Audio API)
+  function playBranchFlightSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
 
-    const el = document.createElement('div');
-    el.className = 'detached-petal';
-    el.style.width = pWidth + 'px';
-    el.style.height = pHeight + 'px';
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(750, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.65);
 
-    const img = document.createElement('img');
-    img.src = pCfg.src;
-    img.alt = 'Cánh hoa đậu biếc rơi';
-    img.className = 'petal-img';
-    el.appendChild(img);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(480, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(290, ctx.currentTime + 0.6);
 
-    branchLayer.appendChild(el);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.035, ctx.currentTime + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.65);
 
-    const kickAngle = Math.random() * Math.PI * 2;
-    const kickSpeed = 0.8 + Math.random() * 1.5;
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
 
-    activePetals.push({
-      el,
-      x: x - pWidth / 2,
-      y: y - pHeight / 2,
-      vx: parentVx * 0.65 + Math.cos(kickAngle) * kickSpeed,
-      vy: parentVy * 0.45 + Math.sin(kickAngle) * kickSpeed - 0.5,
-      g: 0.05 + Math.random() * 0.03, // Nhẹ hơn cành rất nhiều
-      dragX: 0.978,
-      dragY: 0.982,
-      swayPhase: Math.random() * Math.PI * 2,
-      swaySpeed: 0.055 + Math.random() * 0.035, // Lắc nhanh hơn cành
-      swayAmp: 0.8 + Math.random() * 0.8,
-      rotZ: Math.random() * 360,
-      rotSpeedZ: (Math.random() - 0.5) * 5.5,
-      rotY: Math.random() * 360,
-      rotSpeedY: (Math.random() - 0.5) * 7.5,
-      rotX: Math.random() * 360,
-      rotSpeedX: (Math.random() - 0.5) * 4.5,
-      life: 0,
-      maxLife: 210 + Math.random() * 60,
-      scale: 0.85 + Math.random() * 0.3
-    });
-
-    createSparkle(x, y);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.7);
+    } catch (_) {}
   }
 
-  // --- Khởi tạo cành hoa thật tách khỏi bố cục bay lượn ---
-  function launchFlowerBranch(originX, originY, targetDirX = 0) {
-    dismissTouchHint();
+  // ============================================================
+  // CÁC QUỸ ĐẠO BAY NGHỆ THUẬT CỦA CÀNH HOA (BRANCH TRAJECTORIES)
+  // Mỗi quỹ đạo là một cấu trúc toán học Catmull-Rom Spline mượt mà.
+  // Cành + Lá + Hoa là MỘT OBJECT DUY NHẤT (không tách rời thành particles).
+  // ============================================================
+  const branchTrajectories = [
+    {
+      id: 0,
+      name: 'Cành 01: Vút lên rồi hạ cánh êm đềm',
+      symbol: '↗ ↗ ↘ ↘',
+      durationFrames: 280,
+      // Quỹ đạo Cành 01:
+      //   ↗
+      //     ↗
+      //       ↘
+      //         ↘
+      points: [
+        { x: -50, y: 50 },    // P0: điểm dẫn tiếp tuyến ban đầu
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 120, y: -110 },  // P2: [↗] Vút nhanh lên cao sang phải
+        { x: 230, y: -145 },  // P3: [↗] Đỉnh cua vút lên
+        { x: 350, y: -45 },   // P4: [↘] Chuyển hướng dốc xuống sang phải
+        { x: 470, y: 105 },   // P5: [↘] Lướt là đà hạ cánh sang phải
+        { x: 560, y: 220 }    // P6: điểm dẫn tiếp tuyến kết thúc
+      ]
+    },
+    {
+      id: 1,
+      name: 'Cành 02: Rơi nhẹ rồi lộng gió bốc cao',
+      symbol: '↓ ↘ ↗ ↗',
+      durationFrames: 290,
+      // Quỹ đạo Cành 02:
+      //   ↓
+      //    ↘
+      //      ↗
+      //        ↗
+      points: [
+        { x: -5, y: -60 },    // P0
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 15, y: 95 },     // P2: [↓] Rơi thẳng xuống nhẹ nhàng
+        { x: 110, y: 175 },   // P3: [↘] Chao võng chéo xuống sang phải
+        { x: 245, y: 45 },    // P4: [↗] Gió cuộn hất tung bốc ngược lên
+        { x: 385, y: -125 },  // P5: [↗] Vút thẳng bay cao lên trời
+        { x: 470, y: -220 }   // P6
+      ]
+    },
+    {
+      id: 2,
+      name: 'Cành 03: Sóng lượn dập dềnh & trôi lững lờ',
+      symbol: '→ ↘ ↘ ↗ →',
+      durationFrames: 310,
+      // Quỹ đạo Cành 03:
+      //   →
+      //    ↘
+      //      ↘
+      //        ↗
+      //          →
+      points: [
+        { x: -50, y: 0 },     // P0
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 95, y: 8 },      // P2: [→] Trôi ngang ban đầu
+        { x: 190, y: 85 },    // P3: [↘] Lượn dốc xuống dưới
+        { x: 285, y: 155 },   // P4: [↘] Đáy trũng võng sóng
+        { x: 390, y: 70 },    // P5: [↗] Uốn cong ngóc đầu bay lên
+        { x: 495, y: 65 },    // P6: [→] San phẳng trôi ngang lững lờ
+        { x: 580, y: 65 }     // P7
+      ]
+    },
+    {
+      id: 3,
+      name: 'Cành 04: Vòng xoáy lốc cuộn 3D',
+      symbol: '↙ ↘ ↗ ↖',
+      durationFrames: 320,
+      // Quỹ đạo Cành 04:
+      //   ↙
+      //     ↘
+      //       ↗
+      //         ↖
+      points: [
+        { x: 45, y: -45 },    // P0
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: -90, y: 105 },   // P2: [↙] Chao chếch xuống sang trái
+        { x: 45, y: 175 },    // P3: [↘] Cua vòng đáy lượn sang phải
+        { x: 185, y: -25 },   // P4: [↗] Cuộn vút lên cao sang phải
+        { x: 65, y: -135 },   // P5: [↖] Vòng cua ngược đầu về trái lên cao
+        { x: -25, y: -170 }   // P6
+      ]
+    }
+  ];
 
-    // Giới hạn số lượng cành đang bay cùng lúc để luôn mượt 60fps
-    if (activeBranches.length >= 4) {
-      activeBranches[0].maxLife = activeBranches[0].life + 25;
+  // Tính toán vị trí và đạo hàm vận tốc trên đường cong Catmull-Rom Spline
+  function sampleCatmullRomSpline(points, u) {
+    const numSegments = points.length - 3;
+    const clampedU = Math.max(0, Math.min(1, u));
+    const scaledT = clampedU * numSegments;
+    const segIdx = Math.min(Math.floor(scaledT), numSegments - 1);
+    const localT = scaledT - segIdx;
+
+    const p0 = points[segIdx];
+    const p1 = points[segIdx + 1];
+    const p2 = points[segIdx + 2];
+    const p3 = points[segIdx + 3];
+
+    const t = localT;
+    const t2 = t * t;
+    const t3 = t2 * t;
+
+    const x = 0.5 * (
+      (2 * p1.x) +
+      (-p0.x + p2.x) * t +
+      (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
+      (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
+    );
+
+    const y = 0.5 * (
+      (2 * p1.y) +
+      (-p0.y + p2.y) * t +
+      (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
+      (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
+    );
+
+    const dx = 0.5 * (
+      (-p0.x + p2.x) +
+      2 * (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t +
+      3 * (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t2
+    ) * numSegments;
+
+    const dy = 0.5 * (
+      (-p0.y + p2.y) +
+      2 * (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t +
+      3 * (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t2
+    ) * numSegments;
+
+    return { x, y, dx, dy };
+  }
+
+  // Lựa chọn ngẫu nhiên một quỹ đạo (không lặp lại quỹ đạo vừa bay)
+  let lastTrajectoryIdx = -1;
+  function pickRandomTrajectory() {
+    const choices = [0, 1, 2, 3].filter(idx => idx !== lastTrajectoryIdx);
+    const selected = choices[Math.floor(Math.random() * choices.length)];
+    lastTrajectoryIdx = selected;
+    return branchTrajectories[selected];
+  }
+
+  // --- Khởi tạo cành hoa thật nguyên vẹn (Cành + Lá + Hoa là một Object duy nhất) ---
+  function launchFlowerBranch(originX, originY, targetDirX = 0, forcedTrajectoryIdx = null) {
+    dismissTouchHint();
+    playBranchFlightSound();
+
+    // Giới hạn số lượng cành đang bay cùng lúc để luôn mượt mà 60fps
+    if (activeBranches.length >= 5) {
+      activeBranches[0].maxLife = activeBranches[0].life + 20;
     }
 
+    // 1. Chọn cấu hình cành hoa thật (chứa đầy đủ cành, lá, hoa kết liền với nhau)
     const bIdx = Math.floor(Math.random() * branchConfigs.length);
     const bCfg = branchConfigs[bIdx];
     const isMobile = window.innerWidth < 768;
     const bWidth = Math.round(bCfg.width * (isMobile ? 0.72 : 1));
     const bHeight = Math.round(bCfg.height * (isMobile ? 0.72 : 1));
 
+    // 2. Chọn ngẫu nhiên quỹ đạo khí động học (không trùng lần click trước)
+    let trajectory = null;
+    if (typeof forcedTrajectoryIdx === 'number' && branchTrajectories[forcedTrajectoryIdx]) {
+      trajectory = branchTrajectories[forcedTrajectoryIdx];
+      lastTrajectoryIdx = forcedTrajectoryIdx;
+    } else {
+      trajectory = pickRandomTrajectory();
+    }
+
+    // 3. Xác định hướng bay ngang (dir: +1 bay phải, -1 đối xứng bay trái)
+    let dir = 1;
+    if (targetDirX !== 0) {
+      dir = targetDirX < 0 ? -1 : 1;
+    } else if (originX > window.innerWidth * 0.58) {
+      dir = -1; // Click bên phải -> bay hướng vào giữa/trái
+    } else if (originX < window.innerWidth * 0.42) {
+      dir = 1;  // Click bên trái -> bay hướng vào giữa/phải
+    } else {
+      dir = Math.random() < 0.5 ? -1 : 1;
+    }
+
+    // 4. Tạo element DOM: Cành + Lá + Hoa là MỘT OBJECT DUY NHẤT
     const branchEl = document.createElement('div');
     branchEl.className = 'falling-branch';
     branchEl.style.width = bWidth + 'px';
     branchEl.style.height = bHeight + 'px';
+    branchEl.setAttribute('data-trajectory', trajectory.id);
 
     const innerEl = document.createElement('div');
     innerEl.className = 'branch-inner';
 
     const imgEl = document.createElement('img');
     imgEl.src = bCfg.src;
-    imgEl.alt = 'Cành hoa đậu biếc rơi';
+    imgEl.alt = 'Cành hoa đậu biếc bay nghệ thuật';
     imgEl.className = 'branch-img';
     innerEl.appendChild(imgEl);
     branchEl.appendChild(innerEl);
@@ -439,31 +581,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hạt nắng lóe sáng tại điểm cành hoa tách ra
     for (let s = 0; s < 3; s++) {
-      createSparkle(originX + (Math.random() - 0.5) * 24, originY + (Math.random() - 0.5) * 24);
+      createSparkle(originX + (Math.random() - 0.5) * 20, originY + (Math.random() - 0.5) * 20);
     }
+
+    // Tỉ lệ khoảng cách co giãn theo thiết bị (responsive distance scale)
+    const baseDistScale = isMobile ? (0.68 + Math.random() * 0.08) : (0.96 + Math.random() * 0.12);
 
     const branch = {
       el: branchEl,
       innerEl: innerEl,
+      trajectory: trajectory,
       width: bWidth,
       height: bHeight,
-      x: originX - bWidth * 0.45,
-      y: originY - bHeight * 0.45,
-      vx: targetDirX * 1.3 + (Math.random() - 0.5) * 1.4,
-      vy: -0.9 - Math.random() * 0.7, // Lực nâng nhẹ khi tách khỏi bình hoa
-      g: 0.095 + Math.random() * 0.025, // Trọng lực dịu nhẹ
-      dragX: 0.985,
-      dragY: 0.988,
-      swayPhase: Math.random() * Math.PI,
-      swaySpeed: 0.025 + Math.random() * 0.012, // Dao động chao đảo nhẹ
-      swayAmp: 1.3 + Math.random() * 0.8,
-      baseRot: (Math.random() - 0.5) * 22,
-      currentSkew: 0,
+      originX: originX,
+      originY: originY,
+      dir: dir,
+      scaleFactor: baseDistScale,
       life: 0,
-      maxLife: 270 + Math.random() * 60, // Bay trong 4.5s - 5.5s
-      petalMilestones: [0.30, 0.62],
-      scale: 0.90 + Math.random() * 0.18,
-      blossomOffset: bCfg.blossomOffset
+      maxLife: Math.round(trajectory.durationFrames * (0.92 + Math.random() * 0.16)),
+      baseScale: (0.90 + Math.random() * 0.16) * (isMobile ? 0.85 : 1),
+      baseRot: (Math.random() - 0.5) * 16,
+      currentTiltZ: 0,
+      currentSkew: 0,
+      swayPhase: Math.random() * Math.PI * 2,
+      swaySpeed: 0.035 + Math.random() * 0.015,
+      swayAmp: 0.9 + Math.random() * 0.7
     };
 
     activeBranches.push(branch);
@@ -515,11 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 2. Chạm vào chùm hoa đậu biếc ở nửa trên (loại trừ vùng chai lọ)
       if (relY <= 0.48 && relX >= 0.22 && relX <= 0.78) {
-        const flowerBottle = fragranceBottles.find(b => b.id === 'flower_vase');
-        if (flowerBottle && typeof activateProductWorld === 'function') {
-          activateProductWorld(flowerBottle);
-          return;
-        }
         const startX = clientX;
         const startY = clientY;
         const dirX = (relX - 0.5) * 2.2;
@@ -572,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Vòng lặp vật lý học khí động học cho cành hoa & cánh hoa ---
+  // --- Vòng lặp vật lý học khí động học cho cành hoa (60fps) ---
   function updateFlowerBranchPhysics() {
     // 1. Cập nhật đốm sáng nắng lấp lánh (Sparkles)
     for (let i = activeSparkles.length - 1; i >= 0; i--) {
@@ -595,110 +732,60 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 2. Cập nhật cánh hoa nhỏ tách rời (Detached Petals)
-    for (let i = activePetals.length - 1; i >= 0; i--) {
-      const pt = activePetals[i];
-      pt.life++;
-      pt.swayPhase += pt.swaySpeed;
-
-      const swayForce = Math.sin(pt.swayPhase) * pt.swayAmp;
-      pt.vx += swayForce * 0.22;
-      pt.vy += pt.g;
-      pt.vx *= pt.dragX;
-      pt.vy *= pt.dragY;
-
-      // Cánh hoa rất nhẹ nên vận tốc rơi được hãm ở mức êm dịu
-      if (pt.vy > 1.6) pt.vy = 1.6;
-
-      pt.x += pt.vx;
-      pt.y += pt.vy;
-
-      pt.rotZ += pt.rotSpeedZ;
-      pt.rotY += pt.rotSpeedY;
-      pt.rotX += pt.rotSpeedX;
-
-      const progress = pt.life / pt.maxLife;
-      let alpha = 1;
-      if (progress > 0.68) {
-        alpha = 1 - (progress - 0.68) / 0.32;
-      }
-
-      pt.el.style.transform = `translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 0) scale(${pt.scale.toFixed(2)}) rotateZ(${pt.rotZ.toFixed(1)}deg) rotateY(${pt.rotY.toFixed(1)}deg) rotateX(${pt.rotX.toFixed(1)}deg)`;
-      pt.el.style.opacity = Math.max(0, alpha).toFixed(3);
-
-      if (pt.life >= pt.maxLife) {
-        pt.el.remove();
-        activePetals.splice(i, 1);
-      }
-    }
-
-    // 3. Cập nhật cành hoa chính (Falling Branches)
+    // 2. Cập nhật cành hoa bay chính (Unified Falling Branches - Cành + Lá + Hoa là một Object duy nhất)
     for (let i = activeBranches.length - 1; i >= 0; i--) {
       const br = activeBranches[i];
       br.life++;
-      const progress = br.life / br.maxLife;
+      const u = Math.min(1, Math.max(0, br.life / br.maxLife));
 
+      // Lấy tọa độ và đạo hàm vận tốc từ quỹ đạo Spline
+      const sample = sampleCatmullRomSpline(br.trajectory.points, u);
+      const curX = br.originX + sample.x * br.dir * br.scaleFactor;
+      const curY = br.originY + sample.y * br.scaleFactor;
+
+      // Tính góc tiếp tuyến hướng bay
+      const vx = sample.dx * br.dir;
+      const vy = sample.dy;
+      const headingRad = Math.atan2(vy, vx);
+      const headingDeg = headingRad * (180 / Math.PI);
+
+      // Dao động con lắc khí động học tự nhiên
       br.swayPhase += br.swaySpeed;
+      const sway = Math.sin(br.swayPhase) * br.swayAmp;
 
-      // Sức nâng khí động học khi cành chao đảo trong gió
-      const sway = Math.sin(br.swayPhase);
-      const lateralLift = Math.cos(br.swayPhase) * br.swayAmp;
-      br.vx += lateralLift * 0.17;
+      // Hướng đầu cành uốn lượn theo tiếp tuyến đường bay, kết hợp đung đưa tự nhiên
+      const targetTiltZ = br.baseRot + headingDeg * 0.46 + sway * 12;
+      br.currentTiltZ += (targetTiltZ - br.currentTiltZ) * 0.14;
 
-      // Trọng lực kéo xuống nhẹ nhàng
-      br.vy += br.g;
-
-      // Cuối đường bay hơi chậm lại do sức cản không khí (air resistance cushioning)
-      if (progress > 0.58) {
-        br.vy *= 0.972;
-        br.vx *= 0.975;
-        if (br.vy > 1.85) br.vy = 1.85;
-      } else {
-        br.vx *= br.dragX;
-        br.vy *= br.dragY;
-        if (br.vy > 2.5) br.vy = 2.5;
-      }
-
-      br.x += br.vx;
-      br.y += br.vy;
-
-      // Uốn cong thân cành theo hướng bay (Stem flex)
-      // Khi cành bay sang phải, gió ép cành cong về sau; khi lượn trái, cành uốn ngược lại
-      const targetSkew = -br.vx * 6.8 + sway * 5.2;
+      // Độ uốn cong khí động học của thân cành khi đón gió rẽ hướng (Stem Flex)
+      const targetSkew = -Math.sin(headingRad) * 7.2 * br.dir + sway * 3.2;
       br.currentSkew += (targetSkew - br.currentSkew) * 0.12;
 
-      // Xoay nhẹ & nghiêng 3D trong không gian (3D perspective tilt)
-      const tiltZ = br.baseRot + sway * 25 + br.vx * 7.2;
-      const tiltY = Math.cos(br.swayPhase * 0.82) * 32;
-      const tiltX = Math.sin(br.swayPhase * 0.65) * 18;
+      // Góc nghiêng 3D trong không gian (3D perspective tilt & roll)
+      const tiltY = Math.cos(br.swayPhase * 0.85) * (br.trajectory.id === 3 ? 34 : 22);
+      const tiltX = Math.sin(br.swayPhase * 0.68) * 16;
 
-      // Vài cánh hoa nhỏ tách rời khỏi cành giữa đường bay
-      if (br.petalMilestones.length > 0 && progress >= br.petalMilestones[0]) {
-        br.petalMilestones.shift();
-        const rad = tiltZ * Math.PI / 180;
-        const offX = br.blossomOffset ? br.blossomOffset.x : 0;
-        const offY = br.blossomOffset ? br.blossomOffset.y : 0;
-        const rotX = Math.cos(rad) * offX - Math.sin(rad) * offY;
-        const rotY = Math.sin(rad) * offX + Math.cos(rad) * offY;
-        createDetachedPetal(br.x + br.width / 2 + rotX, br.y + br.height / 2 + rotY, br.vx, br.vy);
-      }
-
-      // Cành mờ dần rồi biến mất êm đềm
+      // Đường cong độ trong suốt: hiện êm ái đầu đường bay, vững vàng giữa không trung, mờ dần cuối đường
       let alpha = 1;
-      if (progress > 0.72) {
-        alpha = 1 - (progress - 0.72) / 0.28;
+      if (u < 0.08) {
+        alpha = Math.sin((u / 0.08) * Math.PI * 0.5);
+      } else if (u > 0.74) {
+        alpha = 1 - (u - 0.74) / 0.26;
       }
 
-      br.el.style.transform = `translate3d(${br.x.toFixed(1)}px, ${br.y.toFixed(1)}px, 0) scale(${br.scale.toFixed(2)}) rotateZ(${tiltZ.toFixed(1)}deg) rotateY(${tiltY.toFixed(1)}deg) rotateX(${tiltX.toFixed(1)}deg)`;
-      br.innerEl.style.transform = `skewX(${br.currentSkew.toFixed(1)}deg) scaleY(${(1 - Math.abs(br.currentSkew) * 0.008).toFixed(3)})`;
-      br.el.style.opacity = Math.max(0, alpha).toFixed(3);
+      // Kích thước cành hoa co giãn nhẹ theo nhịp thở của luồng gió
+      const scaleBreathe = 0.95 + 0.09 * Math.sin(u * Math.PI);
+      const renderScale = br.baseScale * scaleBreathe;
+
+      // Render cành hoa như một object thống nhất (Cành + Lá + Hoa)
+      br.el.style.transform = `translate3d(${(curX - br.width * 0.5).toFixed(1)}px, ${(curY - br.height * 0.5).toFixed(1)}px, 0) scale(${renderScale.toFixed(3)}) rotateZ(${br.currentTiltZ.toFixed(1)}deg) rotateY(${tiltY.toFixed(1)}deg) rotateX(${tiltX.toFixed(1)}deg)`;
+      br.innerEl.style.transform = `skewX(${br.currentSkew.toFixed(1)}deg) scaleY(${(1 - Math.abs(br.currentSkew) * 0.007).toFixed(3)})`;
+      br.el.style.opacity = Math.max(0, Math.min(1, alpha)).toFixed(3);
 
       if (br.life >= br.maxLife) {
         br.el.remove();
         activeBranches.splice(i, 1);
       }
-    }
-
     requestAnimationFrame(updateFlowerBranchPhysics);
   }
 
@@ -815,7 +902,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   function getBottleAtRel(relX, relY) {
-    // 1. Ưu tiên các chai lọ mỹ phẩm trước
+    // Chỉ các chai lọ mỹ phẩm mới mở thế giới riêng (không chặn click vào hoa)
     for (let i = 0; i < fragranceBottles.length; i++) {
       const b = fragranceBottles[i];
       if (b.id === 'flower_vase') continue;
@@ -825,13 +912,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ) {
         return b;
       }
-    }
-    // 2. Kiểm tra bình hoa đậu biếc
-    const flowerVase = fragranceBottles.find(b => b.id === 'flower_vase');
-    if (flowerVase &&
-      relX >= flowerVase.bounds.minX && relX <= flowerVase.bounds.maxX &&
-      relY >= flowerVase.bounds.minY && relY <= flowerVase.bounds.maxY) {
-      return flowerVase;
     }
     return null;
   }
@@ -1097,17 +1177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const bOriginY2 = fRect.top + bottleBox.top + bottleBox.height * 0.15;
         launchFlowerBranch(bOriginX2, bOriginY2, 1.15);
       }, 90);
-
-      // 6 cánh hoa nhỏ tách rời rơi xoay trong gió
-      for (let p = 0; p < 6; p++) {
-        const px = fRect.left + bottleBox.left + bottleBox.width * (0.1 + Math.random() * 0.8);
-        const py = fRect.top + bottleBox.top + bottleBox.height * (0.1 + Math.random() * 0.8);
-        const pVx = (Math.random() - 0.5) * 2.4;
-        const pVy = -1.1 - Math.random() * 1.5;
-        setTimeout(() => {
-          createDetachedPetal(px, py, pVx, pVy);
-        }, p * 30);
-      }
     }, 60);
 
     // ==========================================
@@ -1700,6 +1769,13 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       e.preventDefault();
       const bottleId = btn.getAttribute('data-bottle-id');
+      if (bottleId === 'flower_vase') {
+        const rect = btn.getBoundingClientRect();
+        const startX = rect.left + rect.width * (0.35 + Math.random() * 0.3);
+        const startY = rect.top + rect.height * (0.3 + Math.random() * 0.4);
+        launchFlowerBranch(startX, startY, (Math.random() - 0.5) * 2);
+        return;
+      }
       const bottle = fragranceBottles.find(b => b.id === bottleId);
       if (bottle) {
         activateProductWorld(bottle);
