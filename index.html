@@ -19,7 +19,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="preview.css?v=12">
+  <link rel="stylesheet" href="preview.css?v=13">
 </head>
 
 <body>
@@ -124,6 +124,32 @@
         <!-- Container chứa các thẻ chữ bay bổng của mùi hương -->
         <div id="fragranceTextContainer" class="fragrance-text-container" aria-hidden="true"></div>
 
+        <!-- Lớp tương tác: Các vùng chạm trực tiếp vào từng món mỹ phẩm & hoa -->
+        <div class="bottle-hotspots-container" id="bottleHotspotsContainer"
+          aria-label="Các sản phẩm mỹ phẩm hoa đậu biếc">
+          <button type="button" class="bottle-hotspot" data-bottle-id="serum"
+            style="left: 13.5%; top: 31%; width: 14.5%; height: 52%;" title="Butterfly Pea - Rejuvenating Serum"
+            aria-label="Butterfly Pea - Rejuvenating Serum"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="cream"
+            style="left: 27%; top: 54%; width: 16%; height: 32%;" title="Butterfly Pea - Radiance Cream"
+            aria-label="Butterfly Pea - Radiance Cream"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="toner"
+            style="left: 54%; top: 31%; width: 12%; height: 54%;" title="Butterfly Pea - Hydrating Toner"
+            aria-label="Butterfly Pea - Hydrating Toner"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="essence"
+            style="left: 68%; top: 38%; width: 11%; height: 48%;" title="Butterfly Pea - Soothing Essence"
+            aria-label="Butterfly Pea - Soothing Essence"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="lipbalm"
+            style="left: 60%; top: 71%; width: 14%; height: 22%;" title="Butterfly Pea - Lip Balm Nourish & Glow"
+            aria-label="Butterfly Pea - Lip Balm Nourish & Glow"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="liptube"
+            style="left: 77%; top: 51%; width: 11%; height: 40%;" title="Butterfly Pea - Lip Balm Tube"
+            aria-label="Butterfly Pea - Lip Balm Tube"></button>
+          <button type="button" class="bottle-hotspot" data-bottle-id="flower_vase"
+            style="left: 28%; top: 4%; width: 44%; height: 34%;" title="Butterfly Pea - Botanical Blossom"
+            aria-label="Butterfly Pea - Botanical Blossom"></button>
+        </div>
+
         <!-- Gợi ý tương tác cành hoa & hương thơm nhẹ nhàng (tự ẩn sau khi click) -->
         <div class="flower-touch-hint" id="flowerTouchHint">
           <span class="hint-icon">🌿</span>
@@ -220,7 +246,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=12"></script>
+  <script src="script.js?v=13"></script>
 </body>
 
 </html>

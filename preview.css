@@ -670,6 +670,362 @@ body {
   }
 }
 
+/* ============================================================
+   8. THẾ GIỚI RIÊNG KHI CLICK VÀO TỪNG MÓN MỸ PHẨM (PRODUCT WORLDS)
+   1️⃣ Chai rung nhẹ (haptic shake + focus aura)
+   2️⃣ Cành hoa xung quanh bắt đầu bay
+   3️⃣ Ánh sáng lóe nhẹ trên chai
+   4️⃣ Hương thơm xuất hiện (làn sương ribbon & âm thanh)
+   5️⃣ Thông tin hiện ra (người dùng tự đóng)
+   ============================================================ */
+
+/* Vùng chạm tương tác cho từng món */
+.bottle-hotspots-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 14;
+}
+
+.bottle-hotspot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 18px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottle-hotspot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid transparent;
+  background: radial-gradient(ellipse at center, rgba(147, 197, 253, 0) 0%, transparent 70%);
+  transition: all 0.35s ease;
+  pointer-events: none;
+}
+
+.bottle-hotspot:hover::after,
+.bottle-hotspot:focus-visible::after {
+  border-color: rgba(147, 197, 253, 0.7);
+  background: radial-gradient(ellipse at center, rgba(147, 197, 253, 0.18) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 80%);
+  box-shadow: 0 0 25px rgba(147, 197, 253, 0.45);
+}
+
+.bottle-hotspot:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* 1️⃣ Phần tử chai rung nhẹ tách lớp thực tế */
+.bottle-shaker-element {
+  position: absolute;
+  pointer-events: none;
+  z-index: 18;
+  border-radius: 16px;
+  overflow: hidden;
+  will-change: transform;
+  filter: drop-shadow(0 0 20px rgba(147, 197, 253, 0.85));
+  mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 80%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 80%, transparent 100%);
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.bottle-shaker-element.bottle-shaking {
+  animation: bottle-gentle-shake 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.bottle-shaker-element.bottle-focused {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 28px rgba(147, 197, 253, 1));
+}
+
+.bottle-shaker-element.shaker-fade-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes bottle-gentle-shake {
+  0% {
+    transform: scale(1.02) translate(0, 0) rotate(0deg);
+  }
+  15% {
+    transform: scale(1.03) translate(-3px, -1.5px) rotate(-1.5deg);
+  }
+  30% {
+    transform: scale(1.03) translate(3px, 1.5px) rotate(1.5deg);
+  }
+  45% {
+    transform: scale(1.025) translate(-2.5px, 1px) rotate(-1deg);
+  }
+  60% {
+    transform: scale(1.02) translate(2px, -1px) rotate(0.8deg);
+  }
+  75% {
+    transform: scale(1.015) translate(-1px, 0.5px) rotate(-0.4deg);
+  }
+  90% {
+    transform: scale(1.01) translate(0.5px, -0.5px) rotate(0.2deg);
+  }
+  100% {
+    transform: scale(1.01) translate(0, 0) rotate(0deg);
+  }
+}
+
+.bottle-shaker-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(147, 197, 253, 0.45) 54%,
+    transparent 65%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  animation: bottle-shine-gleam 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes bottle-shine-gleam {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+/* 5️⃣ Thông tin hiện ra: Thẻ thế giới riêng */
+.product-world-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-world-modal.active {
+  opacity: 1;
+}
+
+.product-world-modal.closing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.world-card-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.28) 0%, rgba(15, 23, 42, 0.50) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.world-card-container {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 360px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(191, 219, 254, 0.85);
+  border-radius: 26px;
+  padding: 34px 28px 28px;
+  text-align: center;
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.22),
+    0 0 35px rgba(147, 197, 253, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  transform: translateY(18px) scale(0.94);
+  transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+.product-world-modal.active .world-card-container {
+  transform: translateY(0) scale(1);
+}
+
+.product-world-modal.closing .world-card-container {
+  transform: translateY(12px) scale(0.92);
+  opacity: 0;
+}
+
+.world-sparkle-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.world-star {
+  font-size: 1.6rem;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.95));
+  animation: world-star-twinkle 2.2s ease-in-out infinite alternate;
+  display: inline-block;
+}
+
+@keyframes world-star-twinkle {
+  0% {
+    transform: scale(0.9) rotate(-10deg);
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+  }
+  100% {
+    transform: scale(1.25) rotate(15deg);
+    filter: drop-shadow(0 0 16px rgba(14, 165, 233, 1));
+  }
+}
+
+.world-brand-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #1e3a8a;
+  text-shadow: 0 2px 10px rgba(147, 197, 253, 0.4);
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.world-product-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #2563eb;
+  letter-spacing: 0.5px;
+  margin-bottom: 18px;
+  line-height: 1.3;
+}
+
+.world-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px auto;
+  max-width: 220px;
+}
+
+.world-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.8), transparent);
+}
+
+.world-divider-gem {
+  font-size: 0.75rem;
+  color: #60a5fa;
+  filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.8));
+}
+
+.world-message {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
+}
+
+.world-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 30px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95) 0%, rgba(219, 234, 254, 0.95) 100%);
+  border: 1px solid rgba(147, 197, 253, 0.85);
+  color: #1d4ed8;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  box-shadow:
+    0 4px 14px rgba(37, 99, 235, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.world-close-bracket {
+  color: #93c5fd;
+  font-weight: 400;
+  transition: transform 0.2s ease;
+}
+
+.world-close-btn:hover {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #60a5fa;
+  color: #1e40af;
+  box-shadow:
+    0 6px 20px rgba(37, 99, 235, 0.25),
+    0 0 15px rgba(147, 197, 253, 0.5);
+  transform: translateY(-2px);
+}
+
+.world-close-btn:hover .world-close-bracket:first-child {
+  transform: translateX(-3px);
+}
+
+.world-close-btn:hover .world-close-bracket:last-child {
+  transform: translateX(3px);
+}
+
+.world-close-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+@media (max-width: 768px) {
+  .world-card-container {
+    max-width: 320px;
+    padding: 26px 20px 22px;
+  }
+  .world-brand-title {
+    font-size: 1.22rem;
+  }
+  .world-product-name {
+    font-size: 0.98rem;
+    margin-bottom: 14px;
+  }
+  .world-message {
+    font-size: 0.96rem;
+    margin-bottom: 20px;
+  }
+  .world-close-btn {
+    padding: 7px 24px;
+    font-size: 0.88rem;
+  }
+}
+
 img {
   max-width: 100%;
   height: auto;

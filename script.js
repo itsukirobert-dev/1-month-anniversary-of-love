@@ -471,6 +471,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Bộ lắng nghe tương tác click / chạm ---
   function handleSceneInteraction(e) {
+    // 0. Bỏ qua nếu click vào bên trong modal hoặc nút hotspot (hotspot đã có listener riêng)
+    if (e.target.closest('#productWorldModal') || e.target.closest('.bottle-hotspot')) {
+      return;
+    }
+
     let clientX = e.clientX;
     let clientY = e.clientY;
 
@@ -491,8 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
       clientY >= rect.top && clientY <= rect.bottom
     );
 
-    let startX, startY, dirX = 0;
-
     if (isInsideImg) {
       const relX = (clientX - rect.left) / rect.width;
       const relY = (clientY - rect.top) / rect.height;
@@ -501,13 +504,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof getBottleAtRel === 'function') {
         const clickedBottle = getBottleAtRel(relX, relY);
         if (clickedBottle) {
-          launchFragranceMist(clickedBottle);
+          if (typeof activateProductWorld === 'function') {
+            activateProductWorld(clickedBottle);
+          } else {
+            launchFragranceMist(clickedBottle);
+          }
           return;
         }
       }
 
       // 2. Chạm vào chùm hoa đậu biếc ở nửa trên (loại trừ vùng chai lọ)
       if (relY <= 0.48 && relX >= 0.22 && relX <= 0.78) {
+        const flowerBottle = fragranceBottles.find(b => b.id === 'flower_vase');
+        if (flowerBottle && typeof activateProductWorld === 'function') {
+          activateProductWorld(flowerBottle);
+          return;
+        }
         const startX = clientX;
         const startY = clientY;
         const dirX = (relX - 0.5) * 2.2;
@@ -516,11 +528,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Chạm vào nửa dưới (mặt bàn đá hoa cương, cạnh chai lọ, lụa hồng)
-      // Tỏa hương thơm từ chai mỹ phẩm gần nhất!
+      // Mở thế giới từ chai mỹ phẩm gần nhất!
       if (relY >= 0.38 && typeof getNearestBottle === 'function') {
         const nearestBottle = getNearestBottle(relX, relY);
         if (nearestBottle) {
-          launchFragranceMist(nearestBottle);
+          if (typeof activateProductWorld === 'function') {
+            activateProductWorld(nearestBottle);
+          } else {
+            launchFragranceMist(nearestBottle);
+          }
           return;
         }
       }
@@ -714,75 +730,108 @@ document.addEventListener('DOMContentLoaded', () => {
   const fragranceBottles = [
     {
       id: 'serum',
+      brand: 'Butterfly Pea',
       name: 'Rejuvenating Serum',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Một khoảnh khắc dịu dàng dành cho em.',
       tag: 'Serum Dưỡng Trẻ Hóa',
+      message: 'Một khoảnh khắc\ndịu dàng dành cho em.',
       nozzle: { x: 0.211, y: 0.372 },
-      bounds: { minX: 0.14, maxX: 0.28, minY: 0.32, maxY: 0.82 },
+      bounds: { minX: 0.135, maxX: 0.28, minY: 0.31, maxY: 0.83 },
       ribbonColor: { r: 147, g: 197, b: 253 }, // Blue sapphire
       sprayAngle: -0.06
     },
     {
       id: 'cream',
+      brand: 'Butterfly Pea',
       name: 'Radiance Cream',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Nâng niu từng nét rạng rỡ của em.',
       tag: 'Kem Dưỡng Sáng Mịn',
+      message: 'Nâng niu từng nét rạng rỡ,\nvỗ về giấc mơ êm đềm của em.',
       nozzle: { x: 0.344, y: 0.620 },
-      bounds: { minX: 0.27, maxX: 0.43, minY: 0.55, maxY: 0.85 },
+      bounds: { minX: 0.27, maxX: 0.43, minY: 0.54, maxY: 0.86 },
       ribbonColor: { r: 199, g: 210, b: 254 }, // Lavender pearl
       sprayAngle: -0.03
     },
     {
       id: 'toner',
+      brand: 'Butterfly Pea',
       name: 'Hydrating Toner',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Từng giọt sương mát lành ban mai...',
       tag: 'Toner Cấp Ẩm Tươi Mát',
+      message: 'Từng giọt sương mát lành,\nđánh thức sự tươi mới và nét cười em.',
       nozzle: { x: 0.600, y: 0.357 },
-      bounds: { minX: 0.54, maxX: 0.66, minY: 0.32, maxY: 0.84 },
+      bounds: { minX: 0.54, maxX: 0.66, minY: 0.31, maxY: 0.85 },
       ribbonColor: { r: 147, g: 197, b: 253 },
       sprayAngle: 0.04
     },
     {
       id: 'essence',
+      brand: 'Butterfly Pea',
       name: 'Soothing Essence',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Làn sương thơm dịu ngọt vấn vương...',
       tag: 'Nước Hoa & Tinh Chất Xịt',
+      message: 'Làn sương thơm dịu ngọt,\nvấn vương chở che em qua từng ngày dài.',
       nozzle: { x: 0.729, y: 0.430 },
-      bounds: { minX: 0.68, maxX: 0.78, minY: 0.39, maxY: 0.84 },
+      bounds: { minX: 0.68, maxX: 0.79, minY: 0.38, maxY: 0.86 },
       ribbonColor: { r: 125, g: 211, b: 252 }, // Sky blue mist
       sprayAngle: 0.08
     },
     {
       id: 'lipbalm',
+      brand: 'Butterfly Pea',
       name: 'Lip Balm Nourish & Glow',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Gửi chút ngọt ngào vương nhẹ...',
       tag: 'Son Dưỡng Căng Mọng',
+      message: 'Gửi chút ngọt ngào vương nhẹ,\ncho đôi môi em luôn hé nụ cười tươi.',
       nozzle: { x: 0.667, y: 0.758 },
-      bounds: { minX: 0.61, maxX: 0.74, minY: 0.72, maxY: 0.92 },
+      bounds: { minX: 0.60, maxX: 0.74, minY: 0.71, maxY: 0.93 },
       ribbonColor: { r: 244, g: 208, b: 234 }, // Pink-violet
       sprayAngle: 0.02
     },
     {
       id: 'liptube',
+      brand: 'Butterfly Pea',
       name: 'Lip Balm Tube',
-      subtitle: 'A gentle floral moment...',
+      subtitle: 'Sự chăm sóc ân cần bên em...',
       tag: 'Tuýp Son Đậu Biếc',
+      message: 'Sự chăm sóc ân cần,\nluôn bên em từ những điều nhỏ bé nhất.',
       nozzle: { x: 0.813, y: 0.583 },
-      bounds: { minX: 0.78, maxX: 0.87, minY: 0.52, maxY: 0.90 },
+      bounds: { minX: 0.77, maxX: 0.88, minY: 0.51, maxY: 0.91 },
       ribbonColor: { r: 249, g: 168, b: 212 },
       sprayAngle: 0.06
+    },
+    {
+      id: 'flower_vase',
+      brand: 'Butterfly Pea',
+      name: 'Botanical Blossom',
+      subtitle: 'Sắc biếc hoa thủy chung...',
+      tag: 'Bình Hoa Đậu Biếc',
+      message: 'Sắc biếc hoa thủy chung,\nthay ngàn lời yêu gửi trọn đến em.',
+      nozzle: { x: 0.500, y: 0.220 },
+      bounds: { minX: 0.28, maxX: 0.72, minY: 0.04, maxY: 0.38 },
+      ribbonColor: { r: 147, g: 197, b: 253 },
+      sprayAngle: 0.0
     }
   ];
 
   function getBottleAtRel(relX, relY) {
+    // 1. Ưu tiên các chai lọ mỹ phẩm trước
     for (let i = 0; i < fragranceBottles.length; i++) {
       const b = fragranceBottles[i];
+      if (b.id === 'flower_vase') continue;
       if (
         relX >= b.bounds.minX && relX <= b.bounds.maxX &&
         relY >= b.bounds.minY && relY <= b.bounds.maxY
       ) {
         return b;
       }
+    }
+    // 2. Kiểm tra bình hoa đậu biếc
+    const flowerVase = fragranceBottles.find(b => b.id === 'flower_vase');
+    if (flowerVase &&
+      relX >= flowerVase.bounds.minX && relX <= flowerVase.bounds.maxX &&
+      relY >= flowerVase.bounds.minY && relY <= flowerVase.bounds.maxY) {
+      return flowerVase;
     }
     return null;
   }
@@ -792,6 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let minDist = Infinity;
     for (let i = 0; i < fragranceBottles.length; i++) {
       const b = fragranceBottles[i];
+      if (b.id === 'flower_vase') continue;
       const dx = (relX - b.nozzle.x) * 1.35;
       const dy = relY - b.nozzle.y;
       const dist = Math.hypot(dx, dy);
@@ -944,8 +994,253 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4300);
   }
 
+  // ============================================================
+  // THẾ GIỚI RIÊNG KHI CLICK VÀO TỪNG MÓN MỸ PHẨM (PRODUCT WORLDS)
+  // 1️⃣ Chai rung nhẹ (haptic shake + focus aura)
+  // 2️⃣ Cành hoa xung quanh bắt đầu bay
+  // 3️⃣ Ánh sáng lóe nhẹ trên chai
+  // 4️⃣ Hương thơm xuất hiện (làn sương ribbon & âm thanh)
+  // 5️⃣ Thông tin hiện ra (người dùng tự đóng, không timeout)
+  // ============================================================
+  function activateProductWorld(bottle) {
+    if (!bottle) return;
+    dismissTouchHint();
+
+    // 0. Đóng modal hiện tại nếu có
+    const currentModal = document.getElementById('productWorldModal');
+    if (currentModal) {
+      currentModal.remove();
+    }
+    const oldShaker = livingFrameEl ? livingFrameEl.querySelector('.bottle-shaker-element') : null;
+    if (oldShaker) oldShaker.remove();
+
+    if (!fCtx || fWidth === 0 || fHeight === 0) {
+      resizeFragranceCanvas();
+    }
+
+    const targetImg = livingPhotoEl || (livingFrameEl ? livingFrameEl.querySelector('img') : null);
+    const fRect = livingFrameEl ? livingFrameEl.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+    const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+    const bottleBox = {
+      left: bottle.bounds.minX * iRect.width + (iRect.left - fRect.left),
+      top: bottle.bounds.minY * iRect.height + (iRect.top - fRect.top),
+      width: (bottle.bounds.maxX - bottle.bounds.minX) * iRect.width,
+      height: (bottle.bounds.maxY - bottle.bounds.minY) * iRect.height
+    };
+
+    const nozzleX = bottle.nozzle.x * fWidth;
+    const nozzleY = bottle.nozzle.y * fHeight;
+    const absNozzleX = fRect.left + nozzleX;
+    const absNozzleY = fRect.top + nozzleY;
+
+    // ==========================================
+    // 1️⃣ CHAI RUNG NHẸ (0ms)
+    // ==========================================
+    // Haptic vibration cho thiết bị di động
+    if (window.navigator && window.navigator.vibrate) {
+      try {
+        window.navigator.vibrate([28, 35, 28]);
+      } catch (err) { }
+    }
+
+    // Tách lớp phần tử chai thực tế và rung nhẹ tự nhiên
+    if (targetImg && targetImg.complete && targetImg.naturalWidth > 0 && livingFrameEl && bottle.id !== 'flower_vase') {
+      const shakerEl = document.createElement('div');
+      shakerEl.className = 'bottle-shaker-element bottle-shaking';
+      shakerEl.style.left = `${bottleBox.left}px`;
+      shakerEl.style.top = `${bottleBox.top}px`;
+      shakerEl.style.width = `${bottleBox.width}px`;
+      shakerEl.style.height = `${bottleBox.height}px`;
+
+      const shakerCanvas = document.createElement('canvas');
+      const dpr = window.devicePixelRatio || 1;
+      shakerCanvas.width = Math.max(1, Math.round(bottleBox.width * dpr));
+      shakerCanvas.height = Math.max(1, Math.round(bottleBox.height * dpr));
+      shakerCanvas.style.width = '100%';
+      shakerCanvas.style.height = '100%';
+
+      const sCtx = shakerCanvas.getContext('2d');
+      sCtx.scale(dpr, dpr);
+
+      const sx = bottle.bounds.minX * targetImg.naturalWidth;
+      const sy = bottle.bounds.minY * targetImg.naturalHeight;
+      const sw = (bottle.bounds.maxX - bottle.bounds.minX) * targetImg.naturalWidth;
+      const sh = (bottle.bounds.maxY - bottle.bounds.minY) * targetImg.naturalHeight;
+
+      sCtx.drawImage(targetImg, sx, sy, sw, sh, 0, 0, bottleBox.width, bottleBox.height);
+
+      const shineEl = document.createElement('div');
+      shineEl.className = 'bottle-shaker-shine';
+
+      shakerEl.appendChild(shakerCanvas);
+      shakerEl.appendChild(shineEl);
+      livingFrameEl.appendChild(shakerEl);
+
+      setTimeout(() => {
+        shakerEl.classList.remove('bottle-shaking');
+        shakerEl.classList.add('bottle-focused');
+      }, 500);
+    }
+
+    // ==========================================
+    // 2️⃣ CÀNH HOA XUNG QUANH BẮT ĐẦU BAY (60ms)
+    // ==========================================
+    setTimeout(() => {
+      // 2 cành hoa bay từ 2 hướng trái phải xung quanh chai
+      const bOriginX1 = fRect.left + bottleBox.left + bottleBox.width * 0.15;
+      const bOriginY1 = fRect.top + bottleBox.top + bottleBox.height * 0.2;
+      launchFlowerBranch(bOriginX1, bOriginY1, -1.1);
+
+      setTimeout(() => {
+        const bOriginX2 = fRect.left + bottleBox.left + bottleBox.width * 0.85;
+        const bOriginY2 = fRect.top + bottleBox.top + bottleBox.height * 0.15;
+        launchFlowerBranch(bOriginX2, bOriginY2, 1.15);
+      }, 90);
+
+      // 6 cánh hoa nhỏ tách rời rơi xoay trong gió
+      for (let p = 0; p < 6; p++) {
+        const px = fRect.left + bottleBox.left + bottleBox.width * (0.1 + Math.random() * 0.8);
+        const py = fRect.top + bottleBox.top + bottleBox.height * (0.1 + Math.random() * 0.8);
+        const pVx = (Math.random() - 0.5) * 2.4;
+        const pVy = -1.1 - Math.random() * 1.5;
+        setTimeout(() => {
+          createDetachedPetal(px, py, pVx, pVy);
+        }, p * 30);
+      }
+    }, 60);
+
+    // ==========================================
+    // 3️⃣ ÁNH SÁNG LÓE NHẸ TRÊN CHAI (140ms)
+    // ==========================================
+    setTimeout(() => {
+      const flashEl = document.createElement('div');
+      flashEl.className = 'bottle-spray-flash';
+      flashEl.style.left = `${nozzleX}px`;
+      flashEl.style.top = `${nozzleY}px`;
+      if (livingFrameEl) {
+        livingFrameEl.appendChild(flashEl);
+        setTimeout(() => flashEl.remove(), 750);
+      }
+
+      for (let s = 0; s < 5; s++) {
+        const sx = absNozzleX + (Math.random() - 0.5) * 35;
+        const sy = absNozzleY + (Math.random() - 0.5) * 30;
+        createSparkle(sx, sy);
+      }
+    }, 140);
+
+    // ==========================================
+    // 4️⃣ HƯƠNG THƠM XUẤT HIỆN (220ms)
+    // ==========================================
+    setTimeout(() => {
+      launchFragranceMist(bottle, false);
+    }, 220);
+
+    // ==========================================
+    // 5️⃣ THÔNG TIN HIỆN RA (480ms)
+    // (Người dùng tự đóng, không ép timeout)
+    // ==========================================
+    setTimeout(() => {
+      renderProductWorldModal(bottle);
+    }, 480);
+  }
+
+  // Hiển thị thẻ thông tin "Thế giới riêng" với nút [ Đóng ]
+  function renderProductWorldModal(bottle) {
+    if (!livingFrameEl) return;
+
+    const existing = document.getElementById('productWorldModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.className = 'product-world-modal';
+    modal.id = 'productWorldModal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', `${bottle.brand || 'Butterfly Pea'} - ${bottle.name}`);
+
+    const formattedMessage = (bottle.message || 'Một khoảnh khắc\ndịu dàng dành cho em.').replace(/\n/g, '<br>');
+
+    modal.innerHTML = `
+      <div class="world-card-backdrop" id="worldCardBackdrop"></div>
+      <div class="world-card-container">
+        <div class="world-sparkle-top">
+          <span class="world-star">✨</span>
+        </div>
+
+        <div class="world-brand-title">${bottle.brand || 'Butterfly Pea'}</div>
+
+        <div class="world-product-name">${bottle.name}</div>
+
+        <div class="world-divider">
+          <span class="world-divider-line"></span>
+          <span class="world-divider-gem">✦</span>
+          <span class="world-divider-line"></span>
+        </div>
+
+        <div class="world-message">${formattedMessage}</div>
+
+        <button type="button" class="world-close-btn" id="worldCloseBtn" aria-label="Đóng thế giới riêng">
+          <span class="world-close-bracket">[</span>
+          <span class="world-close-text">Đóng</span>
+          <span class="world-close-bracket">]</span>
+        </button>
+      </div>
+    `;
+
+    livingFrameEl.appendChild(modal);
+
+    requestAnimationFrame(() => {
+      modal.classList.add('active');
+      const closeBtn = modal.querySelector('#worldCloseBtn');
+      if (closeBtn) closeBtn.focus();
+    });
+
+    function closeModal() {
+      modal.classList.remove('active');
+      modal.classList.add('closing');
+
+      const shaker = livingFrameEl.querySelector('.bottle-shaker-element');
+      if (shaker) {
+        shaker.classList.add('shaker-fade-out');
+      }
+
+      setTimeout(() => {
+        modal.remove();
+        if (shaker) shaker.remove();
+      }, 420);
+
+      document.removeEventListener('keydown', handleKeydown);
+    }
+
+    function handleKeydown(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    }
+
+    const closeBtn = modal.querySelector('#worldCloseBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+    }
+
+    const backdrop = modal.querySelector('#worldCardBackdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+    }
+
+    document.addEventListener('keydown', handleKeydown);
+  }
+
   // Khởi phát làn sương hương thơm mỹ phẩm (Fragrance Mist Launch)
-  function launchFragranceMist(bottle) {
+  function launchFragranceMist(bottle, showCard = true) {
     dismissTouchHint();
     playFragranceSound();
 
@@ -966,8 +1261,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => flashEl.remove(), 700);
     }
 
-    // 2. Thẻ chữ nghệ thuật nổi lên
-    showFragranceCard(bottle, nozzleX, nozzleY);
+    // 2. Thẻ chữ nghệ thuật nổi lên (nếu không dùng modal thế giới riêng)
+    if (showCard) {
+      showFragranceCard(bottle, nozzleX, nozzleY);
+    }
 
     // 3. Khởi tạo chùm sương (Fragrance Burst)
     if (activeFragranceBursts.length >= 4) {
@@ -1393,5 +1690,21 @@ document.addEventListener('DOMContentLoaded', () => {
       isFragranceLoopActive = false;
     }
   }
+
+  // ============================================================
+  // 9. LẮNG NGHE TƯƠNG TÁC CHO CÁC NÚT HOTSPOT TỪNG MÓN
+  // ============================================================
+  const bottleHotspots = document.querySelectorAll('.bottle-hotspot');
+  bottleHotspots.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const bottleId = btn.getAttribute('data-bottle-id');
+      const bottle = fragranceBottles.find(b => b.id === bottleId);
+      if (bottle) {
+        activateProductWorld(bottle);
+      }
+    });
+  });
 });
 
