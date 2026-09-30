@@ -1,0 +1,297 @@
+/* ============================================================
+   BUTTERFLY PEA MEMORY GARDEN — BACKGROUND ENGINE CSS
+   Hệ Thống Động Lực Không Gian Mỹ Phẩm Cao Cấp Sống Động
+   Phong cách: Photorealistic, Cinematic, Romantic, Luxury
+   ============================================================ */
+
+/* Khung hình sống động (Living Frame) ôm khít tỷ lệ ảnh */
+.living-frame {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: calc(100vh - 96px);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.28),
+    0 8px 24px rgba(2, 132, 199, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  cursor: pointer;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Ảnh gốc chính xác 100% không bị cắt */
+.main-uncut-image.living-photo {
+  max-width: 100%;
+  max-height: calc(100vh - 96px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 18px;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Lớp chung cho các tầng động lực học (Living Layers) */
+.engine-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: 18px;
+  overflow: hidden;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ============================================================
+   1. LAYER NỀN KIẾN TRÚC & TRỤ CỘT PHA LÊ (BACKDROP LAYER)
+   ============================================================ */
+.engine-layer-backdrop {
+  z-index: 2;
+  opacity: 0.95;
+}
+
+.engine-backdrop-ambient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 30% 25%, rgba(255, 245, 230, 0.16) 0%, transparent 70%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* ============================================================
+   2. LAYER MẶT BÀN ĐÁ HOA CƯƠNG & PHẢN CHIẾU (TABLE LAYER)
+   ============================================================ */
+.engine-layer-table {
+  z-index: 3;
+}
+
+.engine-table-reflection-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.engine-table-sheen {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48%;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 20%,
+      rgba(224, 242, 254, 0.08) 50%,
+      rgba(255, 228, 230, 0.06) 80%,
+      transparent 100%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* ============================================================
+   3. LAYER VẢI LỤA HỒNG CHUYỂN ĐỘNG HỮU CƠ (SILK FABRIC LAYER)
+   - Mặt nạ lông vũ che phủ chuẩn xác vùng vải lụa góc dưới-trái
+   - Bộ lọc sóng lụa (Liquid Silk Wave Displacement) uốn lượn chậm
+   - Vệt sáng satin mềm mại lướt theo từng nếp gấp
+   ============================================================ */
+.engine-layer-silk {
+  z-index: 4;
+  -webkit-mask-image: radial-gradient(ellipse 48% 46% at 16% 82%, black 58%, rgba(0, 0, 0, 0.7) 78%, transparent 100%);
+  mask-image: radial-gradient(ellipse 48% 46% at 16% 82%, black 58%, rgba(0, 0, 0, 0.7) 78%, transparent 100%);
+}
+
+.engine-silk-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 12% 84%;
+  filter: url(#silkFlowFilter);
+  will-change: transform;
+}
+
+.engine-silk-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+.engine-silk-satin-sheen {
+  position: absolute;
+  top: 52%;
+  left: -5%;
+  width: 52%;
+  height: 52%;
+  background: radial-gradient(ellipse 65% 45% at 40% 50%,
+      rgba(255, 250, 245, 0.28) 0%,
+      rgba(255, 225, 235, 0.15) 45%,
+      transparent 75%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* ============================================================
+   4. LAYER BÓ HOA ĐẬU BIẾC SỐNG ĐỘNG (LIVING FLORA LAYER)
+   - Mặt nạ lông vũ che phủ tán hoa đậu biếc và lá
+   - Gốc cành neo tại miệng bình thủy tinh (x: 48%, y: 50%)
+   - Cành hoa đung đưa vươn ra không gian thật
+   - Cụm lá nghiêng qua lại so le không đồng bộ
+   - Hoa rung nhẹ từng thớ cánh mượt mà
+   ============================================================ */
+.engine-layer-flora {
+  z-index: 5;
+  -webkit-mask-image: radial-gradient(ellipse 34% 30% at 48% 30%, black 56%, rgba(0, 0, 0, 0.82) 78%, transparent 100%);
+  mask-image: radial-gradient(ellipse 34% 30% at 48% 30%, black 56%, rgba(0, 0, 0, 0.82) 78%, transparent 100%);
+}
+
+.engine-flora-canopy {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 48% 50%;
+  filter: url(#floraBreezeFilter);
+  will-change: transform;
+}
+
+.engine-flora-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+/* ============================================================
+   5. CÁC CÀNH HOA ĐUNG ĐƯA TỰ NHIÊN (SWAYING BRANCH SPRITES)
+   - Tách biệt ngoài không gian để tạo độ nổi 3D (Depth Relief)
+   - Đung đưa theo phương trình con lắc khí động học
+   ============================================================ */
+.engine-swaying-branch {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.engine-swaying-branch .branch-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.18));
+}
+
+/* Cành bên trái: vươn sang hướng tây-bắc, neo tại gốc dưới-phải */
+.engine-swaying-branch.branch-left {
+  left: 19.5%;
+  top: 15.5%;
+  width: 21%;
+  height: 20%;
+  transform-origin: 88% 82%;
+}
+
+/* Cành bên phải: vươn sang hướng đông-bắc, neo tại gốc dưới-trái */
+.engine-swaying-branch.branch-right {
+  left: 58.5%;
+  top: 14%;
+  width: 16.5%;
+  height: 22%;
+  transform-origin: 14% 82%;
+}
+
+/* Cành đỉnh vòm: vươn cao đón nắng, neo tại gốc dưới-giữa */
+.engine-swaying-branch.branch-top {
+  left: 41.5%;
+  top: 5.5%;
+  width: 16%;
+  height: 17%;
+  transform-origin: 48% 90%;
+}
+
+/* ============================================================
+   6. CÁC CỤM LÁ NGHIÊNG QUA LẠI ĐỘC LẬP (DESYNCHRONIZED LEAVES)
+   ============================================================ */
+.engine-living-leaf {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/* ============================================================
+   7. CÁC BÔNG HOA ĐẬU BIẾC RUNG CỰC NHẸ (MICRO-TREMOR BLOSSOMS)
+   ============================================================ */
+.engine-living-blossom {
+  position: absolute;
+  pointer-events: none;
+  z-index: 7;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.engine-living-blossom .blossom-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(2, 44, 114, 0.22));
+}
+
+.engine-living-blossom.blossom-pos-1 {
+  left: 39.5%;
+  top: 23%;
+  width: 9%;
+  height: 9%;
+  transform-origin: 45% 55%;
+}
+
+.engine-living-blossom.blossom-pos-2 {
+  left: 49%;
+  top: 11%;
+  width: 8.5%;
+  height: 8.5%;
+  transform-origin: 50% 60%;
+}
+
+/* ============================================================
+   8. CANVAS ÁNH SÁNG SPECULAR & NẮP VÀNG CHAMPAGNE (SPECULAR CANVAS)
+   ============================================================ */
+.engine-specular-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 8;
+  border-radius: 18px;
+}
+
+/* ============================================================
+   9. SVG DEF CỦA BỘ LỌC ĐỘNG HỌC (HIDDEN SVG ENGINE DEFS)
+   ============================================================ */
+.engine-svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

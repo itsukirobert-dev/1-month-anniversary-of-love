@@ -1,0 +1,400 @@
+/* ============================================================
+   BRANCH ENGINE: ĐỘNG CƠ CÀNH HOA ĐẬU BIẾC (BUTTERFLY PEA BRANCH ENGINE)
+   ============================================================
+   Hệ thống mô phỏng chuyển động khí động học của CÀNH HOA ĐẬU BIẾC:
+   - Cành hoa là một OBJECT HOÀN CHỈNH: thân + lá + hoa + nụ hoa
+   - Không tách chúng thành các particle độc lập trong chuyển động chính
+   - Tách khỏi background với hiệu ứng quang học mềm mại
+   - Uốn lượn (stem flex theo độ cong quỹ đạo)
+   - Nghiêng trái / phải (3D roll banking)
+   - Xoay nhẹ (tangent yaw + chao đảo con lắc)
+   - Quán tính vật lý (inertia: tăng tốc ban đầu, giảm tốc cuối đường)
+   - Secondary motion:
+       + Lá rung nhẹ theo luồng gió
+       + Hoa rung nhẹ cánh hoa nhung mượt
+       + Nụ hoa dao động tự nhiên
+   - Một số cánh hoa tách khỏi cành giữa đường bay
+   - Motion blur nhẹ khi tốc độ cao, sắc nét trở lại khi giảm tốc
+   - Chậm lại ở cuối trajectory, mờ dần và biến mất êm đềm
+   - Gợi liên tưởng tới sự nhẹ nhàng của cánh bướm (tuyệt đối không dùng hình ảnh bướm)
+   ============================================================ */
+
+/* 1. LỚP CHỨA VIEWPORT TOÀN CẢNH CHO BRANCH ENGINE */
+.flower-branch-layer,
+.branch-engine-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 998;
+  overflow: visible;
+  perspective: 1400px;
+  -webkit-perspective: 1400px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* 2. CÀNH HOA HOÀN CHỈNH (UNIFIED BOTANICAL OBJECT) */
+.branch-engine-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: 30% 50%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  contain: layout style paint;
+}
+
+/* 3. LỚP WRAPPER HIỆU ỨNG MOTION BLUR & ĐỔ BÓNG TỰ NHIÊN */
+.branch-blur-wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: filter, transform;
+  /* Đổ bóng quang học 2 lớp: bóng sâu màu chàm + bóng mềm khí quyển */
+  filter: drop-shadow(0 16px 28px rgba(15, 23, 42, 0.32)) drop-shadow(0 4px 10px rgba(30, 58, 138, 0.18));
+  transition: filter 0.08s ease-out;
+}
+
+/* 4. KHUNG XƯƠNG UỐN CONG CỦA THÂN CÂY (STEM FLEX & SECONDARY CURVATURE) */
+.branch-stem-flex {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 22% 52%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* 5. KHỐI THỰC VẬT HOÀN CHỈNH (THÂN + LÁ + HOA + NỤ HOA) */
+.branch-composite-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Ảnh cành hoa gốc chất lượng cao với đầy đủ thân, lá, hoa, nụ */
+.branch-base-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+}
+
+/* 6. VÙNG SECONDARY MOTION: LÁ RUNG NHẸ (LEAF MICRO-FLUTTER) */
+.branch-leaf-flutter-zone {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 35% 65%;
+  will-change: transform;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at center, rgba(167, 243, 208, 0.28) 0%, rgba(52, 211, 153, 0.08) 55%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* 7. VÙNG SECONDARY MOTION: HOA RUNG NHẸ (BLOSSOM VELVET TREMOR) */
+.branch-blossom-flutter-zone {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at center, rgba(191, 219, 254, 0.35) 0%, rgba(96, 165, 250, 0.12) 60%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(1.5px);
+}
+
+/* 8. VÙNG NỤ HOA (FLOWER BUD NODE) */
+.branch-bud-node {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 40% 70%;
+  will-change: transform;
+}
+
+/* 9. CÁNH HOA TÁCH KHỎI CÀNH TRÊN ĐƯỜNG BAY (DETACHED PETALS) */
+.branch-detached-petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, opacity;
+  z-index: 997;
+  filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.30)) drop-shadow(0 2px 6px rgba(30, 58, 138, 0.20));
+}
+
+.branch-detached-petal img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 10. ĐỐM SÁNG LẤP LÁNH KHI CÀNH TÁCH KHỎI BACKGROUND */
+.branch-detachment-sparkle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  z-index: 999;
+}
+
+.branch-detachment-sparkle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 8px rgba(254, 240, 138, 0.9));
+}
+
+/* 11. HIỆU ỨNG TÁCH CÀNH TRÊN BACKGROUND CANOPY */
+.engine-swaying-branch.branch-detaching {
+  opacity: 0 !important;
+  transform: scale(0.85) rotate(-6deg) !important;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out !important;
+}
+
+/* Tái sinh cành hoa mới trên vòm lá (Regrowth & Unfurl) */
+.engine-swaying-branch.branch-regrowing {
+  animation: branchCanopyRegrow 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes branchCanopyRegrow {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+    filter: brightness(1.3) blur(2px);
+  }
+
+  40% {
+    opacity: 0.7;
+    transform: scale(1.04) rotate(2deg);
+    filter: brightness(1.1) blur(0.5px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) blur(0);
+  }
+}
+
+/* 12. BẢNG ĐIỀU KHIỂN TRAJECTORY TƯƠNG TÁC (BRANCH ENGINE CONTROLS) */
+.branch-engine-controls {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(147, 197, 253, 0.15);
+  z-index: 1002;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 95vw;
+}
+
+/* Badge tiêu đề của Branch Engine */
+.branch-engine-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.85), rgba(59, 130, 246, 0.75));
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.branch-engine-badge .engine-icon {
+  font-size: 13px;
+  animation: branchBadgePulse 2.8s infinite ease-in-out;
+}
+
+@keyframes branchBadgePulse {
+
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  50% {
+    transform: scale(1.18) rotate(8deg);
+  }
+}
+
+/* Nhóm nút chọn Trajectory A, B, C, D */
+.branch-traj-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.branch-traj-buttons::-webkit-scrollbar {
+  display: none;
+}
+
+.branch-traj-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  color: #e2e8f0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.22s ease-out;
+  outline: none;
+}
+
+.branch-traj-btn:hover {
+  background: rgba(255, 255, 255, 0.20);
+  border-color: rgba(191, 219, 254, 0.6);
+  color: #ffffff;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.35);
+}
+
+.branch-traj-btn:active {
+  transform: translateY(0.5px) scale(0.97);
+}
+
+.branch-traj-btn.active,
+.branch-traj-btn:focus-visible {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border-color: #93c5fd;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.6);
+}
+
+.branch-traj-symbol {
+  font-family: monospace, sans-serif;
+  font-size: 12px;
+  color: #93c5fd;
+}
+
+.branch-traj-btn:hover .branch-traj-symbol,
+.branch-traj-btn.active .branch-traj-symbol {
+  color: #ffffff;
+}
+
+/* Nút ngẫu nhiên (Random Launch) */
+.branch-traj-btn.btn-random {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(245, 158, 11, 0.35));
+  border-color: rgba(253, 224, 71, 0.45);
+  color: #fef08a;
+}
+
+.branch-traj-btn.btn-random:hover {
+  background: linear-gradient(135deg, #eab308, #f59e0b);
+  border-color: #fef08a;
+  color: #1e1b4b;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5);
+}
+
+/* Nút thu nhỏ / mở rộng thanh điều khiển */
+.branch-controls-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #cbd5e1;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.branch-controls-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+/* Trạng thái thu gọn (Collapsed state) */
+.branch-engine-controls.is-collapsed {
+  padding: 6px 10px;
+  gap: 0;
+}
+
+.branch-engine-controls.is-collapsed .branch-traj-buttons {
+  display: none;
+}
+
+.branch-engine-controls.is-collapsed .branch-engine-badge {
+  margin-right: 6px;
+}
+
+/* Tương thích thiết bị di động */
+@media (max-width: 768px) {
+  .branch-engine-controls {
+    bottom: 14px;
+    padding: 6px 10px;
+    gap: 5px;
+  }
+
+  .branch-engine-badge {
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
+
+  .branch-traj-btn {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+
+  .branch-traj-label {
+    display: none;
+  }
+}

@@ -19,7 +19,12 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="preview.css?v=13">
+  <link rel="stylesheet" href="preview.css?v=23">
+  <link rel="stylesheet" href="background-engine.css?v=23">
+  <link rel="stylesheet" href="branch-engine.css?v=23">
+  <link rel="stylesheet" href="petal-engine.css?v=23">
+  <link rel="stylesheet" href="scent-engine.css?v=24">
+  <link rel="stylesheet" href="interaction-engine.css?v=25">
 </head>
 
 <body>
@@ -83,34 +88,83 @@
     <!-- Nền ambient hòa sắc thái nhẹ nhàng -->
     <div class="main-ambient-bg"></div>
 
-    <!-- SVG filter mô phỏng gió nhẹ lay động hoa và lụa -->
-    <svg class="wind-svg-filter" aria-hidden="true">
-      <defs>
-        <filter id="gentle-breeze" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" result="windNoise" seed="7">
-            <animate attributeName="baseFrequency" dur="14s" values="0.010 0.016; 0.016 0.024; 0.012 0.018; 0.010 0.016"
-              repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="windNoise" scale="4" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-    </svg>
-
     <!-- Khung cảnh căn phòng chuyển động hữu cơ -->
     <div class="living-scene-wrapper">
       <div class="living-frame" id="livingFrame">
-        <!-- Bức ảnh mỹ phẩm hoa đậu biếc sắc nét 100% không bị cắt -->
+        <!-- SVG Definitions cho bộ lọc động lực học Background Engine -->
+        <svg id="backgroundEngineDefs" class="engine-svg-defs" aria-hidden="true">
+          <defs>
+            <filter id="silkFlowFilter" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence id="silkTurbulence" type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="2" seed="53"
+                result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.8" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <filter id="floraBreezeFilter" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence id="floraTurbulence" type="fractalNoise" baseFrequency="0.013 0.009" numOctaves="2"
+                seed="27" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.8" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
+
+        <!-- Bức ảnh mỹ phẩm hoa đậu biếc sắc nét 100% không bị cắt (Tầng chuẩn) -->
         <img src="assets/images/background.jpg" alt="Hoa đậu biếc &amp; Mỹ phẩm Khây Ti"
           class="main-uncut-image living-photo">
 
-        <!-- Hiệu ứng ánh nắng sớm chiếu qua khung cửa sổ -->
-        <div class="sunlight-caustic-layer"></div>
+        <!-- =======================================================
+             BACKGROUND ENGINE: LIVING PHYSICAL LAYERS
+             ======================================================= -->
+        <!-- Layer 1: Nền kiến trúc & trụ cột pha lê (Parallax sâu) -->
+        <div class="engine-layer engine-layer-backdrop" aria-hidden="true">
+          <div class="engine-backdrop-ambient"></div>
+        </div>
 
-        <!-- Vệt ánh sáng lướt chậm trên bề mặt chai lọ & nắp kim loại -->
-        <div class="bottle-sheen-layer"></div>
+        <!-- Layer 2: Gợn sóng phản chiếu mặt bàn đá hoa cương (Table Layer) -->
+        <div class="engine-layer engine-layer-table" aria-hidden="true">
+          <div class="engine-table-sheen"></div>
+          <canvas id="engineTableReflectionCanvas" class="engine-table-reflection-canvas"></canvas>
+        </div>
 
-        <!-- Gợn sóng phản chiếu chuyển động nhẹ trên mặt bàn -->
-        <div class="table-reflection-layer"></div>
+        <!-- Layer 3: Vải lụa hồng pastel chuyển động hữu cơ (Silk Fabric Layer) -->
+        <div class="engine-layer engine-layer-silk" id="engineSilkLayer" aria-hidden="true">
+          <div class="engine-silk-inner">
+            <img src="assets/images/background.jpg" alt="" class="engine-silk-img">
+            <div class="engine-silk-satin-sheen"></div>
+          </div>
+        </div>
+
+        <!-- Layer 4: Bó hoa đậu biếc sống động (Flora Canopy Layer) -->
+        <div class="engine-layer engine-layer-flora" id="engineFloraLayer" aria-hidden="true">
+          <div class="engine-flora-canopy" id="engineFloraCanopy">
+            <img src="assets/images/background.jpg" alt="" class="engine-flora-img">
+
+            <!-- Cành hoa đung đưa vươn ra ngoài bên trái -->
+            <div class="engine-swaying-branch branch-left" id="branchLeft">
+              <img src="assets/images/falling_branches/branch_1.png" alt="" class="branch-sprite">
+            </div>
+
+            <!-- Cành hoa đung đưa vươn ra ngoài bên phải -->
+            <div class="engine-swaying-branch branch-right" id="branchRight">
+              <img src="assets/images/falling_branches/branch_2.png" alt="" class="branch-sprite">
+            </div>
+
+            <!-- Cành hoa đung đưa vươn lên đỉnh vòm -->
+            <div class="engine-swaying-branch branch-top" id="branchTop">
+              <img src="assets/images/falling_branches/branch_3.png" alt="" class="branch-sprite">
+            </div>
+
+            <!-- Các bông hoa đậu biếc rung rất nhẹ cánh hoa -->
+            <div class="engine-living-blossom blossom-pos-1" id="blossomHead1">
+              <img src="assets/images/falling_branches/flower_head.png" alt="" class="blossom-sprite">
+            </div>
+            <div class="engine-living-blossom blossom-pos-2" id="blossomHead2">
+              <img src="assets/images/falling_branches/flower_head.png" alt="" class="blossom-sprite">
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 5: Canvas Ánh Sáng Specular Trên Thân Chai & Nắp Vàng Champagne -->
+        <canvas id="engineSpecularCanvas" class="engine-specular-canvas" aria-hidden="true"></canvas>
 
         <!-- Đốm nắng ấm áp dịu dàng -->
         <div class="warm-sun-glow"></div>
@@ -128,8 +182,8 @@
         <div class="bottle-hotspots-container" id="bottleHotspotsContainer"
           aria-label="Các sản phẩm mỹ phẩm hoa đậu biếc">
           <button type="button" class="bottle-hotspot" data-bottle-id="serum"
-            style="left: 13.5%; top: 31%; width: 14.5%; height: 52%;" title="Butterfly Pea - Rejuvenating Serum"
-            aria-label="Butterfly Pea - Rejuvenating Serum"></button>
+            style="left: 13.5%; top: 31%; width: 14.5%; height: 52%;" title="Butterfly Pea - Rejuvenating Serum (KÝ ỨC)"
+            aria-label="Butterfly Pea - Rejuvenating Serum (KÝ ỨC)"></button>
           <button type="button" class="bottle-hotspot" data-bottle-id="cream"
             style="left: 27%; top: 54%; width: 16%; height: 32%;" title="Butterfly Pea - Radiance Cream"
             aria-label="Butterfly Pea - Radiance Cream"></button>
@@ -153,12 +207,14 @@
         <!-- Gợi ý tương tác cành hoa & hương thơm nhẹ nhàng (tự ẩn sau khi click) -->
         <div class="flower-touch-hint" id="flowerTouchHint">
           <span class="hint-icon">🌿</span>
-          <span class="hint-text">Chạm vào hoa hoặc chai mỹ phẩm...</span>
+          <span class="hint-text">Chạm hoa hoặc vuốt tay để tung cánh hoa...</span>
         </div>
       </div>
 
       <!-- Layer chứa cành hoa đậu biếc rơi tự do ra ngoài khung cảnh -->
       <div id="flowerBranchLayer" class="flower-branch-layer" aria-hidden="true"></div>
+      <!-- Layer chứa cánh hoa đậu biếc Petal Engine bay lượn 3D -->
+      <div id="petalEngineLayer" class="petal-engine-layer" aria-hidden="true"></div>
     </div>
   </main>
 
@@ -246,7 +302,12 @@
     </div>
   </footer>
 
-  <script src="script.js?v=14"></script>
+  <script src="background-engine.js?v=23"></script>
+  <script src="branch-engine.js?v=23"></script>
+  <script src="petal-engine.js?v=23"></script>
+  <script src="scent-engine.js?v=24"></script>
+  <script src="interaction-engine.js?v=25"></script>
+  <script src="script.js?v=25"></script>
 </body>
 
 </html>

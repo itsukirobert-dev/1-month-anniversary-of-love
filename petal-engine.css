@@ -1,0 +1,85 @@
+/**
+ * ============================================================
+ * BUTTERFLY PEA PETAL ENGINE — STYLESHEET
+ * Hệ thống mô phỏng cánh hoa đậu biếc chân thực (Photorealistic)
+ * ============================================================
+ */
+
+/* Lớp chứa cánh hoa toàn màn hình (3D Viewport) */
+.petal-engine-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 998;
+  overflow: visible;
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* Phần tử cánh hoa riêng lẻ */
+.engine-petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  contain: layout style paint;
+}
+
+/* Lớp vỏ bọc bên trong cho hiệu ứng bóng đổ và uốn cong 3D */
+.engine-petal-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  /* Bóng đổ kép: bóng tối mờ tự nhiên + sắc lam tím đậu biếc chân thực */
+  filter: drop-shadow(0 12px 22px rgba(15, 23, 42, 0.28)) drop-shadow(0 2px 7px rgba(30, 58, 138, 0.20));
+  transition: filter 0.15s ease-out;
+}
+
+/* Ảnh cánh hoa photorealistic nguyên gốc */
+.engine-petal-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+}
+
+/* Bụi phấn hoa / đốm sáng sương mai lấp lánh khi hất cánh hoa */
+.petal-sparkle-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(191, 219, 254, 0.6) 50%, rgba(96, 165, 250, 0) 100%);
+  box-shadow: 0 0 10px rgba(147, 197, 253, 0.8);
+}
+
+/* Responsive scale trên điện thoại */
+@media (max-width: 768px) {
+  .engine-petal-inner {
+    filter: drop-shadow(0 8px 14px rgba(15, 23, 42, 0.24)) drop-shadow(0 2px 5px rgba(30, 58, 138, 0.16));
+  }
+}
