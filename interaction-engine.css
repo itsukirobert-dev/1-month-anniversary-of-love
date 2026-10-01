@@ -805,3 +805,1822 @@
     font-size: 0.84rem;
   }
 }
+
+/* ============================================================
+   CREAM = DÒNG THỜI GIAN (HỆ THỐNG HIỆU ỨNG THỊ GIÁC HŨ RADIANCE CREAM)
+   ============================================================
+   1. Ánh sáng vàng/hồng chạy nhẹ quanh hũ (.cream-timeline-bottle, .cream-orbit-wrap)
+   2. Một vài cánh hoa rơi xuống mặt bàn (.cream-table-petal, .landed-on-table)
+   3. Các cánh hoa tạo thành một đường cong (.cream-petal-curve-svg-layer)
+   4. Đường cong biến thành timeline (.cream-timeline-container, .cream-milestone-node)
+   5. Cột mốc và thẻ kỷ niệm (.cream-milestone-modal, .cream-milestone-card)
+   ============================================================ */
+
+/* 1. Phần tử hũ kem và hào quang vàng hồng */
+.cream-timeline-bottle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 25;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  transition: opacity 0.5s ease;
+}
+
+.cream-bottle-aura {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+      rgba(255, 215, 0, 0.45) 0%,
+      rgba(251, 113, 133, 0.35) 45%,
+      rgba(244, 114, 182, 0.15) 70%,
+      transparent 85%);
+  filter: blur(14px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cream-bottle-aura.active {
+  opacity: 1;
+  transform: scale(1.08);
+  animation: cream-aura-pulse 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes cream-aura-pulse {
+  0% {
+    transform: scale(1.02);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* Ánh sáng chạy quanh hũ Radiance Cream */
+.cream-orbit-wrap {
+  position: absolute;
+  inset: -10px;
+  pointer-events: none;
+  z-index: 26;
+}
+
+.cream-orbit-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.cream-orbit-track {
+  fill: none;
+  stroke: rgba(255, 215, 0, 0.18);
+  stroke-width: 1.5;
+}
+
+.cream-orbit-beam {
+  fill: none;
+  stroke: url(#creamOrbitGrad);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 80 320;
+  stroke-dashoffset: 400;
+  animation: cream-orbit-sweep 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes cream-orbit-sweep {
+  0% {
+    stroke-dashoffset: 400;
+    opacity: 0.2;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* Ngôi sao / điểm sáng lướt ở đầu vệt sáng */
+.cream-orbit-star {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 30%, #ffd700 70%, #fb7185 100%);
+  box-shadow: 0 0 16px #ffd700, 0 0 24px #fb7185;
+  top: 4px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: cream-star-glide 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes cream-star-glide {
+  0% {
+    top: 4px;
+    left: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  35% {
+    top: 50%;
+    left: 4px;
+  }
+
+  65% {
+    top: calc(100% - 4px);
+    left: 50%;
+  }
+
+  85% {
+    top: 50%;
+    left: calc(100% - 4px);
+    opacity: 1;
+  }
+
+  100% {
+    top: 4px;
+    left: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+}
+
+/* Hạt bụi sáng lơ lửng quanh hũ */
+.cream-spark-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 20%, #fde047 60%, #fb7185 100%);
+  box-shadow: 0 0 8px #ffd700, 0 0 12px #fb7185;
+  pointer-events: none;
+  animation: cream-spark-drift 0.75s ease-out forwards;
+}
+
+@keyframes cream-spark-drift {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translate(0, 0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1.2) translate(4px, -6px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.2) translate(14px, -20px);
+  }
+}
+
+/* 2. Cánh hoa rơi xuống mặt bàn */
+.cream-falling-petals-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 26;
+}
+
+.cream-table-petal {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  will-change: transform, left, top, opacity;
+}
+
+.cream-petal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+.cream-table-petal.landed-on-table {
+  filter: drop-shadow(0 2px 5px rgba(15, 23, 42, 0.5));
+}
+
+/* 3. Đường cong kết nối các cánh hoa */
+.cream-petal-curve-svg-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 27;
+}
+
+.cream-curve-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.curve-trail-glow {
+  fill: none;
+  stroke: url(#curveTrackGrad);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  opacity: 0.7;
+  animation: cream-curve-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.curve-trail-core {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: cream-curve-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cream-curve-draw {
+  0% {
+    stroke-dashoffset: 1200;
+    opacity: 0.1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* 4. Dòng Thời Gian (Timeline Container) */
+.cream-timeline-container {
+  position: absolute;
+  inset: 0;
+  z-index: 28;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 20px 24px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.cream-timeline-container.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cream-timeline-container.closing {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* Backdrop mờ nền êm dịu */
+.cream-timeline-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%,
+      rgba(26, 18, 42, 0.65) 0%,
+      rgba(15, 23, 42, 0.82) 55%,
+      rgba(8, 12, 24, 0.92) 100%);
+  backdrop-filter: blur(3.5px);
+  -webkit-backdrop-filter: blur(3.5px);
+  opacity: 0;
+  z-index: 1;
+  cursor: pointer;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.8s ease;
+}
+
+.cream-timeline-backdrop.active {
+  opacity: 1;
+}
+
+.cream-timeline-backdrop.reading-milestone {
+  background: radial-gradient(ellipse at 50% 50%,
+      rgba(38, 22, 54, 0.88) 0%,
+      rgba(18, 14, 34, 0.94) 60%,
+      rgba(10, 8, 20, 0.98) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Header Dòng Thời Gian */
+.cream-timeline-header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.68);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 24px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  animation: cream-header-slide-down 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cream-header-slide-down {
+  0% {
+    transform: translateY(-24px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cream-tag-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cream-header-tag {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #fde047;
+  text-shadow: 0 0 16px rgba(253, 224, 71, 0.7);
+}
+
+.cream-header-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.86rem;
+  color: #cbd5e1;
+  margin: 3px 0 0 0;
+}
+
+.cream-timeline-instruction {
+  font-size: 0.76rem;
+  color: #fb7185;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.05em;
+}
+
+.cream-timeline-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(251, 113, 133, 0.14);
+  border: 1px solid rgba(251, 113, 133, 0.4);
+  color: #ffe4e6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.cream-timeline-exit-btn:hover {
+  background: rgba(251, 113, 133, 0.32);
+  border-color: #fb7185;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(251, 113, 133, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Vùng đường hoa & các node cột mốc */
+.cream-timeline-track-wrap {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.timeline-vine-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.vine-path-glow {
+  fill: none;
+  stroke: url(#vineGrad);
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.65;
+  animation: vine-pulse 3.5s ease-in-out infinite alternate;
+}
+
+.vine-path-core {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+@keyframes vine-pulse {
+  0% {
+    stroke-width: 5;
+    opacity: 0.55;
+  }
+
+  100% {
+    stroke-width: 7.5;
+    opacity: 0.85;
+  }
+}
+
+/* Container chứa 5 cột mốc */
+.cream-milestone-nodes-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 20px;
+}
+
+/* Từng Cột Mốc Thời Gian (Được tạo nên từ những cánh hoa) */
+.cream-milestone-node {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  outline: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cream-milestone-node:hover,
+.cream-milestone-node:focus-visible {
+  transform: scale(1.12) translateY(-4px);
+}
+
+.cream-milestone-node.active-blooming {
+  transform: scale(1.18) translateY(-6px);
+}
+
+/* Đóa hoa cánh biếc của mỗi cột mốc */
+.node-flower-rosette {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rosette-petals-cluster {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cream-milestone-node:hover .rosette-petals-cluster,
+.cream-milestone-node.active-blooming .rosette-petals-cluster {
+  transform: rotate(20deg) scale(1.08);
+}
+
+.rosette-petal {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+}
+
+.rosette-petal.p-1 {
+  top: 0;
+  left: 15px;
+  transform: rotate(-15deg);
+}
+
+.rosette-petal.p-2 {
+  top: 15px;
+  right: 0;
+  transform: rotate(75deg);
+}
+
+.rosette-petal.p-3 {
+  bottom: 0;
+  left: 15px;
+  transform: rotate(165deg);
+}
+
+.rosette-petal.p-4 {
+  top: 15px;
+  left: 0;
+  transform: rotate(255deg);
+}
+
+.cream-milestone-node:hover .rosette-petal.p-1 {
+  transform: rotate(-25deg) translateY(-3px);
+}
+
+.cream-milestone-node:hover .rosette-petal.p-2 {
+  transform: rotate(85deg) translateX(3px);
+}
+
+.cream-milestone-node:hover .rosette-petal.p-3 {
+  transform: rotate(175deg) translateY(3px);
+}
+
+.cream-milestone-node:hover .rosette-petal.p-4 {
+  transform: rotate(265deg) translateX(-3px);
+}
+
+/* Nhụy hoa ngọc trai vàng óng */
+.rosette-center-pistil {
+  position: relative;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pistil-gem {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 15%, #ffd700 55%, #f59e0b 100%);
+  box-shadow: 0 0 14px #ffd700, 0 0 22px rgba(251, 113, 133, 0.8);
+  border: 1.5px solid #ffffff;
+}
+
+.pistil-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  animation: pistil-ring-pulse 2s infinite ease-out;
+}
+
+@keyframes pistil-ring-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Thẻ thông tin mốc thời gian */
+.node-info-badge {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.node-day-pill {
+  background: linear-gradient(135deg, #ffd700, #fb7185);
+  color: #0f172a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(251, 113, 133, 0.4);
+}
+
+.node-date-text {
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.node-title-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.88rem;
+  color: #ffffff;
+  margin-top: 2px;
+  max-width: 130px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+}
+
+.node-arrow-down {
+  font-size: 1rem;
+  color: #ffd700;
+  margin-top: 4px;
+  animation: arrow-bounce 1.6s ease-in-out infinite alternate;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+@keyframes arrow-bounce {
+  0% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+/* 5. Modal & Card Kỷ Niệm của từng Cột Mốc */
+.cream-milestone-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.cream-milestone-modal.active {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.cream-milestone-modal.closing {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.cream-milestone-card {
+  position: relative;
+  max-width: 500px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px 26px 24px;
+  background: linear-gradient(150deg,
+      rgba(22, 16, 36, 0.95),
+      rgba(32, 22, 48, 0.92),
+      rgba(15, 12, 28, 0.97));
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 24px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    0 0 50px rgba(251, 113, 133, 0.28),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  text-align: center;
+  transform: scale(0.92) translateY(14px);
+  opacity: 0;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.cream-milestone-card.revealed {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.milestone-card-halo {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.28) 0%, rgba(251, 113, 133, 0.18) 50%, transparent 80%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+.milestone-card-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.milestone-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 4px 14px;
+  border-radius: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #fde047;
+  text-transform: uppercase;
+}
+
+.milestone-close-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.milestone-close-icon-btn:hover {
+  background: rgba(251, 113, 133, 0.35);
+  border-color: #fb7185;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.milestone-main-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(255, 215, 0, 0.65), 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0 0 6px 0;
+}
+
+.milestone-time-sub {
+  font-size: 0.86rem;
+  color: #fda4af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* Khung ảnh Polaroid kỷ niệm */
+.milestone-photo-polaroid {
+  margin: 0 auto 18px;
+  display: inline-block;
+  transform: rotate(-1.5deg);
+  transition: transform 0.4s ease;
+}
+
+.milestone-photo-polaroid:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+.polaroid-frame {
+  background: #ffffff;
+  padding: 8px 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.2);
+  max-width: 220px;
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+.polaroid-caption {
+  font-family: 'Caveat', cursive, sans-serif;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Đường phân cách hoa */
+.milestone-floral-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 18px;
+  width: 75%;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(251, 191, 36, 0.55), transparent);
+}
+
+.divider-gem {
+  color: #fb7185;
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+}
+
+/* Từng dòng câu chuyện kỷ niệm */
+.milestone-story-lines {
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.story-line {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin: 0 0 6px 0;
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(4px);
+}
+
+.story-line.line-1 {
+  color: #f8fafc;
+  animation: memory-line-reveal 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
+}
+
+.story-line.line-2 {
+  color: #f1f5f9;
+  animation: memory-line-reveal 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s forwards;
+}
+
+.story-line.line-3 {
+  font-weight: 600;
+  color: #fde047;
+  text-shadow: 0 0 14px rgba(253, 224, 71, 0.65);
+  animation: memory-line-reveal 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) 1.5s forwards;
+}
+
+/* Hộp trích dẫn */
+.milestone-quote-box {
+  background: rgba(251, 113, 133, 0.1);
+  border-left: 3px solid #fb7185;
+  border-radius: 0 12px 12px 0;
+  padding: 10px 16px;
+  margin: 0 auto 20px;
+  text-align: left;
+  opacity: 0;
+  animation: memory-line-reveal 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) 2.1s forwards;
+}
+
+.quote-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+  color: #ffe4e6;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Điều hướng chân thẻ */
+.milestone-card-nav-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  opacity: 0;
+  animation: memory-line-reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 2.5s forwards;
+}
+
+.milestone-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f1f5f9;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.milestone-nav-btn:hover:not(.disabled) {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: #ffd700;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.milestone-nav-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.milestone-back-timeline-btn {
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.22), rgba(251, 191, 36, 0.22));
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.milestone-back-timeline-btn:hover {
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.4), rgba(251, 191, 36, 0.4));
+  border-color: #ffd700;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN CHO TIMELINE TRÊN ĐIỆN THOẠI & TABLET
+   ============================================================ */
+@media (max-width: 768px) {
+  .cream-timeline-container {
+    padding: 12px 10px 16px;
+  }
+
+  .cream-timeline-header {
+    padding: 10px 14px;
+    border-radius: 16px;
+  }
+
+  .cream-header-tag {
+    font-size: 1.0rem;
+    letter-spacing: 0.1em;
+  }
+
+  .cream-header-sub {
+    font-size: 0.78rem;
+  }
+
+  .cream-timeline-instruction {
+    display: none;
+  }
+
+  .cream-timeline-exit-btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  /* Bố cục dọc dạng sóng lượn trên màn hình nhỏ */
+  .cream-timeline-container.layout-vertical .cream-milestone-nodes-container {
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  .cream-timeline-container.layout-vertical .cream-milestone-node {
+    flex-direction: row;
+    gap: 12px;
+    width: 88%;
+    max-width: 320px;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    border-radius: 20px;
+    padding: 6px 14px;
+    margin: 4px 0;
+  }
+
+  .cream-timeline-container.layout-vertical .node-info-badge {
+    margin-top: 0;
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+  }
+
+  .cream-timeline-container.layout-vertical .node-title-text {
+    max-width: 100%;
+    font-size: 0.82rem;
+  }
+
+  .cream-timeline-container.layout-vertical .node-arrow-down {
+    margin-left: auto;
+    font-size: 0.9rem;
+  }
+
+  .node-flower-rosette {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+
+  .rosette-petal {
+    width: 26px;
+    height: 26px;
+  }
+
+  .rosette-petal.p-1 {
+    left: 11px;
+  }
+
+  .rosette-petal.p-2 {
+    top: 11px;
+  }
+
+  .rosette-petal.p-3 {
+    left: 11px;
+  }
+
+  .rosette-petal.p-4 {
+    top: 11px;
+  }
+
+  .rosette-center-pistil {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pistil-gem {
+    width: 11px;
+    height: 11px;
+  }
+
+  .cream-milestone-card {
+    padding: 20px 16px 18px;
+  }
+
+  .milestone-main-title {
+    font-size: 1.3rem;
+  }
+
+  .story-line {
+    font-size: 0.96rem;
+  }
+
+  .polaroid-frame {
+    max-width: 180px;
+    padding: 6px 6px 10px;
+  }
+
+  .polaroid-img {
+    height: 110px;
+  }
+}
+
+/* ============================================================
+   TONER = LỜI NHẮN (HỆ THỐNG HIỆU ỨNG THỊ GIÁC CHAI HYDRATING TONER)
+   ============================================================
+   1. Các giọt nước trên chai phát sáng (.toner-water-drop, .toner-bottle-aura, .toner-glass-sheen)
+   2. Các hạt sáng bay lên (.toner-rising-mote)
+   3. Một cành hoa xuất hiện (.toner-branch-spawn-flash)
+   4. Cành hoa uốn lượn theo đường bay (.toner-flight-stardust)
+   5. Cuối trajectory, hiệu ứng biến thành một lá thư (.toner-transform-vortex, .transform-petal-ring)
+   6. Lá thư xuất hiện ở trung tâm (.toner-message-modal, .toner-letter-card)
+   ============================================================ */
+
+/* 1. Phần tử chai Toner và hào quang sương nước */
+.toner-message-bottle {
+  z-index: 25 !important;
+  border-radius: 14px;
+}
+
+.toner-message-bottle.shaker-fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.toner-bottle-aura {
+  position: absolute;
+  inset: -12px;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at center,
+      rgba(56, 189, 248, 0.45) 0%,
+      rgba(147, 197, 253, 0.28) 40%,
+      rgba(251, 191, 36, 0.12) 70%,
+      transparent 100%);
+  filter: blur(14px);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 17;
+}
+
+.toner-bottle-aura.active {
+  opacity: 1;
+  transform: scale(1.06);
+  animation: toner-aura-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes toner-aura-pulse {
+  0% {
+    transform: scale(1.05);
+    opacity: 0.85;
+    filter: blur(12px);
+  }
+
+  100% {
+    transform: scale(1.10);
+    opacity: 1;
+    filter: blur(16px);
+  }
+}
+
+/* Vệt sáng lướt qua thân chai thủy tinh */
+.toner-glass-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.toner-glass-sheen::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: -140%;
+  width: 80%;
+  height: 180%;
+  background: linear-gradient(118deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(56, 189, 248, 0.5) 65%,
+      transparent 100%);
+  transform: rotate(22deg);
+  animation: toner-sheen-sweep 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes toner-sheen-sweep {
+  0% {
+    left: -140%;
+    opacity: 0.2;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 180%;
+    opacity: 0;
+  }
+}
+
+/* BƯỚC 1: Các giọt nước trên chai phát sáng */
+.toner-water-drop {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.3);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 35% 28%,
+      #ffffff 0%,
+      rgba(224, 242, 254, 0.95) 22%,
+      rgba(56, 189, 248, 0.65) 55%,
+      rgba(30, 58, 138, 0.35) 85%,
+      rgba(15, 23, 42, 0.15) 100%);
+  box-shadow:
+    0 0 10px rgba(56, 189, 248, 0.95),
+    0 0 20px rgba(186, 230, 253, 0.8),
+    inset 0 1.5px 2px #ffffff,
+    inset 0 -1.5px 2px rgba(14, 165, 233, 0.6),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 22;
+  animation: toner-drop-ignite 1.4s cubic-bezier(0.18, 0.9, 0.32, 1) forwards;
+}
+
+.toner-drop-glint {
+  position: absolute;
+  top: 18%;
+  left: 24%;
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px #ffffff, 0 0 8px #93c5fd;
+  opacity: 0.95;
+}
+
+.toner-drop-refraction {
+  position: absolute;
+  bottom: 12%;
+  right: 20%;
+  width: 40%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgba(224, 242, 254, 0.6);
+  filter: blur(0.5px);
+}
+
+@keyframes toner-drop-ignite {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    filter: brightness(2) drop-shadow(0 0 1px #fff);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.25);
+    filter: brightness(1.8) drop-shadow(0 0 14px #38bdf8);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1.2) drop-shadow(0 0 10px #38bdf8);
+  }
+
+  75% {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: brightness(1.4) drop-shadow(0 0 12px #93c5fd);
+  }
+
+  100% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1.1) drop-shadow(0 0 8px #38bdf8);
+  }
+}
+
+/* BƯỚC 2: Các hạt sáng bay lên */
+.toner-rising-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 15%, #67e8f9 55%, rgba(56, 189, 248, 0) 80%);
+  box-shadow: 0 0 8px #ffffff, 0 0 16px #38bdf8, 0 0 24px #93c5fd;
+  pointer-events: none;
+  z-index: 24;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  animation: toner-mote-rise linear forwards;
+}
+
+.toner-rising-mote .mote-star {
+  font-size: 8px;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 6px #ffffff, 0 0 12px #38bdf8;
+  animation: toner-star-spin 1.5s linear infinite;
+}
+
+@keyframes toner-mote-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.3);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate3d(calc(var(--drift-x) * 0.25), calc(var(--rise-y) * 0.15), 0) scale(1.2);
+  }
+
+  60% {
+    opacity: 0.85;
+    transform: translate3d(calc(var(--drift-x) * 0.75), calc(var(--rise-y) * 0.65), 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift-x), var(--rise-y), 0) scale(0.4);
+  }
+}
+
+@keyframes toner-star-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* BƯỚC 3: Một cành hoa xuất hiện */
+.toner-branch-spawn-flash {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  margin-left: -45px;
+  margin-top: -45px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(125, 211, 252, 0.8) 35%,
+      rgba(56, 189, 248, 0.4) 60%,
+      transparent 85%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 25;
+  animation: toner-spawn-flash 0.9s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes toner-spawn-flash {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+
+  25% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* BƯỚC 4: Bụi sáng nối dài theo đường bay của cành hoa */
+.toner-flight-stardust {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px #ffffff, 0 0 12px #38bdf8, 0 0 20px #fef08a;
+  pointer-events: none;
+  z-index: 23;
+  animation: toner-stardust-fade 0.75s ease-out forwards;
+}
+
+@keyframes toner-stardust-fade {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.2) translate(0, 14px);
+    opacity: 0;
+  }
+}
+
+/* BƯỚC 5: Cuối trajectory, hiệu ứng biến đổi thành một lá thư */
+.toner-transform-vortex {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 27;
+}
+
+.transform-vortex-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 16px #fbbf24, 0 0 24px #38bdf8;
+  animation: vortex-spark-burst 1.2s cubic-bezier(0.12, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes vortex-spark-burst {
+  0% {
+    transform: translate(0, 0) scale(0.2);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+    transform: translate(var(--tx), var(--ty)) scale(1.4);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(0.1);
+  }
+}
+
+.transform-petal-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  animation: petal-ring-spin 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.transform-ring-petal {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  margin-left: -19px;
+  margin-top: -19px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(30, 58, 138, 0.35));
+  animation: ring-petal-expand 1.4s cubic-bezier(0.15, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes ring-petal-expand {
+  0% {
+    transform: rotate(var(--rot)) translateY(0) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+    transform: rotate(var(--rot)) translateY(-55px) scale(1.1);
+  }
+
+  80% {
+    opacity: 0.8;
+    transform: rotate(var(--rot)) translateY(-85px) scale(0.9);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(var(--rot)) translateY(-110px) scale(0.4);
+  }
+}
+
+@keyframes petal-ring-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(120deg);
+  }
+}
+
+/* BƯỚC 6: Lá thư xuất hiện ở trung tâm */
+.toner-message-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 14, 26, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  z-index: 28;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.toner-message-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.toner-message-backdrop.fading {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.toner-message-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  pointer-events: none;
+  padding: 18px;
+}
+
+.toner-message-modal.active {
+  pointer-events: auto;
+}
+
+/* Lá thư sang trọng, thi vị và lãng mạn */
+.toner-letter-card {
+  position: relative;
+  max-width: 480px;
+  width: 92%;
+  padding: 42px 36px 36px;
+  /* Giấy thư lụa ngà hoa đậu biếc cao cấp */
+  background: linear-gradient(155deg,
+      rgba(255, 254, 251, 0.97) 0%,
+      rgba(246, 250, 255, 0.95) 50%,
+      rgba(255, 253, 249, 0.98) 100%);
+  border: 1.5px solid rgba(217, 180, 110, 0.65);
+  border-radius: 24px;
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.45),
+    0 0 50px rgba(56, 189, 248, 0.3),
+    0 0 20px rgba(251, 191, 36, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  text-align: center;
+  transform: perspective(1000px) rotateX(16deg) scale(0.85) translateY(24px);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+  overflow: hidden;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.toner-letter-card.revealed {
+  transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
+  opacity: 1;
+}
+
+.toner-message-modal.closing .toner-letter-card {
+  transform: perspective(1000px) rotateX(-12deg) scale(0.92) translateY(16px);
+  opacity: 0;
+  transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+/* Ánh hào quang ấm áp bên trong lá thư */
+.toner-card-ambient-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(186, 230, 253, 0.45) 0%, rgba(254, 243, 199, 0.25) 50%, transparent 80%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+/* Con dấu niêm phong phong thư / Wax Seal */
+.toner-letter-top-ornament {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+.toner-wax-seal {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 90%);
+  border: 2px solid rgba(251, 191, 36, 0.8);
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fef08a;
+  font-size: 20px;
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  animation: toner-seal-bloom 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s forwards;
+}
+
+@keyframes toner-seal-bloom {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.toner-seal-ribbon {
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(to bottom, #1d4ed8, rgba(251, 191, 36, 0.6));
+}
+
+/* Header & Tag Badge */
+.toner-letter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 0 6px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.toner-tag-badge {
+  font-weight: 700;
+  color: #1e40af;
+  background: rgba(219, 234, 254, 0.65);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(147, 197, 253, 0.6);
+}
+
+.toner-date-stamp {
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.08em;
+}
+
+/* Đường phân cách thanh nhã */
+.toner-letter-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 20px;
+  width: 70%;
+}
+
+.toner-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(203, 213, 225, 0.9), transparent);
+}
+
+.toner-divider-flower {
+  color: #3b82f6;
+  font-size: 13px;
+}
+
+/* Nội dung thư */
+.toner-letter-inner-content {
+  padding: 4px 8px 18px;
+}
+
+.toner-letter-salutation {
+  font-family: 'Caveat', 'Playfair Display', cursive, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  margin: 0 0 16px 0;
+  padding-left: 4px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.toner-letter-card.revealed .toner-letter-salutation {
+  animation: toner-line-reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s forwards;
+}
+
+.toner-letter-paragraphs {
+  text-align: left;
+  padding: 0 6px;
+  margin-bottom: 24px;
+}
+
+.toner-letter-line {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.22rem;
+  line-height: 1.95;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(3px);
+}
+
+.toner-letter-card.revealed .toner-letter-line {
+  animation: toner-line-reveal 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.toner-line-spacer {
+  height: 14px;
+}
+
+@keyframes toner-line-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(3px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.toner-letter-signoff {
+  text-align: right;
+  margin-top: 20px;
+  padding-right: 8px;
+}
+
+.toner-letter-closing {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 2px 0;
+}
+
+.toner-letter-sender {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+/* Nút Khép lại lá thư */
+.toner-letter-action-bar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.toner-letter-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px 24px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.toner-letter-close-btn:hover {
+  color: #1e40af;
+  background: rgba(239, 246, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+  transform: translateY(-1.5px);
+}
+
+.toner-letter-close-btn:focus-visible {
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.toner-letter-close-btn .btn-bracket {
+  color: #94a3b8;
+  transition: transform 0.25s ease;
+}
+
+.toner-letter-close-btn:hover .btn-bracket:first-child {
+  transform: translateX(-3px);
+}
+
+.toner-letter-close-btn:hover .btn-bracket:last-child {
+  transform: translateX(3px);
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .toner-letter-card {
+    padding: 32px 22px 26px;
+    width: 95%;
+  }
+
+  .toner-letter-salutation {
+    font-size: 1.55rem;
+    margin-bottom: 12px;
+  }
+
+  .toner-letter-line {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .toner-wax-seal {
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+  }
+}

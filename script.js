@@ -897,21 +897,21 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'cream',
       brand: 'Butterfly Pea',
       name: 'Radiance Cream',
-      subtitle: 'NÃ¢ng niu tá»«ng nÃ©t ráº¡ng rá»¡ cá»§a em.',
-      tag: 'Kem DÆ°á»¡ng SÃ¡ng Má»‹n',
-      message: 'NÃ¢ng niu tá»«ng nÃ©t ráº¡ng rá»¡,\nvá»— vá» giáº¥c mÆ¡ Ãªm Ä‘á»m cá»§a em.',
+      subtitle: "CREAM = DÒNG THỜI GIAN",
+      tag: "DÒNG THỜI GIAN",
+      message: "“Mỗi cánh hoa rơi...\n\nlà một ngày yêu thương đọng lại.”",
       nozzle: { x: 0.344, y: 0.620 },
       bounds: { minX: 0.27, maxX: 0.43, minY: 0.54, maxY: 0.86 },
-      ribbonColor: { r: 199, g: 210, b: 254 }, // Lavender pearl
+      ribbonColor: { r: 251, g: 191, b: 36 }, // Champagne Gold
       sprayAngle: -0.03
     },
     {
       id: 'toner',
       brand: 'Butterfly Pea',
       name: 'Hydrating Toner',
-      subtitle: 'Tá»«ng giá»t sÆ°Æ¡ng mÃ¡t lÃ nh ban mai...',
-      tag: 'Toner Cáº¥p áº¨m TÆ°Æ¡i MÃ¡t',
-      message: 'Tá»«ng giá»t sÆ°Æ¡ng mÃ¡t lÃ nh,\nÄ‘Ã¡nh thá»©c sá»± tÆ°Æ¡i má»›i vÃ  nÃ©t cÆ°á»i em.',
+      subtitle: 'TONER = LỜI NHẮN',
+      tag: 'LỜI NHẮN',
+      message: "Gửi em,\n\nCảm ơn vì đã xuất hiện trong những ngày bình thường\nvà khiến chúng trở nên đặc biệt hơn.",
       nozzle: { x: 0.600, y: 0.357 },
       bounds: { minX: 0.54, maxX: 0.66, minY: 0.31, maxY: 0.85 },
       ribbonColor: { r: 147, g: 197, b: 253 },

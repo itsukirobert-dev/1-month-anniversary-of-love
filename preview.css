@@ -2819,3 +2819,713 @@ ul {
     font-size: 0.84rem;
   }
 }
+
+/* ============================================================
+   TONER = LỜI NHẮN (HỆ THỐNG HIỆU ỨNG THỊ GIÁC CHAI HYDRATING TONER)
+   ============================================================ */
+
+.toner-message-bottle {
+  z-index: 25 !important;
+  border-radius: 14px;
+}
+
+.toner-message-bottle.shaker-fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.toner-bottle-aura {
+  position: absolute;
+  inset: -12px;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at center,
+      rgba(56, 189, 248, 0.45) 0%,
+      rgba(147, 197, 253, 0.28) 40%,
+      rgba(251, 191, 36, 0.12) 70%,
+      transparent 100%);
+  filter: blur(14px);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 17;
+}
+
+.toner-bottle-aura.active {
+  opacity: 1;
+  transform: scale(1.06);
+  animation: toner-aura-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes toner-aura-pulse {
+  0% {
+    transform: scale(1.05);
+    opacity: 0.85;
+    filter: blur(12px);
+  }
+
+  100% {
+    transform: scale(1.10);
+    opacity: 1;
+    filter: blur(16px);
+  }
+}
+
+.toner-glass-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.toner-glass-sheen::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: -140%;
+  width: 80%;
+  height: 180%;
+  background: linear-gradient(118deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(56, 189, 248, 0.5) 65%,
+      transparent 100%);
+  transform: rotate(22deg);
+  animation: toner-sheen-sweep 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes toner-sheen-sweep {
+  0% {
+    left: -140%;
+    opacity: 0.2;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 180%;
+    opacity: 0;
+  }
+}
+
+.toner-water-drop {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.3);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 35% 28%,
+      #ffffff 0%,
+      rgba(224, 242, 254, 0.95) 22%,
+      rgba(56, 189, 248, 0.65) 55%,
+      rgba(30, 58, 138, 0.35) 85%,
+      rgba(15, 23, 42, 0.15) 100%);
+  box-shadow:
+    0 0 10px rgba(56, 189, 248, 0.95),
+    0 0 20px rgba(186, 230, 253, 0.8),
+    inset 0 1.5px 2px #ffffff,
+    inset 0 -1.5px 2px rgba(14, 165, 233, 0.6),
+    0 2px 5px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 22;
+  animation: toner-drop-ignite 1.4s cubic-bezier(0.18, 0.9, 0.32, 1) forwards;
+}
+
+.toner-drop-glint {
+  position: absolute;
+  top: 18%;
+  left: 24%;
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px #ffffff, 0 0 8px #93c5fd;
+  opacity: 0.95;
+}
+
+.toner-drop-refraction {
+  position: absolute;
+  bottom: 12%;
+  right: 20%;
+  width: 40%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgba(224, 242, 254, 0.6);
+  filter: blur(0.5px);
+}
+
+@keyframes toner-drop-ignite {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    filter: brightness(2) drop-shadow(0 0 1px #fff);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.25);
+    filter: brightness(1.8) drop-shadow(0 0 14px #38bdf8);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1.2) drop-shadow(0 0 10px #38bdf8);
+  }
+
+  75% {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: brightness(1.4) drop-shadow(0 0 12px #93c5fd);
+  }
+
+  100% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1.1) drop-shadow(0 0 8px #38bdf8);
+  }
+}
+
+.toner-rising-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 15%, #67e8f9 55%, rgba(56, 189, 248, 0) 80%);
+  box-shadow: 0 0 8px #ffffff, 0 0 16px #38bdf8, 0 0 24px #93c5fd;
+  pointer-events: none;
+  z-index: 24;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  animation: toner-mote-rise linear forwards;
+}
+
+.toner-rising-mote .mote-star {
+  font-size: 8px;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 6px #ffffff, 0 0 12px #38bdf8;
+  animation: toner-star-spin 1.5s linear infinite;
+}
+
+@keyframes toner-mote-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.3);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate3d(calc(var(--drift-x) * 0.25), calc(var(--rise-y) * 0.15), 0) scale(1.2);
+  }
+
+  60% {
+    opacity: 0.85;
+    transform: translate3d(calc(var(--drift-x) * 0.75), calc(var(--rise-y) * 0.65), 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift-x), var(--rise-y), 0) scale(0.4);
+  }
+}
+
+@keyframes toner-star-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.toner-branch-spawn-flash {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  margin-left: -45px;
+  margin-top: -45px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(125, 211, 252, 0.8) 35%,
+      rgba(56, 189, 248, 0.4) 60%,
+      transparent 85%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 25;
+  animation: toner-spawn-flash 0.9s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes toner-spawn-flash {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+
+  25% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.toner-flight-stardust {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px #ffffff, 0 0 12px #38bdf8, 0 0 20px #fef08a;
+  pointer-events: none;
+  z-index: 23;
+  animation: toner-stardust-fade 0.75s ease-out forwards;
+}
+
+@keyframes toner-stardust-fade {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.2) translate(0, 14px);
+    opacity: 0;
+  }
+}
+
+.toner-transform-vortex {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 27;
+}
+
+.transform-vortex-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 16px #fbbf24, 0 0 24px #38bdf8;
+  animation: vortex-spark-burst 1.2s cubic-bezier(0.12, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes vortex-spark-burst {
+  0% {
+    transform: translate(0, 0) scale(0.2);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+    transform: translate(var(--tx), var(--ty)) scale(1.4);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(0.1);
+  }
+}
+
+.transform-petal-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  animation: petal-ring-spin 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.transform-ring-petal {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  margin-left: -19px;
+  margin-top: -19px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(30, 58, 138, 0.35));
+  animation: ring-petal-expand 1.4s cubic-bezier(0.15, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes ring-petal-expand {
+  0% {
+    transform: rotate(var(--rot)) translateY(0) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+    transform: rotate(var(--rot)) translateY(-55px) scale(1.1);
+  }
+
+  80% {
+    opacity: 0.8;
+    transform: rotate(var(--rot)) translateY(-85px) scale(0.9);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(var(--rot)) translateY(-110px) scale(0.4);
+  }
+}
+
+@keyframes petal-ring-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(120deg);
+  }
+}
+
+.toner-message-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 14, 26, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  z-index: 28;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.toner-message-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.toner-message-backdrop.fading {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.toner-message-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  pointer-events: none;
+  padding: 18px;
+}
+
+.toner-message-modal.active {
+  pointer-events: auto;
+}
+
+.toner-letter-card {
+  position: relative;
+  max-width: 480px;
+  width: 92%;
+  padding: 42px 36px 36px;
+  background: linear-gradient(155deg,
+      rgba(255, 254, 251, 0.97) 0%,
+      rgba(246, 250, 255, 0.95) 50%,
+      rgba(255, 253, 249, 0.98) 100%);
+  border: 1.5px solid rgba(217, 180, 110, 0.65);
+  border-radius: 24px;
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.45),
+    0 0 50px rgba(56, 189, 248, 0.3),
+    0 0 20px rgba(251, 191, 36, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  text-align: center;
+  transform: perspective(1000px) rotateX(16deg) scale(0.85) translateY(24px);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+  overflow: hidden;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.toner-letter-card.revealed {
+  transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
+  opacity: 1;
+}
+
+.toner-message-modal.closing .toner-letter-card {
+  transform: perspective(1000px) rotateX(-12deg) scale(0.92) translateY(16px);
+  opacity: 0;
+  transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+.toner-card-ambient-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(186, 230, 253, 0.45) 0%, rgba(254, 243, 199, 0.25) 50%, transparent 80%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+.toner-letter-top-ornament {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+.toner-wax-seal {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 90%);
+  border: 2px solid rgba(251, 191, 36, 0.8);
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fef08a;
+  font-size: 20px;
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  animation: toner-seal-bloom 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s forwards;
+}
+
+@keyframes toner-seal-bloom {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.toner-seal-ribbon {
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(to bottom, #1d4ed8, rgba(251, 191, 36, 0.6));
+}
+
+.toner-letter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 0 6px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.toner-tag-badge {
+  font-weight: 700;
+  color: #1e40af;
+  background: rgba(219, 234, 254, 0.65);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(147, 197, 253, 0.6);
+}
+
+.toner-date-stamp {
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.08em;
+}
+
+.toner-letter-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 20px;
+  width: 70%;
+}
+
+.toner-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(203, 213, 225, 0.9), transparent);
+}
+
+.toner-divider-flower {
+  color: #3b82f6;
+  font-size: 13px;
+}
+
+.toner-letter-inner-content {
+  padding: 4px 8px 18px;
+}
+
+.toner-letter-salutation {
+  font-family: 'Caveat', 'Playfair Display', cursive, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  margin: 0 0 16px 0;
+  padding-left: 4px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.toner-letter-card.revealed .toner-letter-salutation {
+  animation: toner-line-reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s forwards;
+}
+
+.toner-letter-paragraphs {
+  text-align: left;
+  padding: 0 6px;
+  margin-bottom: 24px;
+}
+
+.toner-letter-line {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.22rem;
+  line-height: 1.95;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(3px);
+}
+
+.toner-letter-card.revealed .toner-letter-line {
+  animation: toner-line-reveal 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.toner-line-spacer {
+  height: 14px;
+}
+
+@keyframes toner-line-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(3px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.toner-letter-signoff {
+  text-align: right;
+  margin-top: 20px;
+  padding-right: 8px;
+}
+
+.toner-letter-closing {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 2px 0;
+}
+
+.toner-letter-sender {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.toner-letter-action-bar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.toner-letter-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px 24px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.toner-letter-close-btn:hover {
+  color: #1e40af;
+  background: rgba(239, 246, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+  transform: translateY(-1.5px);
+}
+
+.toner-letter-close-btn:focus-visible {
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.toner-letter-close-btn .btn-bracket {
+  color: #94a3b8;
+  transition: transform 0.25s ease;
+}
+
+.toner-letter-close-btn:hover .btn-bracket:first-child {
+  transform: translateX(-3px);
+}
+
+.toner-letter-close-btn:hover .btn-bracket:last-child {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .toner-letter-card {
+    padding: 32px 22px 26px;
+    width: 95%;
+  }
+
+  .toner-letter-salutation {
+    font-size: 1.55rem;
+    margin-bottom: 12px;
+  }
+
+  .toner-letter-line {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .toner-wax-seal {
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+  }
+}

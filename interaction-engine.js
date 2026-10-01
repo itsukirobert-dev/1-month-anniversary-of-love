@@ -118,6 +118,92 @@
     } catch (_) { }
   }
 
+  // Tiếng chuông vàng/hồng ấm áp khi ánh sáng chạy quanh hũ Radiance Cream
+  function playCreamOrbitTone() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      // Gam hợp âm E major 9 ấm áp, sang trọng (E5, G#5, B5, D#6, E6)
+      const freqs = [659.25, 830.61, 987.77, 1244.51, 1318.51];
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2200, now + idx * 0.11);
+        filter.frequency.exponentialRampToValueAtTime(700, now + idx * 0.11 + 0.6);
+
+        gain.gain.setValueAtTime(0.0001, now + idx * 0.11);
+        gain.gain.linearRampToValueAtTime(0.024, now + idx * 0.11 + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.11 + 0.65);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + idx * 0.11);
+        osc.stop(now + idx * 0.11 + 0.68);
+      });
+    } catch (_) { }
+  }
+
+  // Tiếng chuông ngân hoa khi timeline cánh hoa hé nở
+  function playTimelineBloomTone() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5 - E5 - G5 - C6
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+
+        gain.gain.setValueAtTime(0.0001, now + idx * 0.09);
+        gain.gain.linearRampToValueAtTime(0.026, now + idx * 0.09 + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.09 + 0.85);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + idx * 0.09);
+        osc.stop(now + idx * 0.09 + 0.9);
+      });
+    } catch (_) { }
+  }
+
+  // Tiếng ngân hoa khi chạm chọn một mốc kỷ niệm
+  function playMilestoneSelectTone() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const freqs = [880.0, 1108.73, 1318.51, 1760.0]; // A5 - C#6 - E6 - A6
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+
+        gain.gain.setValueAtTime(0.0001, now + idx * 0.07);
+        gain.gain.linearRampToValueAtTime(0.028, now + idx * 0.07 + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.07 + 0.7);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + idx * 0.07);
+        osc.stop(now + idx * 0.07 + 0.75);
+      });
+    } catch (_) { }
+  }
+
   // --- LỚP ĐIỀU PHỐI TƯƠNG TÁC (INTERACTION ENGINE) ---
   class InteractionEngine {
     constructor(options = {}) {
@@ -228,6 +314,9 @@
         if (
           e.target.closest('#productWorldModal') ||
           e.target.closest('#serumMemoryModal') ||
+          e.target.closest('#tonerMessageModal') ||
+          e.target.closest('#creamTimelineContainer') ||
+          e.target.closest('#creamMilestoneModal') ||
           e.target.closest('.site-header') ||
           e.target.closest('.music-toggle-btn') ||
           e.target.closest('.mobile-menu-btn') ||
@@ -682,6 +771,22 @@
       // ============================================================
       if (bottle.id === 'serum') {
         this.triggerSerumMemoryChoreography(bottle, clientX, clientY);
+        return;
+      }
+
+      // ============================================================
+      // CREAM = DÒNG THỜI GIAN (DÀNH RIÊNG CHO HŨ RADIANCE CREAM)
+      // ============================================================
+      if (bottle.id === 'cream') {
+        this.triggerCreamTimelineChoreography(bottle, clientX, clientY);
+        return;
+      }
+
+      // ============================================================
+      // TONER = LỜI NHẮN (DÀNH RIÊNG CHO CHAI HYDRATING TONER)
+      // ============================================================
+      if (bottle.id === 'toner') {
+        this.triggerTonerMessageChoreography(bottle, clientX, clientY);
         return;
       }
 
@@ -1428,6 +1533,1523 @@
     }
 
     // ============================================================
+    // CREAM = DÒNG THỜI GIAN (THIẾT KẾ CHỨC NĂNG DÀNH RIÊNG CHO HŨ RADIANCE CREAM)
+    // ============================================================
+    // 1. Ánh sáng vàng/hồng chạy nhẹ quanh hũ.
+    // 2. Một vài cánh hoa rơi xuống mặt bàn.
+    // 3. Các cánh hoa tạo thành một đường cong.
+    // 4. Đường cong biến thành timeline (DAY 01 ↓ DAY 07 ↓ DAY 30 ↓ DAY 50 ↓ DAY 100).
+    // Mỗi mốc chứa một kỷ niệm.
+    // Khi người dùng chọn một mốc:
+    // - Cành hoa bay ra.
+    // - Background chuyển nhẹ.
+    // - Nội dung kỷ niệm xuất hiện.
+    // Timeline mang cảm giác được tạo nên từ những cánh hoa.
+    // ============================================================
+
+    static CREAM_TIMELINE_DATA = [
+      {
+        day: 'DAY 01',
+        date: '30.08.2026',
+        time: '13:30 • Chủ Nhật',
+        title: 'Khoảnh Khắc Bắt Đầu',
+        subtitle: 'Lời đồng ý ngọt ngào nhất thế gian',
+        story: [
+          '13:30 một chiều thu đẹp nhất, khoảnh khắc em mỉm cười gật đầu...',
+          'Cả thế giới xung quanh dường như dừng lại, chỉ còn nhịp đập rộn ràng của hai trái tim.',
+          'Từ giây phút ấy, từng cánh hoa đậu biếc nở rộ, ta chính thức thuộc về nhau.'
+        ],
+        quote: '“Em là điều kỳ diệu nhất mà định mệnh đã mang đến cho chị.”',
+        tag: 'Khởi Đầu Tình Yêu',
+        photo: 'assets/images/confess1.png',
+        photoCaption: 'Khoảnh khắc đầu tiên ta thuộc về nhau • 30.08.2026',
+        petalSprite: 'assets/images/falling_branches/petal_1.png'
+      },
+      {
+        day: 'DAY 07',
+        date: '06.09.2026',
+        time: 'Tuần thứ nhất bên nhau',
+        title: 'Những Rung Động Đầu Tiên',
+        subtitle: 'Tin nhắn thâu đêm & nụ cười nàng thơ',
+        story: [
+          'Bảy ngày đầu tiên trôi qua trong những cuộc trò chuyện kéo dài đến tận nửa đêm.',
+          'Mỗi sáng thức dậy, lời chào ngày mới của em làm tan biến mọi âu lo mệt mỏi.',
+          'Cảm giác hồi hộp ngóng chờ từng tin nhắn ngọt ngào và êm dịu khôn nguôi.'
+        ],
+        quote: '“Chỉ cần nhìn thấy nụ cười của em, cả một ngày dài bỗng hóa dịu dàng.”',
+        tag: 'Tuần Đầu Ngọt Ngào',
+        photo: 'assets/images/confess2.png',
+        photoCaption: 'Nụ cười nàng thơ thắp sáng những ngày đầu • 06.09.2026',
+        petalSprite: 'assets/images/falling_branches/petal_2.png'
+      },
+      {
+        day: 'DAY 30',
+        date: '30.09.2026',
+        time: 'Kỷ niệm tròn 1 tháng (C1M)',
+        title: 'Tròn Một Tháng Bên Nhau',
+        subtitle: 'C1M • Đóa hoa đậu biếc rực rỡ nhất',
+        story: [
+          'Ba mươi ngày yêu thương đong đầy, từng kỷ niệm nhỏ đều được nâng niu.',
+          'Hũ Radiance Cream lưu giữ từng giọt sương sớm và ánh nắng ấm áp của tháng đầu tiên.',
+          'C1M — Cột mốc tròn 1 tháng, minh chứng cho một tình yêu chân thành và bền chặt.'
+        ],
+        quote: '“C1M • Cảm ơn em vì đã đến bên chị, biến những ngày bình thường thành phép màu.”',
+        tag: 'Cột Mốc C1M',
+        photo: 'assets/images/confess3.png',
+        photoCaption: 'Kỷ niệm C1M • Tròn 1 tháng gắn bó đong đầy • 30.09.2026',
+        petalSprite: 'assets/images/falling_branches/petal_3.png'
+      },
+      {
+        day: 'DAY 50',
+        date: '20.10.2026',
+        time: 'Những ngày thu êm đềm',
+        title: 'Thói Quen Dịu Dàng',
+        subtitle: 'Yêu thương trở thành điều tự nhiên như hơi thở',
+        story: [
+          'Khi việc nhớ về nhau đã trở thành hơi thở tự nhiên mỗi ngày.',
+          'Nhớ giọng nói ngọt ngào, nhớ từng cử chỉ đáng yêu và ánh mắt thơ ngây của em.',
+          'Tình yêu lớn dần qua những sẻ chia mộc mạc và sự thấu hiểu bình yên.'
+        ],
+        quote: '“Hạnh phúc lớn nhất là khi biết luôn có một người đang nhớ và đợi mình.”',
+        tag: 'Gắn Kết Bình Yên',
+        photo: 'assets/images/sample1.jpg',
+        photoCaption: 'Bình yên bên em qua từng tháng ngày • 20.10.2026',
+        petalSprite: 'assets/images/falling_branches/petal_4.png'
+      },
+      {
+        day: 'DAY 100',
+        date: '08.12.2026',
+        time: 'Hành trình tương lai',
+        title: 'Trăm Ngày & Mãi Mãi',
+        subtitle: 'Lời hứa cùng nhau đi qua năm tháng',
+        story: [
+          'Một trăm ngày không phải đích đến, mà là lời khẳng định vững chắc.',
+          'Như dòng chảy vô tận của thời gian, cánh hoa tình yêu sẽ mãi xanh biếc và ngát hương.',
+          'Chị muốn cùng em đi qua 1 năm, 5 năm và trọn vẹn cả cuộc đời phía trước.'
+        ],
+        quote: '“Mong rằng người đầu tiên em nghĩ đến mỗi sớm mai và người chúc em ngủ ngon mỗi đêm... mãi là chị.”',
+        tag: 'Mãi Mãi Về Sau',
+        photo: 'assets/images/sample2.jpg',
+        photoCaption: 'Hành trình 100 ngày và ngàn ngày sau nữa • 08.12.2026',
+        petalSprite: 'assets/images/falling_branches/petal_5.png'
+      }
+    ];
+
+    triggerCreamTimelineChoreography(bottle, clientX, clientY) {
+      if (!bottle || !this.container) return;
+
+      // Chống kích hoạt đúp nếu timeline đang hiển thị
+      if (this.activeSequences.has('cream') || document.getElementById('creamTimelineContainer') || document.getElementById('creamMilestoneModal')) {
+        return;
+      }
+      this.activeSequences.add('cream');
+      this.dismissTouchHint();
+
+      const fRect = this.container.getBoundingClientRect();
+      const targetImg = document.querySelector('.main-uncut-image') || this.container.querySelector('img');
+      const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+      const bounds = bottle.bounds || { minX: 0.27, maxX: 0.43, minY: 0.54, maxY: 0.86 };
+      const bottleBox = {
+        left: bounds.minX * iRect.width + (iRect.left - fRect.left),
+        top: bounds.minY * iRect.height + (iRect.top - fRect.top),
+        width: (bounds.maxX - bounds.minX) * iRect.width,
+        height: (bounds.maxY - bounds.minY) * iRect.height
+      };
+
+      const objCenterX = fRect.left + bottleBox.left + bottleBox.width * 0.5;
+      const touchX = clientX !== undefined ? clientX : objCenterX;
+      const touchY = clientY !== undefined ? clientY : (fRect.top + bottleBox.top + bottleBox.height * 0.5);
+
+      // Phản hồi xúc giác & âm thanh chạm
+      if (this.options.enableHaptics && window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate([24, 32, 24]); } catch (_) { }
+      }
+      playCrystalTouchTone();
+      this.createTouchWaveVisual(touchX, touchY);
+
+      // Tạo phần tử cắt hũ kem để rung nhẹ & phát ánh hào quang
+      const oldShaker = this.container.querySelector('.cream-timeline-bottle');
+      if (oldShaker) oldShaker.remove();
+
+      const creamShaker = document.createElement('div');
+      creamShaker.className = 'bottle-shaker-element cream-timeline-bottle bottle-shaking';
+      creamShaker.style.left = `${bottleBox.left.toFixed(1)}px`;
+      creamShaker.style.top = `${bottleBox.top.toFixed(1)}px`;
+      creamShaker.style.width = `${bottleBox.width.toFixed(1)}px`;
+      creamShaker.style.height = `${bottleBox.height.toFixed(1)}px`;
+
+      const shakerCanvas = document.createElement('canvas');
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      shakerCanvas.width = Math.max(1, Math.round(bottleBox.width * dpr));
+      shakerCanvas.height = Math.max(1, Math.round(bottleBox.height * dpr));
+      shakerCanvas.style.width = '100%';
+      shakerCanvas.style.height = '100%';
+
+      const sCtx = shakerCanvas.getContext('2d');
+      sCtx.scale(dpr, dpr);
+
+      if (targetImg && targetImg.complete && targetImg.naturalWidth > 0) {
+        const sx = bounds.minX * targetImg.naturalWidth;
+        const sy = bounds.minY * targetImg.naturalHeight;
+        const sw = (bounds.maxX - bounds.minX) * targetImg.naturalWidth;
+        const sh = (bounds.maxY - bounds.minY) * targetImg.naturalHeight;
+        sCtx.drawImage(targetImg, sx, sy, sw, sh, 0, 0, bottleBox.width, bottleBox.height);
+      }
+      creamShaker.appendChild(shakerCanvas);
+
+      // Hào quang vàng hồng quanh hũ kem
+      const auraEl = document.createElement('div');
+      auraEl.className = 'cream-bottle-aura active';
+      creamShaker.appendChild(auraEl);
+
+      this.container.appendChild(creamShaker);
+
+      // Sau 460ms kết thúc rung chuyển sang tập trung phát sáng
+      setTimeout(() => {
+        creamShaker.classList.remove('bottle-shaking');
+        creamShaker.classList.add('bottle-focused');
+      }, 460);
+
+      this.addTableCausticWave(bottleBox.left + bottleBox.width * 0.5, bottleBox.top + bottleBox.height * 0.95);
+
+      // ------------------------------------------------------------
+      // BƯỚC 1: ÁNH SÁNG VÀNG/HỒNG CHẠY NHẸ QUANH HŨ (80ms - 900ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        this.runCreamGoldPinkOrbit(creamShaker, bottleBox);
+      }, 80);
+
+      // ------------------------------------------------------------
+      // BƯỚC 2: MỘT VÀI CÁNH HOA RƠI XUỐNG MẶT BÀN (750ms - 1700ms)
+      // ------------------------------------------------------------
+      let fallenPetals = [];
+      setTimeout(() => {
+        fallenPetals = this.dropPetalsOntoTable(bottleBox);
+      }, 750);
+
+      // ------------------------------------------------------------
+      // BƯỚC 3: CÁC CÁNH HOA TẠO THÀNH MỘT ĐƯỜNG CONG (1700ms - 2600ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        this.alignPetalsIntoCurve(fallenPetals, bottleBox);
+      }, 1700);
+
+      // ------------------------------------------------------------
+      // BƯỚC 4: ĐƯỜNG CONG BIẾN THÀNH TIMELINE (2600ms+)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        this.bloomCurveIntoTimeline(bottleBox, fallenPetals);
+      }, 2600);
+    }
+
+    // 1. Ánh sáng vàng/hồng chạy quanh hũ kem
+    runCreamGoldPinkOrbit(creamShaker, bottleBox) {
+      if (!creamShaker) return;
+      playCreamOrbitTone();
+
+      const orbitWrap = document.createElement('div');
+      orbitWrap.className = 'cream-orbit-wrap';
+
+      const w = bottleBox.width;
+      const h = bottleBox.height;
+      const rx = (w * 0.48).toFixed(1);
+      const ry = (h * 0.46).toFixed(1);
+      const cx = (w * 0.5).toFixed(1);
+      const cy = (h * 0.5).toFixed(1);
+
+      orbitWrap.innerHTML = `
+        <svg class="cream-orbit-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="creamOrbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffd700" stop-opacity="0.95" />
+              <stop offset="30%" stop-color="#fb7185" stop-opacity="0.92" />
+              <stop offset="70%" stop-color="#f472b6" stop-opacity="0.88" />
+              <stop offset="100%" stop-color="#fde047" stop-opacity="0.95" />
+            </linearGradient>
+            <filter id="creamOrbitGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <ellipse class="cream-orbit-track" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" />
+          <ellipse class="cream-orbit-beam" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" filter="url(#creamOrbitGlow)" />
+        </svg>
+        <div class="cream-orbit-star"></div>
+      `;
+      creamShaker.appendChild(orbitWrap);
+
+      // Thả 6 hạt bụi sáng vàng/hồng lơ lửng quanh viền hũ
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          if (!creamShaker.parentElement) return;
+          const spark = document.createElement('div');
+          spark.className = 'cream-spark-particle';
+          const angle = (i / 6) * Math.PI * 2;
+          const rX = w * 0.46;
+          const rY = h * 0.44;
+          const sx = w * 0.5 + Math.cos(angle) * rX;
+          const sy = h * 0.5 + Math.sin(angle) * rY;
+          spark.style.left = `${sx.toFixed(1)}px`;
+          spark.style.top = `${sy.toFixed(1)}px`;
+          creamShaker.appendChild(spark);
+          setTimeout(() => spark.remove(), 700);
+        }, i * 110);
+      }
+
+      setTimeout(() => {
+        if (orbitWrap.parentElement) orbitWrap.remove();
+      }, 1600);
+    }
+
+    // 2. Một vài cánh hoa rơi xuống mặt bàn
+    dropPetalsOntoTable(bottleBox) {
+      if (!this.container) return [];
+      playPetalFlutterSound();
+
+      const fRect = this.container.getBoundingClientRect();
+      const petals = [];
+      const petalSprites = [
+        'assets/images/falling_branches/petal_1.png',
+        'assets/images/falling_branches/petal_2.png',
+        'assets/images/falling_branches/petal_3.png',
+        'assets/images/falling_branches/petal_4.png',
+        'assets/images/falling_branches/petal_5.png',
+        'assets/images/falling_branches/petal_6.png'
+      ];
+
+      // Tọa độ rơi phân bố tự nhiên trên mặt bàn phía trước hũ
+      const tableTargets = [
+        { relX: 0.16, relY: 0.77, rot: -18, scale: 0.85 },
+        { relX: 0.33, relY: 0.82, rot: 15, scale: 0.90 },
+        { relX: 0.50, relY: 0.76, rot: -8, scale: 0.95 },
+        { relX: 0.67, relY: 0.81, rot: 22, scale: 0.88 },
+        { relX: 0.84, relY: 0.78, rot: -12, scale: 0.84 },
+        { relX: 0.25, relY: 0.86, rot: 32, scale: 0.75 },
+        { relX: 0.75, relY: 0.85, rot: -28, scale: 0.72 }
+      ];
+
+      const originX = bottleBox.left + bottleBox.width * 0.48;
+      const originY = bottleBox.top + bottleBox.height * 0.68;
+
+      const layer = document.createElement('div');
+      layer.id = 'creamFallingPetalsLayer';
+      layer.className = 'cream-falling-petals-layer';
+      this.container.appendChild(layer);
+
+      tableTargets.forEach((target, i) => {
+        const petalEl = document.createElement('div');
+        petalEl.className = 'cream-table-petal falling';
+        petalEl.dataset.targetIndex = i;
+
+        const img = document.createElement('img');
+        img.src = petalSprites[i % petalSprites.length];
+        img.alt = 'Cánh hoa đậu biếc';
+        img.className = 'cream-petal-img';
+        petalEl.appendChild(img);
+
+        petalEl.style.left = `${originX.toFixed(1)}px`;
+        petalEl.style.top = `${originY.toFixed(1)}px`;
+        petalEl.style.transform = `translate(-50%, -50%) scale(0.2) rotate(${(Math.random() * 60 - 30).toFixed(0)}deg)`;
+        petalEl.style.opacity = '0';
+
+        layer.appendChild(petalEl);
+        petals.push({ el: petalEl, target });
+
+        const delay = i * 65;
+        setTimeout(() => {
+          petalEl.style.opacity = '1';
+          const destX = target.relX * fRect.width;
+          const destY = target.relY * fRect.height;
+          petalEl.style.transition = `left 0.85s cubic-bezier(0.2, 0.8, 0.25, 1), top 0.92s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.92s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.5s ease`;
+          petalEl.style.left = `${destX.toFixed(1)}px`;
+          petalEl.style.top = `${destY.toFixed(1)}px`;
+          petalEl.style.transform = `translate(-50%, -50%) scale(${target.scale}) rotate(${target.rot}deg)`;
+
+          setTimeout(() => {
+            petalEl.classList.remove('falling');
+            petalEl.classList.add('landed-on-table');
+            this.addTableCausticWave(destX, destY);
+          }, 850);
+        }, delay);
+      });
+
+      return petals;
+    }
+
+    // 3. Các cánh hoa tạo thành một đường cong
+    alignPetalsIntoCurve(fallenPetals, bottleBox) {
+      if (!this.container) return;
+      playSwipeWindTone(0.8);
+
+      const fRect = this.container.getBoundingClientRect();
+      const isMobile = fRect.width < 768;
+
+      // Tọa độ đường cong uốn lượn S-Curve
+      const curveCoords = isMobile ? [
+        { relX: 0.26, relY: 0.24, rot: -10 },
+        { relX: 0.72, relY: 0.38, rot: 15 },
+        { relX: 0.28, relY: 0.52, rot: -12 },
+        { relX: 0.70, relY: 0.66, rot: 18 },
+        { relX: 0.32, relY: 0.80, rot: -8 }
+      ] : [
+        { relX: 0.14, relY: 0.75, rot: -16 },
+        { relX: 0.32, relY: 0.64, rot: 12 },
+        { relX: 0.50, relY: 0.76, rot: -10 },
+        { relX: 0.68, relY: 0.65, rot: 14 },
+        { relX: 0.86, relY: 0.74, rot: -14 }
+      ];
+
+      if (fallenPetals && fallenPetals.length) {
+        fallenPetals.forEach((p, idx) => {
+          if (idx < curveCoords.length) {
+            const coord = curveCoords[idx];
+            const destX = coord.relX * fRect.width;
+            const destY = coord.relY * fRect.height;
+            p.el.style.transition = 'left 0.75s cubic-bezier(0.25, 1, 0.5, 1), top 0.75s cubic-bezier(0.25, 1, 0.5, 1), transform 0.75s ease';
+            p.el.style.left = `${destX.toFixed(1)}px`;
+            p.el.style.top = `${destY.toFixed(1)}px`;
+            p.el.style.transform = `translate(-50%, -50%) scale(0.9) rotate(${coord.rot}deg)`;
+            p.el.classList.add('aligned-in-curve');
+          } else {
+            p.el.style.transition = 'opacity 0.6s ease';
+            p.el.style.opacity = '0.35';
+          }
+        });
+      }
+
+      // Vẽ đường cong SVG mềm mại phát sáng nối các cánh hoa
+      let svgLayer = document.getElementById('creamPetalCurveSvgLayer');
+      if (svgLayer) svgLayer.remove();
+
+      svgLayer = document.createElement('div');
+      svgLayer.id = 'creamPetalCurveSvgLayer';
+      svgLayer.className = 'cream-petal-curve-svg-layer';
+
+      let pathD = '';
+      if (isMobile) {
+        const p = curveCoords.map(c => ({ x: c.relX * fRect.width, y: c.relY * fRect.height }));
+        pathD = `M ${p[0].x} ${p[0].y} C ${p[0].x + 120} ${p[0].y + 40}, ${p[1].x + 40} ${p[1].y - 60}, ${p[1].x} ${p[1].y} C ${p[1].x - 140} ${p[1].y + 60}, ${p[2].x - 60} ${p[2].y - 60}, ${p[2].x} ${p[2].y} C ${p[2].x + 140} ${p[2].y + 60}, ${p[3].x + 60} ${p[3].y - 60}, ${p[3].x} ${p[3].y} C ${p[3].x - 120} ${p[3].y + 60}, ${p[4].x + 20} ${p[4].y - 40}, ${p[4].x} ${p[4].y}`;
+      } else {
+        const p = curveCoords.map(c => ({ x: c.relX * fRect.width, y: c.relY * fRect.height }));
+        pathD = `M ${p[0].x} ${p[0].y} Q ${p[0].x + 70} ${p[1].y - 30}, ${p[1].x} ${p[1].y} T ${p[2].x} ${p[2].y} T ${p[3].x} ${p[3].y} T ${p[4].x} ${p[4].y}`;
+      }
+
+      svgLayer.innerHTML = `
+        <svg class="cream-curve-svg" width="${fRect.width}" height="${fRect.height}" viewBox="0 0 ${fRect.width} ${fRect.height}">
+          <defs>
+            <linearGradient id="curveTrackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9" />
+              <stop offset="25%" stop-color="#fb7185" stop-opacity="0.9" />
+              <stop offset="50%" stop-color="#c084fc" stop-opacity="0.85" />
+              <stop offset="75%" stop-color="#38bdf8" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#ffd700" stop-opacity="0.9" />
+            </linearGradient>
+            <filter id="curvePathGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <path class="curve-trail-glow" d="${pathD}" filter="url(#curvePathGlow)" />
+          <path class="curve-trail-core" d="${pathD}" />
+        </svg>
+      `;
+      this.container.appendChild(svgLayer);
+    }
+
+    // 4. Đường cong biến thành Dòng Thời Gian (Timeline)
+    bloomCurveIntoTimeline(bottleBox, fallenPetals) {
+      if (!this.container) return;
+      playTimelineBloomTone();
+
+      // Dọn dẹp layer cánh hoa tạm thời trên bàn
+      const fallingLayer = document.getElementById('creamFallingPetalsLayer');
+      if (fallingLayer) {
+        fallingLayer.style.transition = 'opacity 0.6s ease';
+        fallingLayer.style.opacity = '0';
+        setTimeout(() => fallingLayer.remove(), 600);
+      }
+      const curveSvg = document.getElementById('creamPetalCurveSvgLayer');
+      if (curveSvg) {
+        curveSvg.style.transition = 'opacity 0.6s ease';
+        curveSvg.style.opacity = '0';
+        setTimeout(() => curveSvg.remove(), 600);
+      }
+
+      // Xóa timeline cũ nếu có
+      const oldTimeline = document.getElementById('creamTimelineContainer');
+      if (oldTimeline) oldTimeline.remove();
+
+      const fRect = this.container.getBoundingClientRect();
+      const isMobile = fRect.width < 768;
+      const milestones = InteractionEngine.CREAM_TIMELINE_DATA;
+
+      // Tạo Container chính của Dòng Thời Gian
+      const timelineContainer = document.createElement('div');
+      timelineContainer.id = 'creamTimelineContainer';
+      timelineContainer.className = `cream-timeline-container ${isMobile ? 'layout-vertical' : 'layout-horizontal'}`;
+
+      // Backdrop giảm sáng và chuyển sắc thái êm đềm
+      const backdrop = document.createElement('div');
+      backdrop.id = 'creamTimelineBackdrop';
+      backdrop.className = 'cream-timeline-backdrop active';
+      timelineContainer.appendChild(backdrop);
+
+      // Header Dòng Thời Gian
+      const headerEl = document.createElement('div');
+      headerEl.className = 'cream-timeline-header';
+      headerEl.innerHTML = `
+        <div class="cream-timeline-header-inner">
+          <div class="cream-tag-wrap">
+            <span class="cream-header-petal-icon">🌸</span>
+            <span class="cream-header-tag">CREAM = DÒNG THỜI GIAN</span>
+            <span class="cream-header-petal-icon">✨</span>
+          </div>
+          <p class="cream-header-sub">Hành trình yêu thương của Cá Sudo ♡ Khây Ti kết tinh từ những cánh hoa</p>
+          <div class="cream-timeline-instruction">
+            <i class="fa-solid fa-hand-pointer"></i> Chạm vào từng mốc thời gian để mở cánh hoa kỷ niệm
+          </div>
+        </div>
+        <button type="button" class="cream-timeline-exit-btn" id="creamTimelineExitBtn" title="Đóng Dòng Thời Gian" aria-label="Đóng Dòng Thời Gian">
+          <i class="fa-solid fa-xmark"></i>
+          <span>Đóng Timeline</span>
+        </button>
+      `;
+      timelineContainer.appendChild(headerEl);
+
+      // Wrapper cành hoa & các node mốc
+      const trackWrap = document.createElement('div');
+      trackWrap.className = 'cream-timeline-track-wrap';
+
+      const svgD = isMobile
+        ? "M 150 50 C 320 130, 320 210, 150 290 C -20 370, -20 450, 150 530"
+        : "M 80 180 Q 220 90, 360 170 T 640 170 T 920 180";
+      const svgViewBox = isMobile ? "0 0 300 600" : "0 0 1000 320";
+
+      trackWrap.innerHTML = `
+        <svg class="timeline-vine-svg" viewBox="${svgViewBox}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="vineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9" />
+              <stop offset="25%" stop-color="#fb7185" stop-opacity="0.9" />
+              <stop offset="50%" stop-color="#c084fc" stop-opacity="0.85" />
+              <stop offset="75%" stop-color="#38bdf8" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#fde047" stop-opacity="0.95" />
+            </linearGradient>
+            <filter id="vineGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <path class="vine-path-glow" d="${svgD}" filter="url(#vineGlow)" />
+          <path class="vine-path-core" d="${svgD}" />
+        </svg>
+      `;
+
+      // 5 Nodes Milestone
+      const nodesContainer = document.createElement('div');
+      nodesContainer.className = 'cream-milestone-nodes-container';
+
+      milestones.forEach((m, idx) => {
+        const nodeBtn = document.createElement('button');
+        nodeBtn.type = 'button';
+        nodeBtn.className = `cream-milestone-node node-idx-${idx}`;
+        nodeBtn.dataset.index = idx;
+        nodeBtn.title = `${m.day}: ${m.title} (${m.date})`;
+        nodeBtn.setAttribute('aria-label', `${m.day}: ${m.title}`);
+
+        nodeBtn.innerHTML = `
+          <div class="node-flower-rosette">
+            <div class="rosette-petals-cluster">
+              <img src="assets/images/falling_branches/petal_1.png" alt="" class="rosette-petal p-1" />
+              <img src="assets/images/falling_branches/petal_2.png" alt="" class="rosette-petal p-2" />
+              <img src="assets/images/falling_branches/petal_3.png" alt="" class="rosette-petal p-3" />
+              <img src="assets/images/falling_branches/petal_4.png" alt="" class="rosette-petal p-4" />
+            </div>
+            <div class="rosette-center-pistil">
+              <span class="pistil-gem"></span>
+              <span class="pistil-pulse"></span>
+            </div>
+          </div>
+          <div class="node-info-badge">
+            <div class="node-day-pill">${m.day}</div>
+            <div class="node-date-text">${m.date}</div>
+            <div class="node-title-text">${m.title}</div>
+            ${idx < milestones.length - 1 ? '<div class="node-arrow-down" title="Mốc tiếp theo">↓</div>' : ''}
+          </div>
+        `;
+
+        nodeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.selectTimelineMilestone(m, nodeBtn, idx, milestones);
+        });
+
+        nodesContainer.appendChild(nodeBtn);
+      });
+
+      trackWrap.appendChild(nodesContainer);
+      timelineContainer.appendChild(trackWrap);
+      this.container.appendChild(timelineContainer);
+
+      requestAnimationFrame(() => {
+        timelineContainer.classList.add('active');
+      });
+
+      const exitBtn = timelineContainer.querySelector('#creamTimelineExitBtn');
+      if (exitBtn) {
+        exitBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.closeCreamTimeline();
+        });
+      }
+
+      backdrop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (document.getElementById('creamMilestoneModal')) {
+          this.closeMilestoneModal();
+        } else {
+          this.closeCreamTimeline();
+        }
+      });
+    }
+
+    // 5. Khi người dùng chọn một mốc: Cành hoa bay ra, background chuyển nhẹ, nội dung kỷ niệm xuất hiện
+    selectTimelineMilestone(m, nodeEl, index, milestones) {
+      if (!m || !this.container) return;
+      playMilestoneSelectTone();
+
+      const allNodes = this.container.querySelectorAll('.cream-milestone-node');
+      allNodes.forEach(n => n.classList.remove('active-blooming'));
+      if (nodeEl) nodeEl.classList.add('active-blooming');
+
+      const fRect = this.container.getBoundingClientRect();
+      const nodeRect = nodeEl ? nodeEl.getBoundingClientRect() : fRect;
+      const nodeCenterX = nodeEl ? (nodeRect.left + nodeRect.width * 0.5) : (fRect.left + fRect.width * 0.5);
+      const nodeCenterY = nodeEl ? (nodeRect.top + nodeRect.height * 0.5) : (fRect.top + fRect.height * 0.6);
+
+      // CÀNH HOA BAY RA
+      if (window.branchEngine) {
+        window.branchEngine.launch({
+          originX: nodeCenterX,
+          originY: nodeCenterY,
+          dir: index % 2 === 0 ? 1 : -1,
+          branchIndex: index % 3,
+          trajectory: index % 2 === 0 ? 'A' : 'C',
+          allowPetalDetach: true
+        });
+      }
+
+      // Bung cánh hoa bay lượn
+      if (window.petalEngine) {
+        window.petalEngine.toss({
+          x: nodeCenterX,
+          y: nodeCenterY,
+          count: 8,
+          force: 1.15,
+          angle: -Math.PI * 0.5 + (Math.random() - 0.5) * 0.7,
+          spread: 0.65
+        });
+      }
+
+      // BACKGROUND CHUYỂN NHẸ
+      const backdrop = document.getElementById('creamTimelineBackdrop');
+      if (backdrop) {
+        backdrop.classList.add('reading-milestone');
+      }
+
+      // NỘI DUNG KỶ NIỆM XUẤT HIỆN
+      this.displayMilestoneMemoryModal(m, index, milestones);
+    }
+
+    // Hiển thị Card Kỷ Niệm của từng Cột Mốc
+    displayMilestoneMemoryModal(m, index, milestones) {
+      let modal = document.getElementById('creamMilestoneModal');
+
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'creamMilestoneModal';
+        modal.className = 'cream-milestone-modal';
+        this.container.appendChild(modal);
+      } else {
+        modal.classList.add('crossfading');
+      }
+
+      const prevMilestone = index > 0 ? milestones[index - 1] : null;
+      const nextMilestone = index < milestones.length - 1 ? milestones[index + 1] : null;
+
+      const cardHtml = `
+        <div class="cream-milestone-card" id="creamMilestoneCard">
+          <div class="milestone-card-halo"></div>
+          
+          <div class="milestone-card-topbar">
+            <div class="milestone-tag-pill">
+              <span class="tag-icon">🌸</span>
+              <span class="tag-text">CỘT MỐC THỜI GIAN • ${m.day}</span>
+            </div>
+            <button type="button" class="milestone-close-icon-btn" id="milestoneCardCloseBtn" title="Quay lại Timeline" aria-label="Đóng kỷ niệm">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="milestone-card-header">
+            <h3 class="milestone-main-title">${m.title}</h3>
+            <div class="milestone-time-sub">
+              <i class="fa-regular fa-clock"></i> ${m.time} • ${m.date}
+            </div>
+          </div>
+
+          <div class="milestone-photo-polaroid">
+            <div class="polaroid-frame">
+              <img src="${m.photo}" alt="${m.title}" class="polaroid-img" />
+              <div class="polaroid-caption">${m.photoCaption}</div>
+            </div>
+          </div>
+
+          <div class="milestone-floral-divider">
+            <span class="divider-line"></span>
+            <span class="divider-gem">✤ 🌸 ✤</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <div class="milestone-story-lines">
+            <p class="story-line line-1">${m.story[0]}</p>
+            <p class="story-line line-2">${m.story[1]}</p>
+            <p class="story-line line-3">${m.story[2]}</p>
+          </div>
+
+          <div class="milestone-quote-box">
+            <p class="quote-text">${m.quote}</p>
+          </div>
+
+          <div class="milestone-card-nav-footer">
+            <button type="button" class="milestone-nav-btn prev-btn ${!prevMilestone ? 'disabled' : ''}" id="milestonePrevBtn" ${!prevMilestone ? 'disabled' : ''}>
+              <i class="fa-solid fa-arrow-left"></i> ${prevMilestone ? prevMilestone.day : 'Đầu'}
+            </button>
+            <button type="button" class="milestone-back-timeline-btn" id="milestoneBackTimelineBtn">
+              🌸 Dòng Thời Gian
+            </button>
+            <button type="button" class="milestone-nav-btn next-btn ${!nextMilestone ? 'disabled' : ''}" id="milestoneNextBtn" ${!nextMilestone ? 'disabled' : ''}>
+              ${nextMilestone ? nextMilestone.day : 'Cuối'} <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.innerHTML = cardHtml;
+
+      requestAnimationFrame(() => {
+        modal.classList.remove('crossfading');
+        modal.classList.add('active');
+        const card = modal.querySelector('#creamMilestoneCard');
+        if (card) card.classList.add('revealed');
+      });
+
+      const closeBtn = modal.querySelector('#milestoneCardCloseBtn');
+      const backTimelineBtn = modal.querySelector('#milestoneBackTimelineBtn');
+      const prevBtn = modal.querySelector('#milestonePrevBtn');
+      const nextBtn = modal.querySelector('#milestoneNextBtn');
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.closeMilestoneModal();
+        });
+      }
+
+      if (backTimelineBtn) {
+        backTimelineBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.closeMilestoneModal();
+        });
+      }
+
+      if (prevBtn && prevMilestone) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const targetNode = this.container.querySelector(`.cream-milestone-node[data-index="${index - 1}"]`);
+          this.selectTimelineMilestone(prevMilestone, targetNode, index - 1, milestones);
+        });
+      }
+
+      if (nextBtn && nextMilestone) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const targetNode = this.container.querySelector(`.cream-milestone-node[data-index="${index + 1}"]`);
+          this.selectTimelineMilestone(nextMilestone, targetNode, index + 1, milestones);
+        });
+      }
+
+      const handleModalKey = (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          this.closeMilestoneModal();
+          document.removeEventListener('keydown', handleModalKey);
+        } else if (e.key === 'ArrowLeft' && prevMilestone) {
+          e.preventDefault();
+          document.removeEventListener('keydown', handleModalKey);
+          const targetNode = this.container.querySelector(`.cream-milestone-node[data-index="${index - 1}"]`);
+          this.selectTimelineMilestone(prevMilestone, targetNode, index - 1, milestones);
+        } else if (e.key === 'ArrowRight' && nextMilestone) {
+          e.preventDefault();
+          document.removeEventListener('keydown', handleModalKey);
+          const targetNode = this.container.querySelector(`.cream-milestone-node[data-index="${index + 1}"]`);
+          this.selectTimelineMilestone(nextMilestone, targetNode, index + 1, milestones);
+        }
+      };
+      document.addEventListener('keydown', handleModalKey);
+    }
+
+    // Đóng Card Kỷ Niệm quay lại màn hình Dòng Thời Gian
+    closeMilestoneModal() {
+      const modal = document.getElementById('creamMilestoneModal');
+      if (modal) {
+        modal.classList.add('closing');
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 420);
+      }
+      const backdrop = document.getElementById('creamTimelineBackdrop');
+      if (backdrop) {
+        backdrop.classList.remove('reading-milestone');
+      }
+    }
+
+    // Đóng hoàn toàn Dòng Thời Gian
+    closeCreamTimeline() {
+      this.closeMilestoneModal();
+
+      const timelineContainer = document.getElementById('creamTimelineContainer');
+      if (timelineContainer) {
+        timelineContainer.classList.remove('active');
+        timelineContainer.classList.add('closing');
+        setTimeout(() => timelineContainer.remove(), 600);
+      }
+
+      const creamShaker = this.container.querySelector('.cream-timeline-bottle');
+      if (creamShaker) {
+        creamShaker.classList.add('shaker-fade-out');
+        setTimeout(() => creamShaker.remove(), 600);
+      }
+
+      setTimeout(() => {
+        this.activeSequences.delete('cream');
+      }, 650);
+    }
+
+    // ============================================================
+    // TONER = LỜI NHẮN (THIẾT KẾ CHỨC NĂNG DÀNH RIÊNG CHO CHAI HYDRATING TONER)
+    // ============================================================
+    // Quy trình tương tác tuần tự tinh xảo:
+    // 1. Các giọt nước trên chai phát sáng (0ms - 600ms)
+    // 2. Các hạt sáng bay lên (350ms - 1500ms)
+    // 3. Một cành hoa xuất hiện (800ms)
+    // 4. Cành hoa uốn lượn theo đường bay trajectory về trung tâm (950ms - 2900ms)
+    // 5. Cuối trajectory, hiệu ứng biến thành một lá thư (2800ms - 3400ms)
+    // 6. Lá thư xuất hiện ở trung tâm màn hình (3200ms+)
+    // 
+    // Nội dung thư có thể chỉnh sửa bằng dữ liệu JavaScript hoặc JSON.
+    // Người dùng tự đóng lá thư bằng nút đóng.
+    // ============================================================
+
+    static TONER_LETTER_DATA = {
+      salutation: "Gửi em,",
+      paragraphs: [
+        "Cảm ơn vì đã xuất hiện",
+        "trong những ngày bình thường",
+        "và khiến chúng trở nên",
+        "đặc biệt hơn."
+      ],
+      closing: "Thương em,",
+      sender: "Cá Sudo ♡ Khây Ti",
+      date: "C1M • 2026",
+      tag: "Hydrating Toner • Lời Nhắn Dành Cho Em"
+    };
+
+    triggerTonerMessageChoreography(bottle, clientX, clientY) {
+      if (!bottle || !this.container) return;
+
+      // Chống kích hoạt đúp nếu đang hiển thị lá thư
+      if (this.activeSequences.has('toner') || document.getElementById('tonerMessageModal')) {
+        return;
+      }
+      this.activeSequences.add('toner');
+      this.dismissTouchHint();
+
+      const fRect = this.container.getBoundingClientRect();
+      const targetImg = document.querySelector('.main-uncut-image') || this.container.querySelector('img');
+      const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+      const bounds = bottle.bounds || { minX: 0.54, maxX: 0.66, minY: 0.31, maxY: 0.85 };
+      const bottleBox = {
+        left: bounds.minX * iRect.width + (iRect.left - fRect.left),
+        top: bounds.minY * iRect.height + (iRect.top - fRect.top),
+        width: (bounds.maxX - bounds.minX) * iRect.width,
+        height: (bounds.maxY - bounds.minY) * iRect.height
+      };
+
+      const objCenterX = fRect.left + bottleBox.left + bottleBox.width * 0.5;
+      const touchX = clientX !== undefined ? clientX : objCenterX;
+      const touchY = clientY !== undefined ? clientY : (fRect.top + bottleBox.top + bottleBox.height * 0.45);
+
+      // Phản hồi xúc giác & âm thanh giọt nước ban đầu
+      if (this.options.enableHaptics && window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate([18, 30, 18]); } catch (_) { }
+      }
+      if (this.options.enableAudio) {
+        this.playDewdropGlowTone();
+      }
+
+      this.createTouchWaveVisual(touchX, touchY);
+      this.addTableCausticWave(bottleBox.left + bottleBox.width * 0.5, bottleBox.top + bottleBox.height * 0.95);
+
+      // ------------------------------------------------------------
+      // BƯỚC 1: CÁC GIỌT NƯỚC TRÊN CHAI PHÁT SÁNG (0ms - 600ms)
+      // ------------------------------------------------------------
+      const oldShaker = this.container.querySelector('.toner-message-bottle');
+      if (oldShaker) oldShaker.remove();
+
+      const tonerShaker = document.createElement('div');
+      tonerShaker.className = 'bottle-shaker-element toner-message-bottle bottle-focused';
+      tonerShaker.style.left = `${bottleBox.left.toFixed(1)}px`;
+      tonerShaker.style.top = `${bottleBox.top.toFixed(1)}px`;
+      tonerShaker.style.width = `${bottleBox.width.toFixed(1)}px`;
+      tonerShaker.style.height = `${bottleBox.height.toFixed(1)}px`;
+
+      // Hào quang xanh ngọc sương nước bao bọc thân chai
+      const auraEl = document.createElement('div');
+      auraEl.className = 'toner-bottle-aura active';
+      tonerShaker.appendChild(auraEl);
+
+      // Vệt sáng lướt qua thân chai thủy tinh
+      const sheenEl = document.createElement('div');
+      sheenEl.className = 'toner-glass-sheen';
+      tonerShaker.appendChild(sheenEl);
+
+      // Tạo các giọt nước trong suốt phát sáng lung linh bám dọc thân chai
+      this.createTonerWaterDrops(tonerShaker, bottleBox);
+
+      this.container.appendChild(tonerShaker);
+
+      // ------------------------------------------------------------
+      // BƯỚC 2: CÁC HẠT SÁNG BAY LÊN (350ms - 1500ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        if (this.options.enableAudio) {
+          this.playFloatingParticlesTone();
+        }
+        this.spawnTonerRisingParticles(bottleBox);
+      }, 350);
+
+      // ------------------------------------------------------------
+      // BƯỚC 3: MỘT CÀNH HOA XUẤT HIỆN (800ms)
+      // ------------------------------------------------------------
+      const branchOriginX = fRect.left + bottleBox.left + bottleBox.width * 0.52;
+      const branchOriginY = fRect.top + bottleBox.top + bottleBox.height * 0.12;
+
+      setTimeout(() => {
+        this.spawnBranchEmergenceFlash(branchOriginX, branchOriginY);
+      }, 780);
+
+      // ------------------------------------------------------------
+      // BƯỚC 4: CÀNH HOA UỐN LƯỢN THEO ĐƯỜNG BAY (TRAJECTORY) (950ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        // Tọa độ trung tâm màn hình (đích đến của lá thư)
+        const centerScreenX = fRect.left + fRect.width * 0.50;
+        const centerScreenY = fRect.top + fRect.height * 0.46;
+
+        const deltaX = centerScreenX - branchOriginX;
+        const deltaY = centerScreenY - branchOriginY;
+
+        // Quỹ đạo Spline uốn lượn hình sóng gió từ chai toner về trung tâm
+        const tonerTrajectory = {
+          id: 'TONER_TO_CENTER',
+          name: 'Quỹ đạo cành hoa dẫn lối lời nhắn',
+          baseDuration: 2200,
+          points: [
+            { x: 35, y: 40 },                                // P0: Tiếp tuyến phóng ban đầu
+            { x: 0, y: 0 },                                  // P1: Điểm cành hoa xuất hiện (đỉnh chai toner)
+            { x: 60, y: -90 },                               // P2: Vút lên cao sang phải đón luồng gió hạt sáng
+            { x: -15, y: -130 },                             // P3: Uốn đỉnh vòm lượn cong mềm mại sang trái
+            { x: deltaX * 0.58 + 25, y: deltaY * 0.45 - 25 },// P4: Đáy võng lượn hướng vào trung tâm
+            { x: deltaX, y: deltaY },                        // P5: ĐÍCH ĐẾN CHÍNH XÁC TẠI TRUNG TÂM MÀN HÌNH
+            { x: deltaX - 10, y: deltaY + 5 }                // P6: Tiếp tuyến hãm phanh êm ái
+          ]
+        };
+
+        let transformStarted = false;
+
+        // Bộ hẹn giờ an toàn đảm bảo lá thư xuất hiện đúng hẹn kể cả khi trình duyệt giảm FPS
+        const safetyTimer = setTimeout(() => {
+          if (!transformStarted) {
+            transformStarted = true;
+            this.triggerLetterTransformation(centerScreenX, centerScreenY, tonerShaker);
+          }
+        }, 2250);
+
+        if (window.branchEngine) {
+          window.branchEngine.launch({
+            originX: branchOriginX,
+            originY: branchOriginY,
+            branchIndex: 0, // Cành hoa 1 xanh ngát đọng hoa đậu biếc tím biếc
+            trajectory: tonerTrajectory,
+            dir: 1,
+            distScale: 1.0,
+            duration: 2150,
+            allowPetalDetach: true,
+            onProgress: (progress, curX, curY) => {
+              // Bụi sáng lấp lánh nối dài theo đường bay
+              if (Math.random() < 0.4) {
+                this.spawnFlightStardust(curX, curY);
+              }
+
+              // ------------------------------------------------------------
+              // BƯỚC 5: CUỐI TRAJECTORY, HIỆU ỨNG BIẾN THÀNH MỘT LÁ THƯ
+              // ------------------------------------------------------------
+              if (progress >= 0.94 && !transformStarted) {
+                transformStarted = true;
+                clearTimeout(safetyTimer);
+                this.triggerLetterTransformation(curX, curY, tonerShaker);
+              }
+            },
+            onComplete: (endX, endY) => {
+              if (!transformStarted) {
+                transformStarted = true;
+                clearTimeout(safetyTimer);
+                this.triggerLetterTransformation(endX, endY, tonerShaker);
+              }
+            }
+          });
+        } else {
+          // Fallback an toàn nếu chưa tải branchEngine
+          setTimeout(() => {
+            if (!transformStarted) {
+              transformStarted = true;
+              clearTimeout(safetyTimer);
+              this.triggerLetterTransformation(centerScreenX, centerScreenY, tonerShaker);
+            }
+          }, 1800);
+        }
+      }, 950);
+    }
+
+    // 1. Tạo các giọt nước trên thân chai phát sáng lung linh
+    createTonerWaterDrops(tonerShaker, bottleBox) {
+      if (!tonerShaker) return;
+
+      const dropConfigs = [
+        { left: '38%', top: '22%', size: 9, delay: 0 },
+        { left: '62%', top: '26%', size: 11, delay: 50 },
+        { left: '26%', top: '35%', size: 8, delay: 90 },
+        { left: '50%', top: '38%', size: 14, delay: 130 },
+        { left: '72%', top: '44%', size: 10, delay: 170 },
+        { left: '34%', top: '50%', size: 12, delay: 210 },
+        { left: '58%', top: '56%', size: 13, delay: 250 },
+        { left: '22%', top: '63%', size: 9, delay: 290 },
+        { left: '46%', top: '68%', size: 15, delay: 330 },
+        { left: '68%', top: '74%', size: 11, delay: 370 },
+        { left: '36%', top: '80%', size: 10, delay: 410 },
+        { left: '54%', top: '85%', size: 12, delay: 450 },
+        { left: '42%', top: '16%', size: 7, delay: 60 },
+        { left: '65%', top: '62%', size: 9, delay: 280 }
+      ];
+
+      dropConfigs.forEach((cfg) => {
+        const drop = document.createElement('div');
+        drop.className = 'toner-water-drop';
+        drop.style.left = cfg.left;
+        drop.style.top = cfg.top;
+        drop.style.width = `${cfg.size}px`;
+        drop.style.height = `${Math.round(cfg.size * 1.25)}px`;
+        drop.style.animationDelay = `${cfg.delay}ms`;
+
+        // Lớp phản chiếu ánh sáng và khúc xạ giọt sương thủy tinh
+        const glint = document.createElement('span');
+        glint.className = 'toner-drop-glint';
+        drop.appendChild(glint);
+
+        const refraction = document.createElement('span');
+        refraction.className = 'toner-drop-refraction';
+        drop.appendChild(refraction);
+
+        tonerShaker.appendChild(drop);
+      });
+    }
+
+    // 2. Tạo các hạt sáng bay lên từ thân chai toner
+    spawnTonerRisingParticles(bottleBox) {
+      if (!this.container) return;
+
+      const count = 30;
+
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          if (!this.activeSequences.has('toner')) return;
+
+          const p = document.createElement('div');
+          p.className = 'toner-rising-mote';
+
+          // Xuất phát từ mặt chai hoặc vai chai toner
+          const startRelX = 0.25 + Math.random() * 0.50;
+          const startRelY = 0.20 + Math.random() * 0.70;
+          const startX = bottleBox.left + bottleBox.width * startRelX;
+          const startY = bottleBox.top + bottleBox.height * startRelY;
+
+          const driftX = (Math.random() - 0.5) * 60;
+          const riseDist = 120 + Math.random() * 220;
+          const duration = 1400 + Math.random() * 800;
+          const size = 4 + Math.random() * 6;
+
+          p.style.left = `${startX.toFixed(1)}px`;
+          p.style.top = `${startY.toFixed(1)}px`;
+          p.style.width = `${size.toFixed(1)}px`;
+          p.style.height = `${size.toFixed(1)}px`;
+          p.style.setProperty('--drift-x', `${driftX.toFixed(1)}px`);
+          p.style.setProperty('--rise-y', `-${riseDist.toFixed(1)}px`);
+          p.style.animationDuration = `${duration}ms`;
+
+          // Đốm sáng có ánh sao lấp lánh
+          if (Math.random() < 0.35) {
+            p.innerHTML = '<span class="mote-star">✦</span>';
+          }
+
+          this.container.appendChild(p);
+
+          setTimeout(() => {
+            if (p.parentElement) p.remove();
+          }, duration + 50);
+        }, i * 38);
+      }
+    }
+
+    // 3. Vệt sáng bừng nở khi cành hoa xuất hiện
+    spawnBranchEmergenceFlash(x, y) {
+      if (!this.container) return;
+      const fRect = this.container.getBoundingClientRect();
+      const localX = x - fRect.left;
+      const localY = y - fRect.top;
+
+      const flash = document.createElement('div');
+      flash.className = 'toner-branch-spawn-flash';
+      flash.style.left = `${localX}px`;
+      flash.style.top = `${localY}px`;
+      this.container.appendChild(flash);
+
+      setTimeout(() => flash.remove(), 900);
+    }
+
+    // 4. Bụi sáng lấp lánh nối dài theo đường bay của cành hoa
+    spawnFlightStardust(x, y) {
+      if (!this.container) return;
+      const fRect = this.container.getBoundingClientRect();
+      const localX = x - fRect.left;
+      const localY = y - fRect.top;
+
+      const spark = document.createElement('div');
+      spark.className = 'toner-flight-stardust';
+      spark.style.left = `${(localX + (Math.random() - 0.5) * 20).toFixed(1)}px`;
+      spark.style.top = `${(localY + (Math.random() - 0.5) * 20).toFixed(1)}px`;
+      this.container.appendChild(spark);
+
+      setTimeout(() => spark.remove(), 750);
+    }
+
+    // 5. Cuối trajectory: Hiệu ứng biến đổi thành lá thư (Transformation Vortex)
+    triggerLetterTransformation(centerX, centerY, tonerShaker) {
+      if (document.getElementById('tonerMessageModal')) return;
+
+      const fRect = this.container.getBoundingClientRect();
+      const localX = centerX - fRect.left;
+      const localY = centerY - fRect.top;
+
+      // Giảm sáng nhẹ background để tôn vinh sự xuất hiện của lá thư
+      this.dimBackgroundGently();
+
+      if (this.options.enableAudio) {
+        this.playLetterUnfoldTone();
+      }
+
+      // Vòng xoáy biến hình ánh sáng và cánh hoa (Transformation Vortex)
+      const vortex = document.createElement('div');
+      vortex.className = 'toner-transform-vortex';
+      vortex.style.left = `${localX}px`;
+      vortex.style.top = `${localY}px`;
+
+      // 12 tia sáng hoa cúc / ngôi sao xoay tròn
+      for (let s = 0; s < 12; s++) {
+        const spark = document.createElement('div');
+        spark.className = 'transform-vortex-spark';
+        const angle = (s / 12) * Math.PI * 2;
+        const dist = 45 + Math.random() * 45;
+        spark.style.setProperty('--tx', `${(Math.cos(angle) * dist).toFixed(1)}px`);
+        spark.style.setProperty('--ty', `${(Math.sin(angle) * dist).toFixed(1)}px`);
+        vortex.appendChild(spark);
+      }
+
+      // Vòng cánh hoa đậu biếc bung xòe 3D
+      const petalRing = document.createElement('div');
+      petalRing.className = 'transform-petal-ring';
+      for (let p = 0; p < 6; p++) {
+        const petal = document.createElement('img');
+        petal.src = `assets/images/falling_branches/petal_${(p % 3) + 1}.png`;
+        petal.className = 'transform-ring-petal';
+        const rot = p * 60;
+        petal.style.setProperty('--rot', `${rot}deg`);
+        petalRing.appendChild(petal);
+      }
+      vortex.appendChild(petalRing);
+
+      this.container.appendChild(vortex);
+
+      // Sau 420ms, hiển thị lá thư chính thức mở ra từ tâm điểm biến hình
+      setTimeout(() => {
+        this.displayTonerLetterModal(tonerShaker, { x: localX, y: localY });
+      }, 420);
+
+      setTimeout(() => {
+        if (vortex.parentElement) vortex.remove();
+      }, 1600);
+    }
+
+    // 6. Hiển thị lá thư ở trung tâm màn hình (Letter Modal)
+    displayTonerLetterModal(tonerShaker) {
+      const existing = document.getElementById('tonerMessageModal');
+      if (existing) existing.remove();
+
+      // Dữ liệu lá thư (ưu tiên lấy từ window.TONER_LETTER_DATA, fallback static data)
+      const data = window.TONER_LETTER_DATA || InteractionEngine.TONER_LETTER_DATA;
+
+      // Backdrop nền làm mờ dịu mắt
+      let backdrop = document.getElementById('tonerMessageBackdrop');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'tonerMessageBackdrop';
+        backdrop.className = 'toner-message-backdrop';
+        this.container.appendChild(backdrop);
+      }
+      requestAnimationFrame(() => backdrop.classList.add('active'));
+
+      const modal = document.createElement('div');
+      modal.className = 'toner-message-modal';
+      modal.id = 'tonerMessageModal';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'tonerLetterTitle');
+
+      modal.innerHTML = `
+        <div class="toner-letter-card" id="tonerLetterCard">
+          <div class="toner-card-ambient-glow" aria-hidden="true"></div>
+          
+          <!-- Họa tiết hoa đậu biếc & huy hiệu niêm phong phong thư -->
+          <div class="toner-letter-top-ornament" aria-hidden="true">
+            <div class="toner-wax-seal">
+              <span class="wax-seal-gem">❀</span>
+            </div>
+            <div class="toner-seal-ribbon"></div>
+          </div>
+
+          <div class="toner-letter-header">
+            <span class="toner-tag-badge" id="tonerLetterTag">${data.tag || 'Hydrating Toner • Lời Nhắn Dành Cho Em'}</span>
+            <span class="toner-date-stamp" id="tonerLetterDate">${data.date || '30.09.2026'}</span>
+          </div>
+
+          <div class="toner-letter-divider" aria-hidden="true">
+            <span class="toner-divider-line"></span>
+            <span class="toner-divider-flower">❦</span>
+            <span class="toner-divider-line"></span>
+          </div>
+
+          <div class="toner-letter-inner-content">
+            <h3 class="toner-letter-salutation" id="tonerLetterSalutation">${data.salutation || 'Gửi em,'}</h3>
+            
+            <div class="toner-letter-paragraphs" id="tonerLetterParagraphs">
+              <!-- Render từng dòng câu chữ -->
+            </div>
+
+            <div class="toner-letter-signoff">
+              <p class="toner-letter-closing" id="tonerLetterClosing">${data.closing || 'Thương em,'}</p>
+              <p class="toner-letter-sender" id="tonerLetterSender">${data.sender || 'Cá Sudo ♡ Khây Ti'}</p>
+            </div>
+          </div>
+
+          <div class="toner-letter-action-bar">
+            <button type="button" class="toner-letter-close-btn" id="tonerLetterCloseBtn" aria-label="Khép lại lá thư">
+              <span class="btn-bracket">[</span>
+              <span class="btn-text">Khép lại lá thư</span>
+              <span class="btn-bracket">]</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      this.container.appendChild(modal);
+
+      const card = modal.querySelector('#tonerLetterCard');
+      const paragraphsEl = modal.querySelector('#tonerLetterParagraphs');
+      const closeBtn = modal.querySelector('#tonerLetterCloseBtn');
+
+      // Render nội dung các đoạn văn bản
+      this.renderTonerLetterBody(paragraphsEl, data);
+
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        if (card) {
+          card.classList.add('revealed');
+        }
+        if (closeBtn) {
+          setTimeout(() => closeBtn.focus(), 2400);
+        }
+      });
+
+      // ============================================================
+      // NGƯỜI DÙNG TỰ ĐÓNG LÁ THƯ (KHÔNG TỰ ĐỘNG ĐÓNG)
+      // ============================================================
+      const closeLetter = () => {
+        this.closeTonerLetterModal(modal, backdrop, tonerShaker);
+      };
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeLetter();
+        });
+      }
+
+      backdrop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLetter();
+      });
+
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          closeLetter();
+        }
+      };
+
+      document.addEventListener('keydown', handleKeydown, { once: true });
+    }
+
+    // Render các dòng của lá thư mềm mại
+    renderTonerLetterBody(containerEl, data) {
+      if (!containerEl) return;
+      containerEl.innerHTML = '';
+
+      let lines = [];
+      if (Array.isArray(data.paragraphs)) {
+        lines = data.paragraphs;
+      } else if (typeof data.paragraphs === 'string') {
+        lines = data.paragraphs.split('\n');
+      } else if (typeof data.message === 'string') {
+        lines = data.message.split('\n');
+      } else {
+        lines = [
+          "Cảm ơn vì đã xuất hiện",
+          "trong những ngày bình thường",
+          "và khiến chúng trở nên",
+          "đặc biệt hơn."
+        ];
+      }
+
+      lines.forEach((line, idx) => {
+        const trimmed = line.trim();
+        if (trimmed === '') {
+          const spacer = document.createElement('div');
+          spacer.className = 'toner-line-spacer';
+          containerEl.appendChild(spacer);
+        } else {
+          const p = document.createElement('p');
+          p.className = `toner-letter-line toner-line-${idx + 1}`;
+          p.textContent = trimmed;
+          p.style.animationDelay = `${0.35 + idx * 0.22}s`;
+          containerEl.appendChild(p);
+        }
+      });
+    }
+
+    // Đóng hoàn toàn lá thư và dọn dẹp trạng thái
+    closeTonerLetterModal(modal, backdrop, tonerShaker) {
+      if (!modal) return;
+
+      modal.classList.add('closing');
+      modal.classList.remove('active');
+
+      if (backdrop) {
+        backdrop.classList.remove('active');
+        backdrop.classList.add('fading');
+      }
+
+      if (tonerShaker) {
+        tonerShaker.classList.add('shaker-fade-out');
+      }
+
+      setTimeout(() => {
+        modal.remove();
+        if (backdrop) backdrop.remove();
+        if (tonerShaker) tonerShaker.remove();
+        this.activeSequences.delete('toner');
+      }, 620);
+    }
+
+    // Cập nhật nội dung thư bằng JavaScript hoặc JSON (Runtime / Programmatic)
+    setTonerMessage(dataOrJson) {
+      try {
+        let parsed = dataOrJson;
+        if (typeof dataOrJson === 'string') {
+          try {
+            parsed = JSON.parse(dataOrJson);
+          } catch (_) {
+            parsed = { paragraphs: dataOrJson.split('\n') };
+          }
+        }
+
+        if (parsed && typeof parsed === 'object') {
+          if (typeof parsed.paragraphs === 'string') {
+            parsed.paragraphs = parsed.paragraphs.split('\n');
+          } else if (typeof parsed.message === 'string' && !parsed.paragraphs) {
+            parsed.paragraphs = parsed.message.split('\n');
+          }
+
+          window.TONER_LETTER_DATA = Object.assign({}, window.TONER_LETTER_DATA || InteractionEngine.TONER_LETTER_DATA, parsed);
+
+          // Cập nhật tức thời nếu lá thư đang mở trên màn hình
+          const modal = document.getElementById('tonerMessageModal');
+          if (modal) {
+            const sal = modal.querySelector('#tonerLetterSalutation');
+            if (sal && parsed.salutation) sal.textContent = parsed.salutation;
+
+            const paragraphsEl = modal.querySelector('#tonerLetterParagraphs');
+            if (paragraphsEl) this.renderTonerLetterBody(paragraphsEl, window.TONER_LETTER_DATA);
+
+            const clo = modal.querySelector('#tonerLetterClosing');
+            if (clo && parsed.closing) clo.textContent = parsed.closing;
+
+            const sen = modal.querySelector('#tonerLetterSender');
+            if (sen && parsed.sender) sen.textContent = parsed.sender;
+
+            const tag = modal.querySelector('#tonerLetterTag');
+            if (tag && parsed.tag) tag.textContent = parsed.tag;
+
+            const date = modal.querySelector('#tonerLetterDate');
+            if (date && parsed.date) date.textContent = parsed.date;
+          }
+
+          return true;
+        }
+      } catch (err) {
+        console.error('Lỗi khi thiết lập nội dung lá thư Toner:', err);
+      }
+      return false;
+    }
+
+    getTonerMessage() {
+      return JSON.parse(JSON.stringify(window.TONER_LETTER_DATA || InteractionEngine.TONER_LETTER_DATA));
+    }
+
+    // Âm thanh giọt sương phát sáng (Crystalline Dewdrop Arpeggio)
+    playDewdropGlowTone() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        // Gam hợp âm C major 7 / 9 trong trẻo như giọt sương: E6, G6, B6, D7, E7
+        const freqs = [1318.51, 1567.98, 1975.53, 2349.32, 2637.02];
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.045);
+
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(freq, now + idx * 0.045);
+          filter.Q.value = 8;
+
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.045);
+          gain.gain.linearRampToValueAtTime(0.022, now + idx * 0.045 + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.045 + 0.45);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now + idx * 0.045);
+          osc.stop(now + idx * 0.045 + 0.48);
+        });
+      } catch (_) { }
+    }
+
+    // Âm thanh hạt sáng bay lên bồng bềnh
+    playFloatingParticlesTone() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const freqs = [880.0, 1174.66, 1396.91, 1760.0]; // A5, D6, F6, A6
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.08, now + idx * 0.08 + 0.6);
+
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.018, now + idx * 0.08 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.7);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.75);
+        });
+      } catch (_) { }
+    }
+
+    // Âm thanh mở lá thư ấm áp & thi vị (F Major 9 Chord)
+    playLetterUnfoldTone() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        // Gam hợp âm F Major 9 ấm áp, thơ mộng và ngọt ngào (F4, A4, C5, E5, G5, A5)
+        const freqs = [349.23, 440.0, 523.25, 659.25, 783.99, 880.0];
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2400, now + idx * 0.06);
+          filter.frequency.exponentialRampToValueAtTime(750, now + idx * 0.06 + 1.2);
+
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.06);
+          gain.gain.linearRampToValueAtTime(0.026 / (1 + idx * 0.15), now + idx * 0.06 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.06 + 1.4);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 1.45);
+        });
+      } catch (_) { }
+    }
+
+    // ============================================================
     // HIỆU ỨNG THỊ GIÁC: SÓNG NƯỚC, ĐỐM SÁNG & GỢN GIÓ
     // ============================================================
     // Gợn sóng chạm nhẹ tại điểm tiếp xúc
@@ -1722,6 +3344,42 @@
 
   // Gán lớp và Singleton toàn cục
   window.InteractionEngine = InteractionEngine;
+
+  // Dữ liệu lá thư toàn cục có thể tùy biến qua JavaScript hoặc JSON
+  window.TONER_LETTER_DATA = Object.assign({}, InteractionEngine.TONER_LETTER_DATA);
+
+  // API hỗ trợ chỉnh sửa nội dung thư dạng chuỗi JSON hoặc Object
+  window.setTonerMessage = function (dataOrJson) {
+    if (window.interactionEngine && typeof window.interactionEngine.setTonerMessage === 'function') {
+      return window.interactionEngine.setTonerMessage(dataOrJson);
+    }
+    try {
+      let parsed = dataOrJson;
+      if (typeof dataOrJson === 'string') {
+        try { parsed = JSON.parse(dataOrJson); } catch (_) { parsed = { paragraphs: dataOrJson.split('\n') }; }
+      }
+      if (parsed && typeof parsed === 'object') {
+        window.TONER_LETTER_DATA = Object.assign({}, window.TONER_LETTER_DATA, parsed);
+        return true;
+      }
+    } catch (_) { }
+    return false;
+  };
+
+  window.getTonerMessage = function () {
+    if (window.interactionEngine && typeof window.interactionEngine.getTonerMessage === 'function') {
+      return window.interactionEngine.getTonerMessage();
+    }
+    return JSON.parse(JSON.stringify(window.TONER_LETTER_DATA || InteractionEngine.TONER_LETTER_DATA));
+  };
+
+  window.resetTonerMessage = function () {
+    window.TONER_LETTER_DATA = Object.assign({}, InteractionEngine.TONER_LETTER_DATA);
+    if (window.interactionEngine && typeof window.interactionEngine.setTonerMessage === 'function') {
+      window.interactionEngine.setTonerMessage(window.TONER_LETTER_DATA);
+    }
+    return window.getTonerMessage();
+  };
 
   function initInteractionEngine() {
     if (!window.interactionEngine) {

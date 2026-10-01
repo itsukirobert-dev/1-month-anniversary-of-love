@@ -846,6 +846,22 @@
         return;
       }
 
+      // Hũ RADIANCE CREAM: CREAM = DÒNG THỜI GIAN
+      if (bottleId === 'cream') {
+        if (window.interactionEngine && typeof window.interactionEngine.trigger === 'function') {
+          window.interactionEngine.trigger('cream');
+        }
+        return;
+      }
+
+      // Chai HYDRATING TONER: TONER = LỜI NHẮN
+      if (bottleId === 'toner') {
+        if (window.interactionEngine && typeof window.interactionEngine.trigger === 'function') {
+          window.interactionEngine.trigger('toner');
+        }
+        return;
+      }
+
       // Xóa thẻ cũ của chai này nếu đang có
       const existing = this.activeScentCards.get(bottleId);
       if (existing && existing.parentElement) {

@@ -586,7 +586,8 @@
     // --- Chọn quỹ đạo ngẫu nhiên không lặp lại ---
     pickTrajectory(forcedCode = null) {
       if (forcedCode) {
-        const found = TRAJECTORY_PRESETS.find(t => t.id === forcedCode.toUpperCase());
+        if (typeof forcedCode === 'object' && Array.isArray(forcedCode.points)) return forcedCode;
+        const found = TRAJECTORY_PRESETS.find(t => t.id === String(forcedCode).toUpperCase());
         if (found) return found;
       }
 
@@ -619,7 +620,7 @@
       const bWidth = Math.round(bCfg.width * sizeScale);
       const bHeight = Math.round(bCfg.height * sizeScale);
 
-      // 3. Chọn Quỹ đạo bay (A, B, C, D)
+      // 3. Chọn Quỹ đạo bay (A, B, C, D hoặc tùy biến)
       const trajPreset = this.pickTrajectory(options.trajectory || (this.selectedTrajectoryCode === 'RANDOM' ? null : this.selectedTrajectoryCode));
 
       // 4. Hướng bay (dir: +1 sang phải, -1 đối xứng sang trái)
@@ -635,7 +636,9 @@
       }
 
       // Hệ số khoảng cách theo độ phân giải màn hình
-      const distScale = isMobile ? (0.75 + Math.random() * 0.1) : (1.05 + Math.random() * 0.15);
+      const distScale = options.distScale !== undefined
+        ? options.distScale
+        : (isMobile ? (0.75 + Math.random() * 0.1) : (1.05 + Math.random() * 0.15));
 
       // 5. Tạo cấu trúc DOM hoàn chỉnh (Unified Hierarchical Object)
       const branchItem = document.createElement('div');
@@ -702,7 +705,9 @@
       }
 
       // 7. Tạo đối tượng dữ liệu vật lý của cành hoa
-      const durationMs = trajPreset.baseDuration * (0.94 + Math.random() * 0.12);
+      const durationMs = options.duration !== undefined
+        ? options.duration
+        : trajPreset.baseDuration * (0.94 + Math.random() * 0.12);
       const branchObj = {
         el: branchItem,
         blurWrapper: blurWrapper,
@@ -739,7 +744,9 @@
         prevX: originX,
         prevY: originY,
         vx: 0,
-        vy: 0
+        vy: 0,
+        onProgress: options.onProgress,
+        onComplete: options.onComplete
       };
 
       this.activeBranches.push(branchObj);
@@ -938,8 +945,20 @@
         br.stemFlex.style.transform = `skewX(${br.currentSkew.toFixed(1)}deg) scaleY(${stemScaleY.toFixed(3)})`;
         br.el.style.opacity = alpha.toFixed(3);
 
+        // Kích hoạt callback tiến độ bay
+        if (typeof br.onProgress === 'function') {
+          try {
+            br.onProgress(rawProgress, curX, curY, br);
+          } catch (_) {}
+        }
+
         // Kết thúc hành trình: Xóa khỏi DOM sạch sẽ
         if (rawProgress >= 1.0) {
+          if (typeof br.onComplete === 'function') {
+            try {
+              br.onComplete(curX, curY, br);
+            } catch (_) {}
+          }
           br.el.remove();
           this.activeBranches.splice(i, 1);
         }
