@@ -8,6 +8,7 @@
 @import url('branch-engine.css');
 @import url('petal-engine.css');
 @import url('scent-engine.css');
+@import url('story-transition-engine.css');
 
 :root {
   /* Báº£ng mÃ u chÃ­nh: Xanh Sapphire (CÃ¡ Sudo) káº¿t há»£p Há»“ng Dá»‹u DÃ ng (KhÃ¢y Ti) */
@@ -472,19 +473,19 @@ body {
   position: absolute;
   bottom: 24px;
   right: 24px;
-  background: rgba(255, 255, 255, 0.90);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(225, 29, 72, 0.2);
-  color: #334155;
-  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  color: #475569;
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  gap: 7px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
   pointer-events: none;
   z-index: 12;
   animation: hint-float-glow 3.5s ease-in-out infinite;
@@ -583,21 +584,21 @@ body {
 
 .fragrance-moment-card {
   position: absolute;
-  pointer-events: none;
+  pointer-events: auto;
   user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 10px 22px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(147, 197, 253, 0.55);
+  padding: 8px 16px 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   box-shadow:
-    0 12px 30px rgba(15, 23, 42, 0.16),
-    0 0 25px rgba(147, 197, 253, 0.40),
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    0 0 16px rgba(255, 255, 255, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
   transform: translate(-50%, -40%) scale(0.92);
   opacity: 0;
@@ -616,18 +617,18 @@ body {
   opacity: 0;
   transform: translate(-50%, -90%) scale(1.06);
   filter: blur(6px);
-  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), filter 0.9s ease;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease;
 }
 
 @keyframes fragrance-card-hover {
   0% {
     transform: translate(-50%, -60%) translateY(0);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16), 0 0 25px rgba(147, 197, 253, 0.40);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08), 0 0 16px rgba(255, 255, 255, 0.5);
   }
 
   100% {
-    transform: translate(-50%, -60%) translateY(-6px);
-    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.20), 0 0 32px rgba(199, 210, 254, 0.55);
+    transform: translate(-50%, -60%) translateY(-5px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12), 0 0 24px rgba(199, 210, 254, 0.45);
   }
 }
 
@@ -635,22 +636,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  gap: 5px;
+  font-size: 0.78rem;
   line-height: 1;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .fragrance-sparkle-row .f-star {
   color: #38bdf8;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+  filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.7));
   animation: f-sparkle-pulse 1.8s ease-in-out infinite alternate;
 }
 
 .fragrance-sparkle-row .f-dot {
-  color: #93c5fd;
-  font-size: 1.1rem;
-  font-weight: 800;
+  color: #93c5fa;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 @keyframes f-sparkle-pulse {
@@ -660,44 +661,71 @@ body {
   }
 
   100% {
-    transform: scale(1.2) rotate(12deg);
+    transform: scale(1.15) rotate(12deg);
     opacity: 1;
   }
 }
 
 .fragrance-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   color: #1e3a8a;
-  text-shadow: 0 0 12px rgba(147, 197, 253, 0.6);
-  line-height: 1.25;
+  text-shadow: 0 0 10px rgba(147, 197, 253, 0.5);
+  line-height: 1.2;
 }
 
 .fragrance-subtitle {
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
-  font-size: 0.84rem;
+  font-size: 0.72rem;
   color: #475569;
-  letter-spacing: 0.4px;
-  margin-top: 2px;
-  line-height: 1.3;
+  letter-spacing: 0.3px;
+  margin-top: 1px;
+  line-height: 1.25;
 }
 
 .fragrance-product-tag {
-  margin-top: 5px;
+  margin-top: 4px;
   display: inline-block;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #0284c7;
-  background: rgba(224, 242, 254, 0.65);
-  border: 1px solid rgba(186, 230, 253, 0.8);
+  background: rgba(224, 242, 254, 0.6);
+  border: 1px solid rgba(186, 230, 253, 0.7);
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.fragrance-close-btn {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
   padding: 2px 10px;
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(147, 197, 253, 0.5);
+  color: #1e40af;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.06);
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.fragrance-close-btn:hover {
+  background: rgba(239, 246, 255, 0.95);
+  border-color: #60a5fa;
+  color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .bottle-spray-flash {
@@ -908,11 +936,20 @@ body {
   inset: 0;
   z-index: 50;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 24px 28px;
   pointer-events: auto;
   opacity: 0;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-world-modal.dock-left {
+  justify-content: flex-start;
+}
+
+.product-world-modal.dock-right {
+  justify-content: flex-end;
 }
 
 .product-world-modal.active {
@@ -927,9 +964,9 @@ body {
 .world-card-backdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.28) 0%, rgba(15, 23, 42, 0.50) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   cursor: pointer;
   transition: opacity 0.4s ease;
 }
@@ -937,22 +974,22 @@ body {
 .world-card-container {
   position: relative;
   z-index: 2;
-  width: 90%;
-  max-width: 360px;
-  margin: auto;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(191, 219, 254, 0.85);
-  border-radius: 26px;
-  padding: 34px 28px 28px;
+  width: 100%;
+  max-width: 290px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
+  padding: 16px 18px 14px;
   text-align: center;
   box-shadow:
-    0 20px 45px rgba(15, 23, 42, 0.22),
-    0 0 35px rgba(147, 197, 253, 0.45),
+    0 12px 32px rgba(15, 23, 42, 0.08),
+    0 0 20px rgba(255, 255, 255, 0.6),
     inset 0 1px 1px rgba(255, 255, 255, 0.95);
-  transform: translateY(18px) scale(0.94);
-  transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+  transform: translateY(12px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
   will-change: transform, opacity;
   user-select: none;
 }
@@ -962,7 +999,7 @@ body {
 }
 
 .product-world-modal.closing .world-card-container {
-  transform: translateY(12px) scale(0.92);
+  transform: translateY(10px) scale(0.94);
   opacity: 0;
 }
 
@@ -970,13 +1007,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
 }
 
 .world-star {
-  font-size: 1.6rem;
+  font-size: 1.05rem;
   color: #38bdf8;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.95));
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
   animation: world-star-twinkle 2.2s ease-in-out infinite alternate;
   display: inline-block;
 }
@@ -984,33 +1021,33 @@ body {
 @keyframes world-star-twinkle {
   0% {
     transform: scale(0.9) rotate(-10deg);
-    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+    filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
   }
 
   100% {
-    transform: scale(1.25) rotate(15deg);
-    filter: drop-shadow(0 0 16px rgba(14, 165, 233, 1));
+    transform: scale(1.2) rotate(15deg);
+    filter: drop-shadow(0 0 12px rgba(14, 165, 233, 1));
   }
 }
 
 .world-brand-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   letter-spacing: 1.2px;
+  text-transform: uppercase;
   color: #1e3a8a;
-  text-shadow: 0 2px 10px rgba(147, 197, 253, 0.4);
-  margin-bottom: 6px;
+  margin-bottom: 3px;
   line-height: 1.2;
 }
 
 .world-product-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.08rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #2563eb;
-  letter-spacing: 0.5px;
-  margin-bottom: 18px;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
   line-height: 1.3;
 }
 
@@ -1018,19 +1055,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin: 18px auto;
-  max-width: 220px;
+  gap: 8px;
+  margin: 8px auto;
+  max-width: 140px;
 }
 
 .world-divider-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.8), transparent);
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.7), transparent);
 }
 
 .world-divider-gem {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #60a5fa;
   filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.8));
 }
@@ -1038,31 +1075,29 @@ body {
 .world-message {
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.80rem;
+  line-height: 1.6;
   color: #334155;
-  margin-bottom: 24px;
-  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
 }
 
 .world-close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 30px;
+  gap: 5px;
+  padding: 5px 18px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95) 0%, rgba(219, 234, 254, 0.95) 100%);
-  border: 1px solid rgba(147, 197, 253, 0.85);
-  color: #1d4ed8;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(147, 197, 253, 0.6);
+  color: #1e40af;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.8px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.6px;
   cursor: pointer;
-  box-shadow:
-    0 4px 14px rgba(37, 99, 235, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
 }
@@ -1074,51 +1109,62 @@ body {
 }
 
 .world-close-btn:hover {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  background: rgba(239, 246, 255, 0.95);
   border-color: #60a5fa;
-  color: #1e40af;
+  color: #1d4ed8;
   box-shadow:
-    0 6px 20px rgba(37, 99, 235, 0.25),
-    0 0 15px rgba(147, 197, 253, 0.5);
-  transform: translateY(-2px);
+    0 4px 12px rgba(37, 99, 235, 0.15),
+    0 0 10px rgba(191, 219, 254, 0.6);
+  transform: translateY(-1px);
 }
 
 .world-close-btn:hover .world-close-bracket:first-child {
-  transform: translateX(-3px);
+  transform: translateX(-2px);
 }
 
 .world-close-btn:hover .world-close-bracket:last-child {
-  transform: translateX(3px);
+  transform: translateX(2px);
 }
 
 .world-close-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
 }
 
 @media (max-width: 768px) {
+  .product-world-modal {
+    padding: 12px;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .product-world-modal.dock-left,
+  .product-world-modal.dock-right {
+    justify-content: center;
+  }
+
   .world-card-container {
-    max-width: 320px;
-    padding: 26px 20px 22px;
+    max-width: 280px;
+    padding: 14px 16px 12px;
   }
 
   .world-brand-title {
-    font-size: 1.22rem;
+    font-size: 0.78rem;
   }
 
   .world-product-name {
-    font-size: 0.98rem;
-    margin-bottom: 14px;
+    font-size: 0.74rem;
+    margin-bottom: 6px;
   }
 
   .world-message {
-    font-size: 0.96rem;
-    margin-bottom: 20px;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
   }
 
   .world-close-btn {
-    padding: 7px 24px;
-    font-size: 0.88rem;
+    padding: 4px 16px;
+    font-size: 0.70rem;
   }
 }
 
@@ -1154,18 +1200,19 @@ ul {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-  padding: 12px 0;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  padding: 8px 0;
   transition: var(--transition-smooth);
 }
 
 .site-header.scrolled {
-  padding: 8px 0;
-  box-shadow: var(--shadow-sm);
-  background: rgba(255, 255, 255, 0.98);
+  padding: 6px 0;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  background: rgba(255, 255, 255, 0.68);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.85);
 }
 
 .header-container {
@@ -1174,26 +1221,26 @@ ul {
   justify-content: space-between;
 }
 
-/* Brand Logo CÃ¡ Sudo */
+/* Brand Logo Cá Sudo */
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .logo-image-wrapper {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid var(--color-primary);
-  box-shadow: var(--shadow-blue);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
 
 .brand-logo:hover .logo-image-wrapper {
-  transform: rotate(8deg) scale(1.06);
+  transform: rotate(6deg) scale(1.04);
 }
 
 .logo-fish-img {
@@ -1209,8 +1256,9 @@ ul {
 
 .brand-name {
   font-family: var(--font-serif);
-  font-size: 1.18rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
   color: var(--text-title);
   line-height: 1.2;
 }
@@ -1218,14 +1266,14 @@ ul {
 .brand-name .heart-icon {
   color: var(--color-rose);
   display: inline-block;
-  font-size: 0.95em;
+  font-size: 0.9em;
   animation: heart-beat 1.6s infinite;
 }
 
 .brand-tagline {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.5px;
 }
 
@@ -1238,23 +1286,25 @@ ul {
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
 }
 
 .nav-link {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--text-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: #475569;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 2px;
+  gap: 5px;
+  padding: 4px 2px;
   position: relative;
+  transition: color 0.2s ease;
 }
 
 .nav-link i {
-  font-size: 0.85rem;
-  opacity: 0.8;
+  font-size: 0.74rem;
+  opacity: 0.75;
 }
 
 .nav-link:hover,
@@ -1268,7 +1318,7 @@ ul {
   bottom: 0;
   left: 0;
   width: 0%;
-  height: 2px;
+  height: 1.5px;
   background: var(--color-primary);
   border-radius: var(--radius-pill);
   transition: width 0.25s ease;
@@ -1283,40 +1333,45 @@ ul {
 .header-action-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .music-toggle-btn {
-  background: var(--color-primary-light);
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   color: var(--color-primary-dark);
-  padding: 7px 16px;
+  padding: 5px 13px;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
   font-family: inherit;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: var(--transition-fast);
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+  transition: all 0.25s ease;
 }
 
 .music-toggle-btn:hover {
-  background: var(--color-primary);
-  color: #fff;
-  box-shadow: var(--shadow-blue);
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(147, 197, 253, 0.8);
+  color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12), 0 0 10px rgba(186, 230, 253, 0.5);
 }
 
 .music-toggle-btn.playing {
-  background: var(--color-rose-light);
-  border-color: rgba(225, 29, 72, 0.25);
+  background: rgba(255, 241, 242, 0.65);
+  border-color: rgba(225, 29, 72, 0.3);
   color: var(--color-rose);
 }
 
 .music-toggle-btn.playing:hover {
-  background: var(--color-rose);
-  color: #fff;
+  background: rgba(255, 241, 242, 0.9);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15), 0 0 10px rgba(254, 205, 211, 0.6);
 }
 
 .mobile-menu-btn {

@@ -597,6 +597,48 @@
       return TRAJECTORY_PRESETS[choice];
     }
 
+    // --- Kích hoạt cành hoa bay ngang màn hình chậm rãi & êm dịu (Dành cho Lời Hẹn) ---
+    launchHorizontalAcross(options = {}) {
+      const isMobile = window.innerWidth < 768;
+      const fromLeft = options.fromLeft !== false;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+
+      // Xuất phát từ rìa trái (hoặc rìa phải nếu fromLeft: false)
+      const originX = fromLeft ? -100 : (screenW + 100);
+      const originY = options.originY !== undefined ? options.originY : (screenH * (0.32 + Math.random() * 0.12));
+      const totalSpan = screenW + 260;
+
+      // Quỹ đạo trôi ngang xuyên suốt màn hình với nhịp võng lượn sóng êm ái
+      const horizTraj = {
+        id: 'HORIZONTAL_ACROSS',
+        name: 'Quỹ đạo bay ngang màn hình',
+        symbol: '─── 🌸 ───',
+        detail: 'Cành hoa lướt bay ngang qua toàn bộ màn hình',
+        baseDuration: options.duration || (isMobile ? 5400 : 6200),
+        points: [
+          { x: -140, y: 0 },
+          { x: 0, y: 0 },
+          { x: totalSpan * 0.22, y: -26 },
+          { x: totalSpan * 0.48, y: 22 },
+          { x: totalSpan * 0.74, y: -18 },
+          { x: totalSpan * 1.02, y: 16 },
+          { x: totalSpan * 1.20, y: 24 }
+        ]
+      };
+
+      return this.launch({
+        originX: originX,
+        originY: originY,
+        dir: fromLeft ? 1 : -1,
+        branchIndex: options.branchIndex !== undefined ? options.branchIndex : 0,
+        trajectory: horizTraj,
+        distScale: 1.0,
+        duration: horizTraj.baseDuration,
+        allowPetalDetach: true
+      });
+    }
+
     // ============================================================
     // PHƯƠNG THỨC KÍCH HOẠT CHÍNH: LAUNCH CÀNH HOA HOÀN CHỈNH
     // ============================================================

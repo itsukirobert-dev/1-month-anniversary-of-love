@@ -19,12 +19,14 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="preview.css?v=27">
-  <link rel="stylesheet" href="background-engine.css?v=27">
-  <link rel="stylesheet" href="branch-engine.css?v=27">
-  <link rel="stylesheet" href="petal-engine.css?v=27">
-  <link rel="stylesheet" href="scent-engine.css?v=27">
-  <link rel="stylesheet" href="interaction-engine.css?v=27">
+  <link rel="stylesheet" href="preview.css?v=28">
+  <link rel="stylesheet" href="background-engine.css?v=28">
+  <link rel="stylesheet" href="branch-engine.css?v=28">
+  <link rel="stylesheet" href="petal-engine.css?v=28">
+  <link rel="stylesheet" href="scent-engine.css?v=28">
+  <link rel="stylesheet" href="interaction-engine.css?v=28">
+  <link rel="stylesheet" href="discovery-engine.css?v=29">
+  <link rel="stylesheet" href="story-transition-engine.css?v=28">
 </head>
 
 <body>
@@ -175,6 +177,9 @@
         <!-- Canvas làn sương hương thơm mỹ phẩm (Fragrance Mist Canvas) -->
         <canvas id="fragranceCanvas" class="fragrance-mist-canvas"></canvas>
 
+        <!-- Canvas động cơ mùi hương Scent Engine (Laminar Light Ribbon, Mist & Petals) -->
+        <canvas id="scentEngineCanvas" class="scent-engine-canvas" aria-hidden="true"></canvas>
+
         <!-- Container chứa các thẻ chữ bay bổng của mùi hương -->
         <div id="fragranceTextContainer" class="fragrance-text-container" aria-hidden="true"></div>
 
@@ -192,11 +197,13 @@
             style="left: 54%; top: 31%; width: 12%; height: 54%;" title="Butterfly Pea - Hydrating Toner (LỜI NHẮN)"
             aria-label="Butterfly Pea - Hydrating Toner (LỜI NHẮN)"></button>
           <button type="button" class="bottle-hotspot" data-bottle-id="essence"
-            style="left: 68%; top: 38%; width: 11%; height: 48%;" title="Butterfly Pea - Soothing Essence"
-            aria-label="Butterfly Pea - Soothing Essence"></button>
+            style="left: 68%; top: 38%; width: 11%; height: 48%;"
+            title="Butterfly Pea - Soothing Essence (HƯƠNG CỦA KỶ NIỆM)"
+            aria-label="Butterfly Pea - Soothing Essence (HƯƠNG CỦA KỶ NIỆM)"></button>
           <button type="button" class="bottle-hotspot" data-bottle-id="lipbalm"
-            style="left: 60%; top: 71%; width: 14%; height: 22%;" title="Butterfly Pea - Lip Balm Nourish & Glow"
-            aria-label="Butterfly Pea - Lip Balm Nourish & Glow"></button>
+            style="left: 60%; top: 71%; width: 14%; height: 22%;"
+            title="Butterfly Pea - Lip Balm Nourish & Glow (LỜI HẸN)"
+            aria-label="Butterfly Pea - Lip Balm Nourish & Glow (LỜI HẸN)"></button>
           <button type="button" class="bottle-hotspot" data-bottle-id="liptube"
             style="left: 77%; top: 51%; width: 11%; height: 40%;" title="Butterfly Pea - Lip Balm Tube"
             aria-label="Butterfly Pea - Lip Balm Tube"></button>
@@ -303,12 +310,14 @@
     </div>
   </footer>
 
-  <script src="background-engine.js?v=27"></script>
-  <script src="branch-engine.js?v=27"></script>
-  <script src="petal-engine.js?v=27"></script>
-  <script src="scent-engine.js?v=27"></script>
-  <script src="interaction-engine.js?v=27"></script>
-  <script src="script.js?v=27"></script>
+  <script src="background-engine.js?v=28"></script>
+  <script src="branch-engine.js?v=28"></script>
+  <script src="petal-engine.js?v=28"></script>
+  <script src="scent-engine.js?v=28"></script>
+  <script src="interaction-engine.js?v=28"></script>
+  <script src="discovery-engine.js?v=29"></script>
+  <script src="story-transition-engine.js?v=28"></script>
+  <script src="script.js?v=28"></script>
 </body>
 
 </html>

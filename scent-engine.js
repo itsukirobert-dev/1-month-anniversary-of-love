@@ -6,21 +6,27 @@
  * Hệ thống mô phỏng "MÙI HƯƠNG" bằng hiệu ứng ánh sáng & sương:
  * "Một mùi hương vô hình được nhìn thấy bằng ánh sáng."
  * 
+ * SOOTHING ESSENCE: ESSENCE = HƯƠNG CỦA KỶ NIỆM
+ * 
  * NGUYÊN LÝ THỊ GIÁC & QUANG HỌC:
  * 1. Không dùng khói thuốc, không khói dày, không xám đục.
  * 2. Ribbon ánh sáng (Laminar Light Ribbon): Các dải lụa quang học uốn lượn
  *    mềm mại theo đường cong khí động học, biểu thị luồng tinh dầu khuếch tán.
  * 3. Sương cực mỏng (Ultra-thin Ethereal Mist): Hạt sương siêu mịn với opacity
- *    rất thấp (0.04 - 0.08), tỏa nhẹ làm mát dịu không gian.
+ *    rất thấp (0.045 - 0.075), tỏa nhẹ làm mát dịu không gian, không khói dày.
  * 4. Glow xanh/trắng (Cyan/White Luminescence): Ánh hào quang ngọc bích hòa
  *    sắc đậu biếc tinh khôi, sáng trong trẻo mà không gắt.
  * 5. Hạt sáng nhỏ & Tinh vân (Micro-Sparkles & Stardust): Các phân tử hương
  *    thơm lấp lánh như bụi sao lững lờ trôi theo luồng đối lưu.
  * 6. Cánh hoa nhỏ trong dòng hương (Miniature Petals in Scent Stream):
  *    Một vài cánh hoa đậu biếc nhỏ nhắn (16px - 24px) xuất hiện tự nhiên
- *    trong dòng hương, bay lượn và xoay lật 3D theo đường cong của ánh sáng.
+ *    bên trong dòng hương, bay lượn và xoay lật 3D theo đường cong của ánh sáng.
  * 7. Vận tốc chậm, tan dần êm ái trong không khí (5.5 - 7 giây).
- * 8. Thẻ thi vị: "Butterfly Pea / một chút dịu dàng còn vương lại trong không khí..."
+ * 8. Thẻ thi vị:
+ *    Butterfly Pea
+ *    “một chút dịu dàng
+ *    còn vương lại
+ *    trong không khí...”
  * ============================================================
  */
 
@@ -86,7 +92,7 @@
       noise.start(now);
       noise.stop(now + 0.45);
 
-      // 2. Nốt nhạc Solfeggio 528Hz (Tần số bình yên & chữa lành)
+      // 2. Nốt nhạc Solfeggio 528Hz (Tần số bình yên & chữa lành tình yêu)
       const osc = ctx.createOscillator();
       const oscGain = ctx.createGain();
       osc.type = 'sine';
@@ -139,7 +145,7 @@
   class ScentEngine {
     constructor(options = {}) {
       this.options = Object.assign({
-        canvasId: 'fragranceCanvas',
+        canvasId: 'scentEngineCanvas',
         containerId: 'livingFrame',
         textContainerId: 'fragranceTextContainer',
         autoResize: true
@@ -166,10 +172,10 @@
       this.textContainer = document.getElementById(this.options.textContainerId) || document.querySelector('.fragrance-text-container');
 
       // Tìm hoặc tạo canvas dành riêng cho Scent Engine
-      this.canvas = document.getElementById(this.options.canvasId);
+      this.canvas = document.getElementById('scentEngineCanvas') || document.getElementById(this.options.canvasId);
       if (!this.canvas && this.livingFrame) {
         this.canvas = document.createElement('canvas');
-        this.canvas.id = this.options.canvasId;
+        this.canvas.id = 'scentEngineCanvas';
         this.canvas.className = 'scent-engine-canvas';
         this.livingFrame.appendChild(this.canvas);
       }
@@ -196,7 +202,7 @@
 
       this.width = rect.width;
       this.height = rect.height;
-      this.dpr = window.devicePixelRatio || 1;
+      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       this.canvas.width = Math.round(this.width * this.dpr);
       this.canvas.height = Math.round(this.height * this.dpr);
@@ -218,20 +224,22 @@
       const nozzleRelX = (bottle.nozzle && typeof bottle.nozzle.x === 'number') ? bottle.nozzle.x : 0.5;
       const nozzleRelY = (bottle.nozzle && typeof bottle.nozzle.y === 'number') ? bottle.nozzle.y : 0.5;
 
-      const originX = nozzleRelX * this.width;
-      const originY = nozzleRelY * this.height;
+      const originX = (typeof options.originX === 'number') ? options.originX : nozzleRelX * this.width;
+      const originY = (typeof options.originY === 'number') ? options.originY : nozzleRelY * this.height;
       const sprayAngle = (typeof bottle.sprayAngle === 'number') ? bottle.sprayAngle : 0;
 
-      const color = bottle.ribbonColor || { r: 147, g: 197, b: 253 };
+      const color = bottle.ribbonColor || { r: 125, g: 211, b: 252 };
 
-      // Phát âm thanh thanh thoát
-      playEtherealScentTone();
+      // Phát âm thanh thanh thoát nếu được phép
+      if (options.playAudio !== false) {
+        playEtherealScentTone();
+      }
 
       // Tạo đốm sáng flash ngay vòi xịt
       this.createNozzleFlash(originX, originY);
 
       // Hiển thị thẻ chữ thi vị "Butterfly Pea / một chút dịu dàng..."
-      if (options.showCard !== false) {
+      if (options.showCard) {
         this.showScentNoteCard(bottle, originX, originY);
       }
 
@@ -268,12 +276,13 @@
      * Khởi tạo một chùm hương hoàn chỉnh:
      * - Vòng sóng aura
      * - Các dải lụa Ribbon uốn lượn
-     * - Sương cực mỏng
-     * - Hạt sáng & stardust
-     * - Cánh hoa nhỏ bay trong dòng hương
+     * - Sương cực mỏng (không tạo hiệu ứng khói dày)
+     * - Hạt sáng & stardust lấp lánh
+     * - Cánh hoa nhỏ bay bên trong dòng hương
+     * - Dòng hương uốn lượn và tan dần
      */
     createScentPlume(config) {
-      const { originX, originY, sprayAngle, color } = config;
+      const { originX, originY, sprayAngle, color, bottle } = config;
 
       // Giới hạn số chùm hương đồng thời để tối ưu hiệu năng
       if (this.activePlumes.length >= 4) {
@@ -281,22 +290,25 @@
         oldest.maxLife = Math.min(oldest.maxLife, oldest.life + 28);
       }
 
-      const plumeHeight = Math.min(320, this.height * 0.46);
-      const driftDir = sprayAngle !== 0 ? Math.sign(sprayAngle) : (Math.random() > 0.5 ? 1 : -1);
+      // Nhận diện SOOTHING ESSENCE hoặc các vị trí ở nửa phải khung tranh
+      const isEssence = (bottle && bottle.id === 'essence') || originX > this.width * 0.65;
+      const plumeHeight = Math.min(340, this.height * 0.48);
+      // Với chai essence bên phải, uốn lượn nhẹ về phía tâm không gian mở bên trái (driftDir = -1)
+      const driftDir = isEssence ? -1 : (sprayAngle !== 0 ? Math.sign(sprayAngle) : (Math.random() > 0.5 ? 1 : -1));
 
-      // 1. Quỹ đạo Bézier trung tâm (Central Streamline)
+      // 1. Quỹ đạo Bézier trung tâm (Central Streamline) uốn lượn nhẹ nhàng
       const p0 = { x: originX, y: originY };
       const p1 = {
-        x: originX + sprayAngle * 45 + (Math.random() - 0.5) * 12,
+        x: originX + (isEssence ? -22 : sprayAngle * 45) + (Math.random() - 0.5) * 8,
         y: originY - plumeHeight * 0.28
       };
       const p2 = {
-        x: originX + sprayAngle * 95 + driftDir * (35 + Math.random() * 25),
-        y: originY - plumeHeight * 0.65
+        x: originX + (isEssence ? -62 : (sprayAngle * 95 + driftDir * (35 + Math.random() * 25))),
+        y: originY - plumeHeight * 0.66
       };
       const p3 = {
-        x: originX + sprayAngle * 135 + driftDir * (60 + Math.random() * 40),
-        y: originY - plumeHeight * 1.02
+        x: originX + (isEssence ? -98 : (sprayAngle * 135 + driftDir * (60 + Math.random() * 40))),
+        y: originY - plumeHeight * 1.05
       };
 
       // 2. Vòng sóng aura vi mô quanh miệng chai
@@ -307,22 +319,22 @@
 
       // 3. Ribbon ánh sáng uốn lượn (2 dải chính + 1 sợi filament trung tâm)
       const ribbons = [
-        // Ribbon chính: Mềm mại, lan tỏa sắc xanh ngọc đậu biếc
+        // Ribbon chính: Mềm mại, lan tỏa sắc xanh ngọc đậu biếc tinh khôi
         {
           id: 'main-ribbon',
           p0, p1, p2, p3,
-          color: color || { r: 147, g: 197, b: 253 },
-          maxWidth: 24,
-          baseAlpha: 0.22, // Opacity thấp đúng yêu cầu
-          waveFreq: 0.024,
-          waveAmp: 9,
-          twistFreq: 0.028,
+          color: color || { r: 125, g: 211, b: 252 },
+          maxWidth: 22,
+          baseAlpha: 0.20, // Opacity thấp đúng tiêu chuẩn sang trọng
+          waveFreq: 0.022,
+          waveAmp: 9.5,
+          twistFreq: 0.026,
           twistPhase: 0,
           life: 0,
-          maxLife: 320, // Chuyển động chậm (~5.3 giây)
-          detachDelay: 55
+          maxLife: 360, // Chuyển động chậm (~6 giây)
+          detachDelay: 52
         },
-        // Ribbon phụ: Dịu dàng, đan xen pha ngược lại
+        // Ribbon phụ: Dịu dàng, đan xen sắc tím lavender đậu biếc hoàng hôn
         {
           id: 'whisper-ribbon',
           p0,
@@ -330,15 +342,15 @@
           p2: { x: p2.x - driftDir * 20, y: p2.y },
           p3: { x: p3.x - driftDir * 28, y: p3.y - 12 },
           color: { r: 199, g: 210, b: 254 }, // Xanh tím Lavender đậu biếc
-          maxWidth: 18,
-          baseAlpha: 0.16, // Rất mỏng nhẹ
-          waveFreq: 0.032,
-          waveAmp: 7,
-          twistFreq: 0.035,
+          maxWidth: 16,
+          baseAlpha: 0.15, // Rất mỏng nhẹ
+          waveFreq: 0.028,
+          waveAmp: 7.5,
+          twistFreq: 0.032,
           twistPhase: 1.8,
           life: 0,
-          maxLife: 300,
-          detachDelay: 65
+          maxLife: 350,
+          detachDelay: 62
         },
         // Sợi filament phát sáng lõi (Luminous Core Thread)
         {
@@ -346,77 +358,77 @@
           p0, p1, p2, p3,
           color: { r: 255, g: 255, b: 255 }, // Trắng ngọc tinh khiết
           maxWidth: 2.2,
-          baseAlpha: 0.36,
-          waveFreq: 0.026,
+          baseAlpha: 0.38,
+          waveFreq: 0.024,
           waveAmp: 5,
-          twistFreq: 0.040,
+          twistFreq: 0.038,
           twistPhase: 0.5,
           life: 0,
-          maxLife: 330,
+          maxLife: 370,
           detachDelay: 45
         }
       ];
 
       // 4. Sương cực mỏng (Ultra-thin Ethereal Mist)
-      // Không làm giống khói thuốc, không quá dày
+      // TUYỆT ĐỐI KHÔNG DÙNG KHÓI DÀY, KHÔNG XÁM ĐỤC, TRONG TRẺO NHƯ SƯƠNG SỚM
       const mistParticles = [];
-      const mistCount = 20;
+      const mistCount = 22;
       for (let i = 0; i < mistCount; i++) {
-        const spread = (Math.random() - 0.5) * 1.8 + sprayAngle * 2.0;
-        const initialSpeed = 1.4 + Math.random() * 1.8; // Tốc độ ban đầu chậm
+        const spread = (Math.random() - 0.5) * 1.6 + (isEssence ? -0.35 : sprayAngle * 2.0);
+        const initialSpeed = 1.2 + Math.random() * 1.6; // Tốc độ ban đầu chậm rãi
         mistParticles.push({
           x: originX + (Math.random() - 0.5) * 8,
           y: originY - Math.random() * 4,
-          vx: spread * 0.7,
+          vx: spread * 0.65,
           vy: -initialSpeed,
-          drag: 0.982, // Hãm không khí cao, biến thành luồng sương bồng bềnh
-          driftY: -(0.25 + Math.random() * 0.35),
+          drag: 0.984, // Hãm không khí cao, biến thành luồng sương bồng bềnh
+          driftY: -(0.20 + Math.random() * 0.30),
           swayPhase: Math.random() * Math.PI * 2,
-          swaySpeed: 0.02 + Math.random() * 0.02,
-          swayAmp: 0.4 + Math.random() * 0.6,
-          radius: 8 + Math.random() * 6,
-          maxRadius: 36 + Math.random() * 18,
-          baseAlpha: 0.05 + Math.random() * 0.04, // OPACITY CỰC THẤP: 0.05 - 0.09
+          swaySpeed: 0.018 + Math.random() * 0.02,
+          swayAmp: 0.4 + Math.random() * 0.5,
+          radius: 7 + Math.random() * 5,
+          maxRadius: 32 + Math.random() * 15,
+          baseAlpha: 0.045 + Math.random() * 0.030, // CỰC KỲ MỎNG NHẸ (0.045 - 0.075)
           life: 0,
-          maxLife: 280 + Math.random() * 70, // Bay lơ lửng lâu
-          color: color || { r: 186, g: 230, b: 253 }
+          maxLife: 290 + Math.random() * 60, // Bay lơ lửng lâu
+          color: { r: 224, g: 242, b: 254 } // Lam ngọc trắng sương mai
         });
       }
 
       // 5. Hạt sáng nhỏ & Tinh vân (Micro-Sparkles & Stardust)
       const sparkles = [];
-      const sparkleCount = 32;
+      const sparkleCount = 36;
       for (let i = 0; i < sparkleCount; i++) {
-        const isDiamond = Math.random() > 0.65; // Một số hạt có tia sáng 4 cánh
+        const isDiamond = Math.random() > 0.60; // Một số hạt có tia sáng 4 cánh
         sparkles.push({
           x: originX + (Math.random() - 0.5) * 12,
           y: originY - Math.random() * 6,
-          vx: (Math.random() - 0.5) * 1.4 + sprayAngle * 1.2,
-          vy: -(1.2 + Math.random() * 2.2),
-          drag: 0.978,
-          driftY: -(0.20 + Math.random() * 0.40),
+          vx: (Math.random() - 0.5) * 1.3 + (isEssence ? -0.3 : sprayAngle * 1.2),
+          vy: -(1.1 + Math.random() * 2.1),
+          drag: 0.980,
+          driftY: -(0.18 + Math.random() * 0.35),
           rot: Math.random() * 360,
-          rotSpeed: (Math.random() - 0.5) * 3.5,
+          rotSpeed: (Math.random() - 0.5) * 3.2,
           twinklePhase: Math.random() * Math.PI * 2,
           twinkleSpeed: 0.045 + Math.random() * 0.045,
           size: 1.4 + Math.random() * 1.8,
           isDiamond,
-          baseAlpha: 0.35 + Math.random() * 0.40,
+          baseAlpha: 0.38 + Math.random() * 0.42,
           life: 0,
-          maxLife: 260 + Math.random() * 80
+          maxLife: 280 + Math.random() * 70
         });
       }
 
-      // 6. Một vài cánh hoa nhỏ xuất hiện trong dòng hương (Miniature Petals)
+      // 6. Một vài cánh hoa nhỏ xuất hiện bên trong dòng hương (Miniature Petals in Scent Stream)
       // Xuất hiện tự nhiên, trôi bồng bềnh theo đúng đường cong của dòng hương
       const petals = [];
       const petalCount = 3; // 3 cánh hoa nhỏ nhắn, tinh tế
       for (let i = 0; i < petalCount; i++) {
         const spriteIndex = i % preloadedPetalImages.length;
         const sprite = preloadedPetalImages[spriteIndex];
-        const launchDelay = 18 + i * 26; // Xuất hiện lần lượt trong dòng hương
-        const petalWidth = 18 + Math.random() * 7; // Kích thước nhỏ 18px - 25px
-        const aspect = 1.0; // Tỉ lệ xấp xỉ
+        const launchDelay = 22 + i * 32; // Xuất hiện lần lượt trong dòng hương (22, 54, 86 frames)
+        const petalWidth = 18 + Math.random() * 6; // Kích thước thanh tú 18px - 24px
+        const aspect = 1.0;
 
         petals.push({
           sprite,
@@ -425,19 +437,19 @@
           p0, p1, p2, p3,
           launchDelay,
           life: 0,
-          maxLife: 260 + i * 20,
+          maxLife: 280 + i * 20,
           s: 0, // Vị trí tham số dọc theo đường cong (0 -> 1)
-          speed: 0.0038 - i * 0.0004, // Bay rất êm và chậm
-          lateralOffset: (Math.random() - 0.5) * 14,
-          lateralFreq: 0.03 + Math.random() * 0.02,
+          speed: 0.0035 - i * 0.0003, // Bay êm dịu
+          lateralOffset: (Math.random() - 0.5) * 12,
+          lateralFreq: 0.028 + Math.random() * 0.02,
           lateralPhase: Math.random() * Math.PI * 2,
           rotZ: Math.random() * 360,
-          rotSpeedZ: (Math.random() - 0.5) * 1.8,
+          rotSpeedZ: (Math.random() - 0.5) * 1.6,
           flipX: Math.random() * Math.PI,
-          flipSpeedX: 0.024 + Math.random() * 0.02,
+          flipSpeedX: 0.022 + Math.random() * 0.018,
           flipY: Math.random() * Math.PI,
-          flipSpeedY: 0.018 + Math.random() * 0.018,
-          baseAlpha: 0.72 // Độ trong suốt nhẹ nhàng, không dày cộm
+          flipSpeedY: 0.016 + Math.random() * 0.016,
+          baseAlpha: 0.75 // Độ trong suốt nhẹ nhàng
         });
       }
 
@@ -451,7 +463,7 @@
         sparkles,
         petals,
         life: 0,
-        maxLife: 350
+        maxLife: 370
       };
 
       this.activePlumes.push(plume);
@@ -559,7 +571,7 @@
 
             const distAlong = segT * 300;
             // Sóng uốn lượn hữu cơ nhịp nhàng
-            const wave = Math.sin(distAlong * ribbon.waveFreq + ribbon.life * 0.028) * ribbon.waveAmp;
+            const wave = Math.sin(distAlong * ribbon.waveFreq + ribbon.life * 0.026) * ribbon.waveAmp;
             pt.x += tangent.normalX * wave;
             pt.y += tangent.normalY * wave;
 
@@ -639,6 +651,7 @@
 
         // ------------------------------------------------------------
         // C. VẼ SƯƠNG CỰC MỎNG (ULTRA-THIN ETHEREAL MIST)
+        // Tuyệt đối không tạo khói dày, hạt siêu mịn trong suốt
         // ------------------------------------------------------------
         for (let i = plume.mistParticles.length - 1; i >= 0; i--) {
           const p = plume.mistParticles[i];
@@ -663,9 +676,9 @@
           if (alpha <= 0.003) continue;
 
           const mg = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rad);
-          mg.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.65).toFixed(3)})`);
-          mg.addColorStop(0.35, `rgba(224, 242, 254, ${(alpha * 0.35).toFixed(3)})`);
-          mg.addColorStop(0.70, `rgba(186, 230, 253, ${(alpha * 0.12).toFixed(3)})`);
+          mg.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.55).toFixed(3)})`);
+          mg.addColorStop(0.35, `rgba(224, 242, 254, ${(alpha * 0.30).toFixed(3)})`);
+          mg.addColorStop(0.70, `rgba(186, 230, 253, ${(alpha * 0.10).toFixed(3)})`);
           mg.addColorStop(1, 'rgba(147, 197, 253, 0)');
 
           this.ctx.save();
@@ -743,13 +756,14 @@
         }
 
         // ------------------------------------------------------------
-        // E. VẼ CÁNH HOA NHỎ BAY TRONG DÒNG HƯƠNG (PETALS IN SCENT STREAM)
+        // E. VẼ CÁNH HOA NHỎ BAY BÊN TRONG DÒNG HƯƠNG (PETALS IN SCENT STREAM)
+        // Cánh hoa đậu biếc nhỏ nhắn, trôi bồng bềnh và xoay lật 3D theo đường cong ánh sáng
         // ------------------------------------------------------------
         for (let pIdx = 0; pIdx < plume.petals.length; pIdx++) {
           const petal = plume.petals[pIdx];
           petal.life++;
 
-          // Chờ đến thời điểm xuất hiện tự nhiên trong dòng hương
+          // Chờ đến thời điểm xuất hiện tự nhiên bên trong dòng hương
           if (petal.life < petal.launchDelay) continue;
           if (petal.life >= petal.maxLife) continue;
           totalLivingElements++;
@@ -769,16 +783,19 @@
           petal.lateralPhase += petal.lateralFreq;
           const lateralDisplacement = Math.sin(petal.lateralPhase) * petal.lateralOffset;
 
-          const posX = curvePt.x + tangent.normalX * lateralDisplacement;
-          const posY = curvePt.y + tangent.normalY * lateralDisplacement;
+          // Nhịp sóng uốn lượn hòa cùng ribbon ánh sáng
+          const ribbonWave = Math.sin((petal.s * 300) * 0.022 + plume.life * 0.026) * 8;
 
-          // Xoay lật 3D nhẹ nhàng (Tumbling in breeze)
+          const posX = curvePt.x + tangent.normalX * (lateralDisplacement + ribbonWave);
+          const posY = curvePt.y + tangent.normalY * (lateralDisplacement + ribbonWave);
+
+          // Xoay lật 3D nhẹ nhàng (3D Tumbling in scent breeze)
           petal.rotZ += petal.rotSpeedZ;
           petal.flipX += petal.flipSpeedX;
           petal.flipY += petal.flipSpeedY;
 
-          const scaleX = Math.cos(petal.flipX) * 0.9;
-          const scaleY = Math.cos(petal.flipY) * 0.9;
+          const scaleX = Math.cos(petal.flipX) * 0.88;
+          const scaleY = Math.cos(petal.flipY) * 0.88;
 
           // Opacity xuất hiện mềm mại rồi tan dần
           let petalAlpha = 1.0;
@@ -791,11 +808,14 @@
           if (petalAlpha <= 0.005) continue;
 
           // Vẽ cánh hoa bằng Canvas
+          const safeScaleX = Math.max(0.06, Math.abs(scaleX)) * Math.sign(scaleX || 1);
+          const safeScaleY = Math.max(0.06, Math.abs(scaleY)) * Math.sign(scaleY || 1);
+
           if (petal.sprite && petal.sprite.complete && petal.sprite.naturalWidth > 0) {
             this.ctx.save();
             this.ctx.translate(posX, posY);
             this.ctx.rotate((petal.rotZ * Math.PI) / 180);
-            this.ctx.scale(scaleX, scaleY);
+            this.ctx.scale(safeScaleX, safeScaleY);
             this.ctx.globalAlpha = petalAlpha;
 
             // Hào quang xanh ngọc đậu biếc quanh cánh hoa
@@ -806,6 +826,30 @@
             const drawH = petal.height;
             this.ctx.drawImage(petal.sprite, -drawW * 0.5, -drawH * 0.5, drawW, drawH);
 
+            this.ctx.restore();
+          } else {
+            // Dự phòng mỹ thuật: Vẽ cánh hoa đậu biếc nghệ thuật bằng Vector Path
+            this.ctx.save();
+            this.ctx.translate(posX, posY);
+            this.ctx.rotate((petal.rotZ * Math.PI) / 180);
+            this.ctx.scale(safeScaleX, safeScaleY);
+            this.ctx.globalAlpha = petalAlpha * 0.88;
+            this.ctx.shadowColor = 'rgba(147, 197, 253, 0.8)';
+            this.ctx.shadowBlur = 6;
+
+            const pw = petal.width * 0.5;
+            const ph = petal.height * 0.5;
+            const pg = this.ctx.createLinearGradient(-pw, -ph, pw, ph);
+            pg.addColorStop(0, 'rgba(186, 230, 253, 0.95)');
+            pg.addColorStop(0.5, 'rgba(96, 165, 250, 0.85)');
+            pg.addColorStop(1, 'rgba(59, 130, 246, 0.7)');
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, -ph);
+            this.ctx.bezierCurveTo(pw, -ph * 0.6, pw * 0.8, ph * 0.6, 0, ph);
+            this.ctx.bezierCurveTo(-pw * 0.8, ph * 0.6, -pw, -ph * 0.6, 0, -ph);
+            this.ctx.fillStyle = pg;
+            this.ctx.fill();
             this.ctx.restore();
           }
         }
@@ -875,15 +919,15 @@
       card.setAttribute('data-bottle-id', bottleId);
 
       // Tọa độ thẻ: Đặt ngay phía trên vòi xịt, tự động căn chỉnh không tràn mép
-      const clampedX = Math.max(125, Math.min(this.width - 125, nozzleX));
-      const clampedY = Math.max(68, nozzleY - 65);
+      const clampedX = Math.max(130, Math.min(this.width - 130, nozzleX - 35));
+      const clampedY = Math.max(75, nozzleY - 70);
 
       card.style.left = `${clampedX.toFixed(1)}px`;
       card.style.top = `${clampedY.toFixed(1)}px`;
 
       const brandTitle = bottle.brand || 'Butterfly Pea';
-      const productName = bottle.name || 'Hương Hoa Đậu Biếc';
-      const productTag = bottle.tag || 'Tinh Chất Dưỡng Nàng Thơ';
+      const productName = (bottleId === 'essence') ? 'SOOTHING ESSENCE' : (bottle.name || 'Hương Hoa Đậu Biếc');
+      const productTag = (bottleId === 'essence') ? 'HƯƠNG CỦA KỶ NIỆM' : (bottle.tag || 'Tinh Chất Dưỡng Nàng Thơ');
 
       card.innerHTML = `
         <div class="scent-card-header">
@@ -891,24 +935,18 @@
           <span class="scent-card-brand">${brandTitle}</span>
           <span class="scent-card-gem">✦</span>
         </div>
+        <div class="scent-card-tag">
+          <span class="scent-tag-dot"></span>
+          <span>${productName} • ${productTag}</span>
+        </div>
         <div class="scent-card-poem">
           <p class="scent-poem-line line-1">“một chút dịu dàng</p>
           <p class="scent-poem-line line-2">còn vương lại</p>
           <p class="scent-poem-line line-3">trong không khí...”</p>
         </div>
-        <div class="scent-card-tag">
-          <span class="scent-tag-dot"></span>
-          <span>${productName}</span>
-        </div>
         <div class="scent-card-actions">
-          <button type="button" class="scent-action-btn pin-btn" title="Ghim lại làn hương trên khung hình">
-            <i class="fa-regular fa-bookmark"></i> <span class="btn-text">Giữ lại</span>
-          </button>
-          <button type="button" class="scent-action-btn detail-btn" title="Xem lời nhắn nhủ dành riêng cho em">
-            <i class="fa-solid fa-heart"></i> <span class="btn-text">Lời nhắn</span>
-          </button>
-          <button type="button" class="scent-action-btn close-btn" title="Để hương thơm tan biến nhẹ nhàng">
-            <i class="fa-solid fa-wind"></i> <span class="btn-text">Để hương tan</span>
+          <button type="button" class="scent-action-btn close-btn" title="Đóng thẻ hương" aria-label="Đóng">
+            <i class="fa-solid fa-xmark"></i> <span class="btn-text">Đóng</span>
           </button>
         </div>
       `;
@@ -921,10 +959,7 @@
         card.classList.add('active');
       });
 
-      let isPinned = false;
-      let dissolveTimer = null;
-
-      // Hàm đóng thẻ mềm mại
+      // Hàm đóng thẻ mềm mại do người dùng tự quyết định
       const dissolveCard = () => {
         if (!card.parentElement) return;
         card.classList.remove('active');
@@ -936,53 +971,10 @@
           if (this.activeScentCards.get(bottleId) === card) {
             this.activeScentCards.delete(bottleId);
           }
-        }, 1100);
+        }, 800);
       };
 
-      // Tự động tan biến sau 6.2 giây nếu người dùng không ghim lại
-      const scheduleDissolve = () => {
-        if (dissolveTimer) clearTimeout(dissolveTimer);
-        dissolveTimer = setTimeout(() => {
-          if (!isPinned) {
-            dissolveCard();
-          }
-        }, 6200);
-      };
-
-      scheduleDissolve();
-
-      // Nút [ Giữ lại / Ghim ]
-      const pinBtn = card.querySelector('.pin-btn');
-      if (pinBtn) {
-        pinBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          isPinned = !isPinned;
-          if (isPinned) {
-            card.classList.add('is-pinned');
-            pinBtn.classList.add('pinned');
-            pinBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i> <span class="btn-text">Đã giữ</span>';
-            if (dissolveTimer) clearTimeout(dissolveTimer);
-          } else {
-            card.classList.remove('is-pinned');
-            pinBtn.classList.remove('pinned');
-            pinBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> <span class="btn-text">Giữ lại</span>';
-            scheduleDissolve();
-          }
-        });
-      }
-
-      // Nút [ Lời nhắn ]
-      const detailBtn = card.querySelector('.detail-btn');
-      if (detailBtn) {
-        detailBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (typeof window.renderProductWorldModal === 'function') {
-            window.renderProductWorldModal(bottle);
-          }
-        });
-      }
-
-      // Nút [ Để hương tan ]
+      // Nút [ Đóng ]
       const closeBtn = card.querySelector('.close-btn');
       if (closeBtn) {
         closeBtn.addEventListener('click', (e) => {
@@ -1003,7 +995,7 @@
       const originX = typeof x === 'number' ? x : this.width * 0.5;
       const originY = typeof y === 'number' ? y : this.height * 0.5;
       const sprayAngle = typeof options.sprayAngle === 'number' ? options.sprayAngle : (Math.random() - 0.5) * 0.15;
-      const color = options.color || { r: 147, g: 197, b: 253 };
+      const color = options.color || { r: 125, g: 211, b: 252 };
 
       playEtherealScentTone();
       this.createNozzleFlash(originX, originY);
@@ -1013,7 +1005,7 @@
           id: 'custom-scent',
           brand: options.brand || 'Butterfly Pea',
           name: options.name || 'Dòng Hương Tinh Khôi',
-          tag: options.tag || 'Làn Hương Dịu Êm'
+          tag: options.tag || 'Hương Của Kỷ Niệm'
         };
         this.showScentNoteCard(bottleMock, originX, originY);
       }
@@ -1062,11 +1054,17 @@
   // Gán toàn cục
   window.ScentEngine = ScentEngine;
 
-  // Khởi tạo instance mặc định khi DOM sẵn sàng
-  document.addEventListener('DOMContentLoaded', () => {
-    if (!window.scentEngine) {
+  // Khởi tạo instance mặc định ngay khi sẵn sàng
+  if (!window.scentEngine) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!window.scentEngine) {
+          window.scentEngine = new ScentEngine();
+        }
+      });
+    } else {
       window.scentEngine = new ScentEngine();
     }
-  });
+  }
 
 })(window, document);

@@ -518,6 +518,152 @@
     }
 
     // ============================================================
+    // API TƯƠNG TÁC 3: MỘT CÁNH HOA RƠI XUỐNG (DÀNH CHO LIP BALM)
+    // ============================================================
+    dropSinglePetal(options = {}) {
+      const originX = options.x !== undefined ? options.x : window.innerWidth * 0.65;
+      const originY = options.y !== undefined ? options.y : window.innerHeight * 0.45;
+      const isMobile = window.innerWidth < 768;
+      const spriteIdx = options.spriteIndex !== undefined ? options.spriteIndex : 0;
+      const sprite = PETAL_SPRITES[spriteIdx] || PETAL_SPRITES[0];
+
+      const basePixelW = isMobile ? 36 : 46;
+      const scale = options.scale !== undefined ? options.scale : 0.95;
+      const petalW = Math.round(basePixelW * scale);
+      const petalH = Math.round(petalW / sprite.aspect);
+
+      const p0 = { x: originX, y: originY };
+      const driftX = (Math.random() - 0.5) * 50;
+      const fallDist = options.fallDistance || (isMobile ? 240 : 300);
+
+      // Quỹ đạo rơi buông nhẹ xuống, chao liệng đón gió
+      const p1 = { x: p0.x + driftX * 0.5, y: p0.y + fallDist * 0.28 };
+      const p2 = { x: p0.x - driftX * 0.8, y: p0.y + fallDist * 0.65 };
+      const p3 = { x: p0.x + (driftX > 0 ? 30 : -30), y: p0.y + fallDist };
+
+      const baseDurationMs = options.duration || 4200;
+
+      const petalEl = document.createElement('div');
+      petalEl.className = 'engine-petal lipbalm-falling-petal';
+      petalEl.style.width = petalW + 'px';
+      petalEl.style.height = petalH + 'px';
+
+      const innerEl = document.createElement('div');
+      innerEl.className = 'engine-petal-inner';
+
+      const imgEl = document.createElement('img');
+      imgEl.className = 'engine-petal-img';
+      imgEl.src = sprite.src;
+      imgEl.alt = sprite.description;
+      imgEl.draggable = false;
+
+      innerEl.appendChild(imgEl);
+      petalEl.appendChild(innerEl);
+      this.layerEl.appendChild(petalEl);
+
+      const petalObj = {
+        el: petalEl,
+        innerEl: innerEl,
+        sprite: sprite,
+        width: petalW,
+        height: petalH,
+        p0, p1, p2, p3,
+        startTime: performance.now(),
+        durationMs: baseDurationMs,
+        durationSec: baseDurationMs / 1000,
+        rotZ: Math.random() * 360,
+        rotX: 18,
+        rotY: 22,
+        flipTurnsX: 1.1,
+        flipSpeedY: 1.3,
+        flutterFreq: 1.9,
+        flutterAmpX: 18,
+        flutterAmpY: 8,
+        phase: Math.random() * Math.PI,
+        baseScale: scale,
+        depthZ: 1.05,
+        role: 'falling'
+      };
+
+      this.activePetals.push(petalObj);
+      this.ensurePhysicsLoop();
+      return petalObj;
+    }
+
+    // ============================================================
+    // API TƯƠNG TÁC 4: MỘT CÁNH HOA CUỐI CÙNG BAY QUA MÀN HÌNH (KHI ĐÓNG)
+    // ============================================================
+    flySinglePetalAcross(options = {}) {
+      const isMobile = window.innerWidth < 768;
+      const startX = options.startX !== undefined ? options.startX : (window.innerWidth * 0.40);
+      const startY = options.startY !== undefined ? options.startY : (window.innerHeight * 0.48);
+      const targetX = options.targetX !== undefined ? options.targetX : (window.innerWidth + 90);
+      const targetY = options.targetY !== undefined ? options.targetY : (startY - 80);
+
+      const spriteIdx = options.spriteIndex !== undefined ? options.spriteIndex : 1;
+      const sprite = PETAL_SPRITES[spriteIdx] || PETAL_SPRITES[1];
+
+      const basePixelW = isMobile ? 38 : 50;
+      const scale = options.scale !== undefined ? options.scale : 1.05;
+      const petalW = Math.round(basePixelW * scale);
+      const petalH = Math.round(petalW / sprite.aspect);
+
+      const p0 = { x: startX, y: startY };
+      const deltaX = targetX - startX;
+      const p1 = { x: startX + deltaX * 0.32, y: startY - 45 };
+      const p2 = { x: startX + deltaX * 0.68, y: startY + 25 };
+      const p3 = { x: targetX, y: targetY };
+
+      const baseDurationMs = options.duration || 4800;
+
+      const petalEl = document.createElement('div');
+      petalEl.className = 'engine-petal lipbalm-final-petal';
+      petalEl.style.width = petalW + 'px';
+      petalEl.style.height = petalH + 'px';
+
+      const innerEl = document.createElement('div');
+      innerEl.className = 'engine-petal-inner';
+
+      const imgEl = document.createElement('img');
+      imgEl.className = 'engine-petal-img';
+      imgEl.src = sprite.src;
+      imgEl.alt = sprite.description;
+      imgEl.draggable = false;
+
+      innerEl.appendChild(imgEl);
+      petalEl.appendChild(innerEl);
+      this.layerEl.appendChild(petalEl);
+
+      const petalObj = {
+        el: petalEl,
+        innerEl: innerEl,
+        sprite: sprite,
+        width: petalW,
+        height: petalH,
+        p0, p1, p2, p3,
+        startTime: performance.now(),
+        durationMs: baseDurationMs,
+        durationSec: baseDurationMs / 1000,
+        rotZ: Math.random() * 360,
+        rotX: 24,
+        rotY: 28,
+        flipTurnsX: 1.4,
+        flipSpeedY: 1.8,
+        flutterFreq: 2.1,
+        flutterAmpX: 16,
+        flutterAmpY: 9,
+        phase: Math.random() * Math.PI,
+        baseScale: scale,
+        depthZ: 1.15,
+        role: 'flying-across'
+      };
+
+      this.activePetals.push(petalObj);
+      this.ensurePhysicsLoop();
+      return petalObj;
+    }
+
+    // ============================================================
     // KHỞI TẠO MỘT CÁNH HOA ĐẬU BIẾC ĐỘC NHẤT (SINGLE PETAL)
     // ============================================================
     spawnSinglePetal(originX, originY, launchAngle, launchForce, role) {

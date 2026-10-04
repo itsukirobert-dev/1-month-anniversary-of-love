@@ -80,6 +80,12 @@
       this.lastTime = this.startTime;
       this.rafId = null;
 
+      // Hỗ trợ chế độ quay chậm (Slow Motion) và yên tĩnh (Quiet Mode)
+      this.timeScale = 1.0;
+      this.targetTimeScale = 1.0;
+      this.isQuiet = false;
+      this.simTime = 0;
+
       // DOM Elements
       this.initDOMElements();
 
@@ -309,6 +315,23 @@
       }
     }
 
+    // --- Bật / Tắt chế độ chuyển động chậm (Slow Motion) & Yên tĩnh (Quiet Mode) ---
+    setSlowMotion(isSlow, isQuiet = true) {
+      this.targetTimeScale = isSlow ? 0.20 : 1.0;
+      this.isQuiet = !!isSlow && isQuiet;
+      if (this.container) {
+        if (isSlow) {
+          this.container.classList.add('engine-slow-motion');
+          if (this.isQuiet) {
+            this.container.classList.add('engine-quiet-mode');
+          }
+        } else {
+          this.container.classList.remove('engine-slow-motion');
+          this.container.classList.remove('engine-quiet-mode');
+        }
+      }
+    }
+
     // ============================================================
     // MAIN RENDER LOOP (60FPS HỮU CƠ SIÊU MƯỢT)
     // ============================================================
@@ -317,16 +340,21 @@
 
       const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
       this.lastTime = currentTime;
-      const t = (currentTime - this.startTime) / 1000;
+
+      // Nội suy mượt mà tỷ lệ thời gian hướng tới targetTimeScale (quán tính cinematic)
+      this.timeScale += (this.targetTimeScale - this.timeScale) * Math.min(1, dt * 2.8);
+      const effectiveDt = dt * this.timeScale;
+      this.simTime += effectiveDt;
+      const t = this.simTime;
 
       // 1. Cập nhật hệ thống gió hữu cơ
-      this.updateWind(t, dt);
+      this.updateWind(t, effectiveDt);
 
       // 2. Cập nhật hệ thống Parallax 2.5D
       this.updateParallax(t);
 
       // 3. Cập nhật chuyển động cành hoa & tán lá
-      this.updateFlora(t, dt);
+      this.updateFlora(t, effectiveDt);
 
       // 4. Cập nhật chuyển động sóng lụa hồng
       this.updateSilk(t);
@@ -338,7 +366,7 @@
       this.renderTableReflection(t);
 
       // 7. Vẽ hạt bụi sáng lơ lửng 3D
-      this.renderDust(t, dt);
+      this.renderDust(t, effectiveDt);
 
       this.rafId = requestAnimationFrame(this.loop);
     }
@@ -354,11 +382,12 @@
       const w3 = Math.sin(t * 1.39 + 2.80);
       const noiseTerm = this.noise.noise1D(t * 0.14);
 
-      this.wind.base = (w1 * 0.54 + w2 * 0.26 + w3 * 0.12 + noiseTerm * 0.08);
+      const quietFactor = this.isQuiet ? 0.35 : 1.0;
+      this.wind.base = (w1 * 0.54 + w2 * 0.26 + w3 * 0.12 + noiseTerm * 0.08) * quietFactor;
 
-      // Luồng gió thoảng (Gust): xuất hiện êm ả mỗi 18-25s, tồn tại trong 4-5s rồi êm dịu trở lại
+      // Luồng gió thoảng (Gust): xuất hiện êm ả mỗi 18-25s, tồn tại trong 4-5s rồi êm dịu trở lại (triệt tiêu khi yên tĩnh)
       const gPhase = Math.sin(t * 0.12) * Math.sin(t * 0.068 + 0.95);
-      this.wind.gust = Math.max(0, gPhase * gPhase) * 1.2;
+      this.wind.gust = this.isQuiet ? 0 : Math.max(0, gPhase * gPhase) * 1.2;
 
       this.wind.current = this.wind.base + this.wind.gust;
     }
@@ -683,13 +712,14 @@
       for (let i = 0; i < this.particles.length; i++) {
         const p = this.particles[i];
 
-        // 1. Di chuyển bay lên (Thermal Updraft)
-        p.y += p.speedY;
+        // 1. Di chuyển bay lên (Thermal Updraft - chậm lại theo timeScale)
+        p.y += p.speedY * this.timeScale;
 
         // 2. Chuyển động lượn ngang kết hợp luồng gió tự nhiên
-        p.swayPhase += p.swaySpeed;
+        p.swayPhase += p.swaySpeed * this.timeScale;
         const windDrift = this.wind.current * 0.35 * (0.6 + p.z * 0.8);
-        p.x += Math.sin(p.swayPhase) * p.swayAmp + windDrift;
+        const swayAmpFactor = this.isQuiet ? 0.45 : 1.0;
+        p.x += Math.sin(p.swayPhase) * (p.swayAmp * swayAmpFactor) + windDrift;
 
         // 3. Vòng lặp biên giới mượt mà
         if (p.y < -15) {
@@ -699,15 +729,16 @@
         if (p.x < -20) p.x = w + 20;
         if (p.x > w + 20) p.x = -20;
 
-        // 4. Nhấp nháy quang học (Optical Twinkle)
-        p.twinklePhase += p.twinkleSpeed;
+        // 4. Nhấp nháy quang học (Optical Twinkle - chậm lại theo timeScale)
+        p.twinklePhase += p.twinkleSpeed * this.timeScale;
         const twinkle = 0.65 + 0.35 * Math.sin(p.twinklePhase);
 
         // 5. Tăng cường độ sáng khi đi vào luồng nắng chiếu qua cửa sổ
         const distToSunbeam = Math.hypot(p.x - sunBeamCenterX, p.y - sunBeamCenterY);
         const sunBoost = Math.max(0, 1 - distToSunbeam / (w * 0.45)) * 0.45;
 
-        const currentAlpha = Math.min(1.0, p.baseAlpha * twinkle + sunBoost);
+        const quietDim = this.isQuiet ? 0.72 : 1.0;
+        const currentAlpha = Math.min(1.0, (p.baseAlpha * twinkle + sunBoost) * quietDim);
 
         // Tọa độ áp dụng Parallax theo độ sâu z
         const pParallaxX = p.x + (this.parallax.currentX * 14 + this.parallax.ambientX) * (p.z * 1.4);
@@ -730,6 +761,11 @@
 
   // Khởi tạo và gán toàn cục khi DOM sẵn sàng
   window.BackgroundEngine = BackgroundEngine;
+  window.setSlowMotion = function (isSlow, isQuiet) {
+    if (window.bgEngineInstance) {
+      window.bgEngineInstance.setSlowMotion(isSlow, isQuiet);
+    }
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     // Khởi tạo Background Engine

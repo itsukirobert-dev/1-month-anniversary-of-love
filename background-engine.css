@@ -295,3 +295,27 @@
   overflow: hidden;
   pointer-events: none;
 }
+
+/* ============================================================
+   10. CHẾ ĐỘ SLOW MOTION & YÊN TĨNH (CINEMATIC SLOW MOTION)
+   ============================================================ */
+.living-frame.engine-slow-motion {
+  --engine-time-scale: 0.20;
+}
+
+.living-frame.engine-slow-motion .engine-swaying-branch,
+.living-frame.engine-slow-motion .engine-living-blossom,
+.living-frame.engine-slow-motion .engine-silk-inner,
+.living-frame.engine-slow-motion .engine-flora-canopy {
+  transition: transform 2.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.living-frame.engine-quiet-mode .warm-sun-glow {
+  opacity: 0.45;
+  transition: opacity 1.8s ease;
+}
+
+.living-frame.engine-quiet-mode .engine-table-sheen {
+  opacity: 0.35;
+  transition: opacity 1.8s ease;
+}

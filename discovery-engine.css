@@ -1,0 +1,509 @@
+/* ============================================================
+   BUTTERFLY PEA DISCOVERY ENGINE (TIẾN TRÌNH KHÁM PHÁ CHAPTER)
+   ============================================================
+   - Ghi nhận 5 sản phẩm: SERUM, CREAM, TONER, ESSENCE, LIP BALM.
+   - Không hiển thị achievement, không popup hay thẻ phần thưởng.
+   - Mỗi sản phẩm đã khám phá để lại 1 cành hoa đậu biếc trong background.
+   - Khi đủ cả 5:
+     + Các cành hoa đã mở khóa xuất hiện lại.
+     + Từng cành bay vào màn hình từ các hướng khác nhau.
+     + Cành hoa chuyển động uốn lượn và có secondary motion.
+     + Sau đó tất cả từ từ hội tụ ở trung tâm.
+     + Các cành kết hợp thành một bó hoa đậu biếc hoàn chỉnh.
+     + Ánh sáng xanh và vàng champagne xuất hiện nhẹ.
+     + Một vài cánh hoa bay xung quanh.
+     + Để người dùng tự nhận ra khu vườn đã chuyển mình.
+   ============================================================ */
+
+/* 1. LỚP CHỨA CÁC CÀNH HOA TRONG BACKGROUND & HỘI TỤ */
+.discovery-branches-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+  overflow: visible;
+  border-radius: 18px;
+  transform: translateZ(0);
+}
+
+/* 2. TỪNG CÀNH HOA ĐỌNG LẠI TRONG BACKGROUND */
+.discovery-branch-item {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, opacity;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 12px 26px rgba(15, 23, 42, 0.32)) drop-shadow(0 3px 8px rgba(30, 58, 138, 0.18));
+}
+
+.discovery-branch-item.discovered {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hình ảnh cành hoa chất lượng cao */
+.discovery-branch-item .branch-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Hiệu ứng nảy mầm/bung nở tự nhiên lúc mới xuất hiện */
+.discovery-branch-item.sprouting {
+  animation: branchSproutIn 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes branchSproutIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.68) translateY(18px);
+    filter: blur(4px) drop-shadow(0 0 16px rgba(147, 197, 253, 0.6));
+  }
+
+  60% {
+    opacity: 0.95;
+    filter: blur(0px) drop-shadow(0 0 20px rgba(191, 219, 254, 0.5));
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 12px 26px rgba(15, 23, 42, 0.32)) drop-shadow(0 3px 8px rgba(30, 58, 138, 0.18));
+  }
+}
+
+/* 3. TỌA ĐỘ VÀ GÓC ĐUNG ĐƯA CỦA TỪNG CÀNH TRONG BACKGROUND */
+
+/* SERUM → Cành 1: Nằm góc trên bên trái, vươn qua phía trên chai Serum */
+.discovery-branch-serum {
+  left: 2%;
+  top: 15%;
+  width: 25%;
+  transform-origin: 15% 25%;
+}
+
+.discovery-branch-serum.discovered {
+  animation: swayBranchSerum 7.5s ease-in-out infinite;
+}
+
+@keyframes swayBranchSerum {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-8deg);
+  }
+
+  50% {
+    transform: translate3d(4px, 5px, 0) rotate(-5deg);
+  }
+}
+
+/* CREAM → Cành 2: Nằm góc dưới bên trái, đọng dọc nếp lụa hồng bên hũ Cream */
+.discovery-branch-cream {
+  left: 5%;
+  top: 59%;
+  width: 22%;
+  transform-origin: 20% 80%;
+}
+
+.discovery-branch-cream.discovered {
+  animation: swayBranchCream 8.4s ease-in-out infinite;
+}
+
+@keyframes swayBranchCream {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(11deg);
+  }
+
+  50% {
+    transform: translate3d(-3px, -4px, 0) rotate(13.8deg);
+  }
+}
+
+/* TONER → Cành 3: Nằm đỉnh vòm trên cao, uốn nhánh đón nắng mai trên chai Toner */
+.discovery-branch-toner {
+  left: 44%;
+  top: 1.5%;
+  width: 23%;
+  transform-origin: 50% 10%;
+}
+
+.discovery-branch-toner.discovered {
+  animation: swayBranchToner 6.8s ease-in-out infinite;
+}
+
+@keyframes swayBranchToner {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate3d(3px, 4px, 0) rotate(1deg);
+  }
+}
+
+/* ESSENCE → Cành 4: Nằm góc trên bên phải, che chở phía trên chai Essence */
+.discovery-branch-essence {
+  left: 74%;
+  top: 11%;
+  width: 24%;
+  transform-origin: 85% 15%;
+}
+
+.discovery-branch-essence.discovered {
+  animation: swayBranchEssence 7.8s ease-in-out infinite;
+}
+
+@keyframes swayBranchEssence {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(-1) rotate(16deg);
+  }
+
+  50% {
+    transform: translate3d(-4px, 5px, 0) scaleX(-1) rotate(19deg);
+  }
+}
+
+/* LIP BALM → Cành 5: Nằm góc dưới bên phải, đọng duyên dáng bên khay cẩm thạch */
+.discovery-branch-lipbalm {
+  left: 75%;
+  top: 62%;
+  width: 21%;
+  transform-origin: 80% 80%;
+}
+
+.discovery-branch-lipbalm.discovered {
+  animation: swayBranchLipbalm 8.2s ease-in-out infinite;
+}
+
+@keyframes swayBranchLipbalm {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-22deg);
+  }
+
+  50% {
+    transform: translate3d(3px, -4px, 0) rotate(-19deg);
+  }
+}
+
+/* Hạt bụi sương đọng trên cành tĩnh */
+.discovery-dew-drop {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 40%, rgba(191, 219, 254, 0.8) 100%);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  animation: dewPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes dewPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   4. CÁC CÀNH HOA BAY HỘI TỤ (CONVERGENCE FLYING BRANCHES)
+   ============================================================ */
+.convergence-flying-branch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, opacity;
+  z-index: 1002;
+  transition: opacity 0.8s ease-out;
+}
+
+.convergence-flying-branch .branch-blur-wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: filter, transform;
+  filter: drop-shadow(0 16px 30px rgba(15, 23, 42, 0.38)) drop-shadow(0 4px 12px rgba(30, 58, 138, 0.22)) drop-shadow(0 0 16px rgba(147, 197, 253, 0.35));
+}
+
+.convergence-flying-branch .branch-stem-flex {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 30% 60%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.convergence-flying-branch .branch-composite-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.convergence-flying-branch .branch-base-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Secondary motion nodes trên cành đang bay */
+.convergence-flying-branch .branch-leaf-flutter-zone {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 35% 65%;
+  will-change: transform;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at center, rgba(167, 243, 208, 0.32) 0%, rgba(52, 211, 153, 0.08) 55%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+.convergence-flying-branch .branch-blossom-flutter-zone {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at center, rgba(191, 219, 254, 0.38) 0%, rgba(96, 165, 250, 0.14) 60%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(1.5px);
+}
+
+.convergence-flying-branch .branch-bud-node {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 40% 70%;
+  will-change: transform;
+}
+
+/* ============================================================
+   5. ÁNH SÁNG XANH & VÀNG CHAMPAGNE XUẤT HIỆN NHẸ (AMBIENT RADIANCE)
+   ============================================================ */
+.bouquet-ambient-radiance {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: clamp(280px, 38vw, 500px);
+  height: clamp(280px, 38vw, 500px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 2.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 2.4s ease;
+  /* Lớp ánh sáng hai màu hòa quyện: Vàng champagne ấm áp ở lõi, Xanh đậu biếc thanh khiết ở viền */
+  background: radial-gradient(circle,
+      rgba(254, 243, 199, 0.44) 0%,
+      rgba(253, 230, 138, 0.28) 28%,
+      rgba(147, 197, 253, 0.30) 52%,
+      rgba(59, 130, 246, 0.16) 70%,
+      transparent 85%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+}
+
+.bouquet-ambient-radiance.active {
+  opacity: 1;
+  visibility: visible;
+  animation: champagneBlueBreath 7s ease-in-out infinite alternate;
+}
+
+@keyframes champagneBlueBreath {
+  0% {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.65;
+    filter: blur(24px);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.88;
+    filter: blur(32px);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.72;
+    filter: blur(26px);
+  }
+}
+
+/* ============================================================
+   6. BÓ HOA ĐẬU BIẾC HOÀN CHỈNH GIỮA KHU VƯỜN (CENTERPIECE BOUQUET)
+   ============================================================ */
+.discovery-centerpiece-bouquet {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: clamp(190px, 25vw, 300px);
+  transform: translate(-50%, -50%) scale(0.90);
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 2.0s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 2.0s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 2.0s ease;
+}
+
+.discovery-centerpiece-bouquet.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+  animation: bouquetPeacefulFloat 7.5s ease-in-out infinite alternate;
+}
+
+@keyframes bouquetPeacefulFloat {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -52.5%) rotate(1deg) scale(1.012);
+  }
+
+  100% {
+    transform: translate(-50%, -48.5%) rotate(-0.8deg) scale(0.995);
+  }
+}
+
+.discovery-centerpiece-bouquet .bouquet-inner-wrap {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.discovery-centerpiece-bouquet .bouquet-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 36px rgba(15, 23, 42, 0.36)) drop-shadow(0 4px 14px rgba(30, 58, 138, 0.22)) drop-shadow(0 0 22px rgba(254, 243, 199, 0.32));
+  transition: filter 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.discovery-centerpiece-bouquet:hover .bouquet-img {
+  filter: drop-shadow(0 22px 42px rgba(15, 23, 42, 0.42)) drop-shadow(0 6px 18px rgba(30, 58, 138, 0.30)) drop-shadow(0 0 30px rgba(254, 243, 199, 0.48));
+  transform: scale(1.025);
+}
+
+/* Gợi ý tương tác chạm nhẹ vào bó hoa (tinh tế, không mang tính game) */
+.discovery-centerpiece-bouquet::after {
+  content: '✿ Chạm để ngát hương';
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #1e3a8a;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(254, 243, 199, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.discovery-centerpiece-bouquet:hover::after {
+  opacity: 1;
+}
+
+/* ============================================================
+   7. RESPONSIVE THÍCH ỨNG MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  .discovery-centerpiece-bouquet {
+    width: clamp(150px, 42vw, 240px);
+    top: 42%;
+  }
+
+  .bouquet-ambient-radiance {
+    width: clamp(220px, 60vw, 360px);
+    height: clamp(220px, 60vw, 360px);
+    top: 42%;
+  }
+
+  .discovery-branch-serum {
+    width: 28%;
+    left: 1%;
+    top: 14%;
+  }
+
+  .discovery-branch-cream {
+    width: 25%;
+    left: 2%;
+    top: 61%;
+  }
+
+  .discovery-branch-toner {
+    width: 26%;
+    left: 40%;
+    top: 1%;
+  }
+
+  .discovery-branch-essence {
+    width: 27%;
+    left: 72%;
+    top: 10%;
+  }
+
+  .discovery-branch-lipbalm {
+    width: 24%;
+    left: 73%;
+    top: 63%;
+  }
+}

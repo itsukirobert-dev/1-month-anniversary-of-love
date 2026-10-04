@@ -317,6 +317,10 @@
           e.target.closest('#tonerMessageModal') ||
           e.target.closest('#creamTimelineContainer') ||
           e.target.closest('#creamMilestoneModal') ||
+          e.target.closest('#lipbalmPromiseModal') ||
+          e.target.closest('#storyChapterNavBar') ||
+          e.target.closest('#storyActiveChapterTag') ||
+          e.target.closest('#storyChapterCardBridge') ||
           e.target.closest('.site-header') ||
           e.target.closest('.music-toggle-btn') ||
           e.target.closest('.mobile-menu-btn') ||
@@ -771,6 +775,7 @@
       // ============================================================
       if (bottle.id === 'serum') {
         this.triggerSerumMemoryChoreography(bottle, clientX, clientY);
+        if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('serum');
         return;
       }
 
@@ -779,14 +784,33 @@
       // ============================================================
       if (bottle.id === 'cream') {
         this.triggerCreamTimelineChoreography(bottle, clientX, clientY);
+        if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('cream');
         return;
       }
 
       // ============================================================
+      // ESSENCE = HƯƠNG CỦA KỶ NIỆM (DÀNH RIÊNG CHO CHAI SOOTHING ESSENCE)
+      // ============================================================
+      if (bottle.id === 'essence') {
+        this.triggerEssenceMemoryChoreography(bottle, clientX, clientY);
+        if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('essence');
+        return;
+      }
+
       // TONER = LỜI NHẮN (DÀNH RIÊNG CHO CHAI HYDRATING TONER)
       // ============================================================
       if (bottle.id === 'toner') {
         this.triggerTonerMessageChoreography(bottle, clientX, clientY);
+        if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('toner');
+        return;
+      }
+
+      // ============================================================
+      // LIP BALM = LỜI HẸN (DÀNH RIÊNG CHO HŨ LIP BALM HOẶC TUÝP SON)
+      // ============================================================
+      if (bottle.id === 'lipbalm' || bottle.id === 'liptube') {
+        this.triggerLipbalmPromiseChoreography(bottle, clientX, clientY);
+        if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('lipbalm');
         return;
       }
 
@@ -1503,6 +1527,9 @@
           if (glow) glow.remove();
           if (serumShaker) serumShaker.remove();
           this.activeSequences.delete('serum');
+          if (window.discoveryEngine) {
+            window.discoveryEngine.onSequenceClosed('serum');
+          }
         }, 650);
 
         document.removeEventListener('keydown', handleKeydown);
@@ -2016,9 +2043,9 @@
             <i class="fa-solid fa-hand-pointer"></i> Chạm vào từng mốc thời gian để mở cánh hoa kỷ niệm
           </div>
         </div>
-        <button type="button" class="cream-timeline-exit-btn" id="creamTimelineExitBtn" title="Đóng Dòng Thời Gian" aria-label="Đóng Dòng Thời Gian">
+        <button type="button" class="cream-timeline-exit-btn" id="creamTimelineExitBtn" title="Đóng Dòng Thời Gian" aria-label="Đóng">
           <i class="fa-solid fa-xmark"></i>
-          <span>Đóng Timeline</span>
+          <span>Đóng</span>
         </button>
       `;
       timelineContainer.appendChild(headerEl);
@@ -2195,8 +2222,8 @@
               <span class="tag-icon">🌸</span>
               <span class="tag-text">CỘT MỐC THỜI GIAN • ${m.day}</span>
             </div>
-            <button type="button" class="milestone-close-icon-btn" id="milestoneCardCloseBtn" title="Quay lại Timeline" aria-label="Đóng kỷ niệm">
-              <i class="fa-solid fa-xmark"></i>
+            <button type="button" class="milestone-close-icon-btn" id="milestoneCardCloseBtn" title="Đóng kỷ niệm" aria-label="Đóng">
+              <i class="fa-solid fa-xmark"></i> <span>Đóng</span>
             </button>
           </div>
 
@@ -2341,6 +2368,9 @@
 
       setTimeout(() => {
         this.activeSequences.delete('cream');
+        if (window.discoveryEngine) {
+          window.discoveryEngine.onSequenceClosed('cream');
+        }
       }, 650);
     }
 
@@ -2781,9 +2811,9 @@
           </div>
 
           <div class="toner-letter-action-bar">
-            <button type="button" class="toner-letter-close-btn" id="tonerLetterCloseBtn" aria-label="Khép lại lá thư">
+            <button type="button" class="toner-letter-close-btn" id="tonerLetterCloseBtn" aria-label="Đóng lá thư">
               <span class="btn-bracket">[</span>
-              <span class="btn-text">Khép lại lá thư</span>
+              <span class="btn-text">Đóng</span>
               <span class="btn-bracket">]</span>
             </button>
           </div>
@@ -2895,6 +2925,9 @@
         if (backdrop) backdrop.remove();
         if (tonerShaker) tonerShaker.remove();
         this.activeSequences.delete('toner');
+        if (window.discoveryEngine) {
+          window.discoveryEngine.onSequenceClosed('toner');
+        }
       }, 620);
     }
 
@@ -3052,6 +3085,173 @@
     // ============================================================
     // HIỆU ỨNG THỊ GIÁC: SÓNG NƯỚC, ĐỐM SÁNG & GỢN GIÓ
     // ============================================================
+    // ============================================================
+    // ESSENCE = HƯƠNG CỦA KỶ NIỆM (CHOREOGRAPHY CHO CHAI SOOTHING ESSENCE)
+    // ============================================================
+    // Khi người dùng chạm vào essence:
+    // 1. Chai sáng nhẹ.
+    // 2. Sương mỏng xuất hiện (không tạo hiệu ứng khói dày).
+    // 3. Ribbon ánh sáng bay lên.
+    // 4. Hạt sáng lấp lánh.
+    // 5. Một số cánh hoa xuất hiện bên trong dòng hương.
+    // 6. Dòng hương uốn lượn.
+    // 7. Sau một khoảng thời gian, dòng hương tan dần.
+    // Hiển thị: Butterfly Pea / “một chút dịu dàng còn vương lại trong không khí...”
+    // ============================================================
+    triggerEssenceMemoryChoreography(bottle, clientX, clientY) {
+      if (!bottle || !this.container) return;
+
+      // Chống kích hoạt đúp dồn dập
+      if (this.activeSequences.has('essence')) return;
+      this.activeSequences.add('essence');
+      this.dismissTouchHint();
+
+      const fRect = this.container.getBoundingClientRect();
+      const targetImg = document.querySelector('.main-uncut-image') || this.container.querySelector('img');
+      const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+      const bounds = bottle.bounds || { minX: 0.675, maxX: 0.795, minY: 0.380, maxY: 0.865 };
+      const bottleBox = {
+        left: bounds.minX * iRect.width + (iRect.left - fRect.left),
+        top: bounds.minY * iRect.height + (iRect.top - fRect.top),
+        width: (bounds.maxX - bounds.minX) * iRect.width,
+        height: (bounds.maxY - bounds.minY) * iRect.height
+      };
+
+      const objCenterX = fRect.left + bottleBox.left + bottleBox.width * 0.5;
+      const touchX = clientX !== undefined ? clientX : objCenterX;
+      const touchY = clientY !== undefined ? clientY : (fRect.top + bottleBox.top + bottleBox.height * 0.45);
+
+      const nozzleRelX = bottle.nozzle ? bottle.nozzle.x : 0.729;
+      const nozzleRelY = bottle.nozzle ? bottle.nozzle.y : 0.430;
+      const nozzleScreenX = fRect.left + nozzleRelX * fRect.width;
+      const nozzleScreenY = fRect.top + nozzleRelY * fRect.height;
+      const nozzleLocalX = nozzleRelX * fRect.width;
+      const nozzleLocalY = nozzleRelY * fRect.height;
+
+      // ------------------------------------------------------------
+      // BƯỚC 1: CHẠM & CHAI SÁNG NHẸ (0ms)
+      // "1. Chai sáng nhẹ. Animation phải nhẹ, sang trọng và thơ mộng."
+      // ------------------------------------------------------------
+      if (this.options.enableHaptics && window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate([10]); } catch (_) { }
+      }
+
+      if (this.options.enableAudio) {
+        this.playMemoryScentTone();
+      }
+
+      // Gợn sóng chạm nhẹ tại điểm tiếp xúc ngón tay
+      this.createTouchWaveVisual(touchX, touchY);
+
+      // Gợn sóng phản chiếu trên mặt bàn đá hoa cương ngay dưới chân chai
+      this.addTableCausticWave(bottleBox.left + bottleBox.width * 0.5, bottleBox.top + bottleBox.height * 0.95);
+
+      // Xóa phần tử sáng cũ nếu có
+      const oldGlow = this.container.querySelector('.essence-memory-bottle-glow');
+      if (oldGlow) oldGlow.remove();
+
+      // Tạo phần tử phát sáng nhẹ nhàng trên thân chai
+      const essenceGlowEl = document.createElement('div');
+      essenceGlowEl.className = 'essence-memory-bottle-glow active';
+      essenceGlowEl.style.left = `${bottleBox.left.toFixed(1)}px`;
+      essenceGlowEl.style.top = `${bottleBox.top.toFixed(1)}px`;
+      essenceGlowEl.style.width = `${bottleBox.width.toFixed(1)}px`;
+      essenceGlowEl.style.height = `${bottleBox.height.toFixed(1)}px`;
+
+      // Hào quang vàng champagne & lam ngọc đậu biếc tỏa nhẹ quanh thân chai
+      const auraEl = document.createElement('div');
+      auraEl.className = 'essence-bottle-aura active';
+      essenceGlowEl.appendChild(auraEl);
+
+      // Vệt sáng ngọc trai lướt êm dịu lên cổ chai
+      const sheenEl = document.createElement('div');
+      sheenEl.className = 'essence-glass-sheen';
+      essenceGlowEl.appendChild(sheenEl);
+
+      this.container.appendChild(essenceGlowEl);
+
+      // Thân chai lắng dần sau khi tỏa sáng và tan biến êm ái
+      setTimeout(() => {
+        essenceGlowEl.classList.add('dissolving');
+        setTimeout(() => {
+          if (essenceGlowEl.parentElement) essenceGlowEl.remove();
+        }, 1200);
+      }, 1600);
+
+      // ------------------------------------------------------------
+      // BƯỚC 2 - 7: SƯƠNG MỎNG XUẤT HIỆN, RIBBON ÁNH SÁNG BAY LÊN,
+      // HẠT SÁNG LẤP LÁNH, CÁNH HOA BÊN TRONG DÒNG HƯƠNG, UỐN LƯỢN & TAN DẦN (120ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        // Đốm sáng lóe nhẹ tại đầu vòi xịt
+        this.createNozzleStarburst(nozzleScreenX, nozzleScreenY);
+
+        if (window.scentEngine) {
+          window.scentEngine.emitFromBottle(bottle, {
+            showCard: false, // Thẻ sẽ xuất hiện ở GIAI ĐOẠN 8 với timing chuẩn
+            intensity: 1.0,
+            originX: nozzleLocalX,
+            originY: nozzleLocalY,
+            playAudio: false
+          });
+        }
+      }, 120);
+
+      // ------------------------------------------------------------
+      // BƯỚC 8: HIỂN THỊ THẺ THI VỊ "BUTTERFLY PEA" (420ms)
+      // "Butterfly Pea / một chút dịu dàng còn vương lại trong không khí..."
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        if (window.scentEngine && typeof window.scentEngine.showScentNoteCard === 'function') {
+          window.scentEngine.showScentNoteCard(bottle, nozzleLocalX, nozzleLocalY);
+        }
+
+        // Mở khóa chuỗi tương tác cho lần chạm tiếp theo sau 1.2s
+        setTimeout(() => {
+          this.activeSequences.delete('essence');
+          if (window.discoveryEngine) {
+            window.discoveryEngine.onSequenceClosed('essence');
+          }
+        }, 800);
+      }, 420);
+    }
+
+    // Âm thanh giọt hương kỷ niệm thanh khiết (528Hz Solfeggio & Quãng 8)
+    playMemoryScentTone() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        // Solfeggio 528Hz (Tần số bình yên & chữa lành) hòa âm 660Hz và quãng 8 1056Hz
+        const freqs = [528.0, 660.0, 1056.0];
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.04, now + idx * 0.04 + 0.55);
+
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(freq * 1.15, now + idx * 0.04);
+          filter.Q.value = 6;
+
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.04);
+          gain.gain.linearRampToValueAtTime(0.016 / (1 + idx * 0.2), now + idx * 0.04 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 0.65);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 0.70);
+        });
+      } catch (_) { }
+    }
+
     // Gợn sóng chạm nhẹ tại điểm tiếp xúc
     createTouchWaveVisual(clientX, clientY) {
       const fRect = this.container.getBoundingClientRect();
@@ -3327,6 +3527,425 @@
           if (hint.parentElement) hint.remove();
         }, 600);
       }
+    }
+
+    // ============================================================
+    // LIP BALM = LỜI HẸN (THIẾT KẾ CHỨC NĂNG CẢM XÚC MẠNH NHẤT)
+    // ============================================================
+    // Khi người dùng chạm vào lip balm:
+    // 1. Nắp vàng rung nhẹ.
+    // 2. Một cánh hoa rơi xuống.
+    // 3. Background chuyển sang slow motion.
+    // 4. Ánh sáng xung quanh giảm nhẹ.
+    // 5. Một cành hoa bay ngang màn hình.
+    // 6. Các hiệu ứng xung quanh trở nên yên tĩnh.
+    //
+    // Sau đó hiển thị:
+    // LỜI HẸN
+    // "Không cần những lời
+    // quá lớn lao.
+    //
+    // Chỉ cần ngày mai
+    // chúng ta vẫn còn
+    // muốn ở cạnh nhau."
+    //
+    // Người dùng tự đóng.
+    // Khi đóng:
+    // - Một cánh hoa cuối cùng bay qua màn hình.
+    // - Background trở lại tốc độ bình thường.
+    // ============================================================
+    triggerLipbalmPromiseChoreography(bottle, clientX, clientY) {
+      if (!bottle || !this.container) return;
+
+      // Chống kích hoạt đúp nếu đang hiển thị lời hẹn
+      if (this.activeSequences.has('lipbalm') || document.getElementById('lipbalmPromiseModal')) {
+        return;
+      }
+      this.activeSequences.add('lipbalm');
+      this.dismissTouchHint();
+
+      const fRect = this.container.getBoundingClientRect();
+      const targetImg = document.querySelector('.main-uncut-image') || this.container.querySelector('img');
+      const iRect = targetImg ? targetImg.getBoundingClientRect() : fRect;
+
+      const bounds = bottle.bounds || { minX: 0.60, maxX: 0.74, minY: 0.71, maxY: 0.93 };
+      const bottleBox = {
+        left: bounds.minX * iRect.width + (iRect.left - fRect.left),
+        top: bounds.minY * iRect.height + (iRect.top - fRect.top),
+        width: (bounds.maxX - bounds.minX) * iRect.width,
+        height: (bounds.maxY - bounds.minY) * iRect.height
+      };
+
+      const objCenterX = fRect.left + bottleBox.left + bottleBox.width * 0.5;
+      const touchX = clientX !== undefined ? clientX : objCenterX;
+      const touchY = clientY !== undefined ? clientY : (fRect.top + bottleBox.top + bottleBox.height * 0.45);
+
+      // Gợn sóng chạm nhẹ tại điểm chạm
+      this.createTouchWaveVisual(touchX, touchY);
+      this.addTableCausticWave(bottleBox.left + bottleBox.width * 0.5, bottleBox.top + bottleBox.height * 0.95);
+
+      // ------------------------------------------------------------
+      // 1. NẮP VÀNG RUNG NHẸ (0ms)
+      // ------------------------------------------------------------
+      if (this.options.enableHaptics && window.navigator && window.navigator.vibrate) {
+        try {
+          window.navigator.vibrate([16, 28, 16]);
+        } catch (_) { }
+      }
+
+      if (this.options.enableAudio) {
+        this.playPromiseGoldChimeTone();
+      }
+
+      // Xóa phần tử shaker cũ nếu có
+      const oldShaker = this.container.querySelector('.lipbalm-promise-bottle');
+      if (oldShaker) oldShaker.remove();
+
+      const lipbalmShaker = document.createElement('div');
+      lipbalmShaker.className = 'bottle-shaker-element lipbalm-promise-bottle';
+      lipbalmShaker.style.left = `${bottleBox.left.toFixed(1)}px`;
+      lipbalmShaker.style.top = `${bottleBox.top.toFixed(1)}px`;
+      lipbalmShaker.style.width = `${bottleBox.width.toFixed(1)}px`;
+      lipbalmShaker.style.height = `${bottleBox.height.toFixed(1)}px`;
+
+      // Canvas chụp hình sắc nét 100% của hũ son dưỡng
+      const shakerCanvas = document.createElement('canvas');
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      shakerCanvas.width = Math.max(1, Math.round(bottleBox.width * dpr));
+      shakerCanvas.height = Math.max(1, Math.round(bottleBox.height * dpr));
+      shakerCanvas.style.width = '100%';
+      shakerCanvas.style.height = '100%';
+
+      const sCtx = shakerCanvas.getContext('2d');
+      sCtx.scale(dpr, dpr);
+
+      if (targetImg && targetImg.complete && targetImg.naturalWidth > 0) {
+        const sx = bounds.minX * targetImg.naturalWidth;
+        const sy = bounds.minY * targetImg.naturalHeight;
+        const sw = (bounds.maxX - bounds.minX) * targetImg.naturalWidth;
+        const sh = (bounds.maxY - bounds.minY) * targetImg.naturalHeight;
+        sCtx.drawImage(targetImg, sx, sy, sw, sh, 0, 0, bottleBox.width, bottleBox.height);
+      }
+      lipbalmShaker.appendChild(shakerCanvas);
+
+      // Lớp NẮP VÀNG RUNG NHẸ độc lập (Gold Cap Micro-Tremor)
+      const goldCapEl = document.createElement('div');
+      goldCapEl.className = 'lipbalm-gold-cap-element cap-shaking';
+      goldCapEl.innerHTML = `
+        <div class="lipbalm-cap-specular-shimmer"></div>
+        <div class="lipbalm-cap-gold-halo"></div>
+      `;
+      lipbalmShaker.appendChild(goldCapEl);
+
+      // Hào quang vàng hồng champagne dịu ngọt
+      const auraEl = document.createElement('div');
+      auraEl.className = 'lipbalm-bottle-aura active';
+      lipbalmShaker.appendChild(auraEl);
+
+      this.container.appendChild(lipbalmShaker);
+
+      // Sau 480ms nắp ngừng rung và chuyển sang trạng thái tỏa sáng êm dịu
+      setTimeout(() => {
+        if (goldCapEl) goldCapEl.classList.remove('cap-shaking');
+        lipbalmShaker.classList.add('bottle-focused');
+      }, 480);
+
+      // ------------------------------------------------------------
+      // 2. MỘT CÁNH HOA RƠI XUỐNG (280ms)
+      // ------------------------------------------------------------
+      const petalDropX = fRect.left + bottleBox.left + bottleBox.width * 0.46;
+      const petalDropY = fRect.top + bottleBox.top - 70;
+
+      setTimeout(() => {
+        if (window.petalEngine && typeof window.petalEngine.dropSinglePetal === 'function') {
+          window.petalEngine.dropSinglePetal({
+            x: petalDropX,
+            y: petalDropY,
+            fallDistance: bottleBox.height + 95,
+            duration: 4400
+          });
+        }
+      }, 280);
+
+      // ------------------------------------------------------------
+      // 3. BACKGROUND CHUYỂN SANG SLOW MOTION (420ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        if (window.bgEngineInstance && typeof window.bgEngineInstance.setSlowMotion === 'function') {
+          window.bgEngineInstance.setSlowMotion(true, true);
+        } else if (typeof window.setSlowMotion === 'function') {
+          window.setSlowMotion(true, true);
+        }
+        this.container.classList.add('engine-slow-motion');
+      }, 420);
+
+      // ------------------------------------------------------------
+      // 4. ÁNH SÁNG XUNG QUANH GIẢM NHẸ (580ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        let dimBackdrop = document.getElementById('lipbalmCinematicDim');
+        if (!dimBackdrop) {
+          dimBackdrop = document.createElement('div');
+          dimBackdrop.id = 'lipbalmCinematicDim';
+          dimBackdrop.className = 'lipbalm-cinematic-dim';
+          dimBackdrop.style.setProperty('--lipbalm-center-x', `${((bottleBox.left + bottleBox.width * 0.5) / fRect.width * 100).toFixed(1)}%`);
+          dimBackdrop.style.setProperty('--lipbalm-center-y', `${((bottleBox.top + bottleBox.height * 0.5) / fRect.height * 100).toFixed(1)}%`);
+          this.container.appendChild(dimBackdrop);
+        }
+        requestAnimationFrame(() => {
+          dimBackdrop.classList.add('active');
+        });
+      }, 580);
+
+      // ------------------------------------------------------------
+      // 5. MỘT CÀNH HOA BAY NGANG MÀN HÌNH (900ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        if (window.branchEngine && typeof window.branchEngine.launchHorizontalAcross === 'function') {
+          window.branchEngine.launchHorizontalAcross({
+            fromLeft: true,
+            duration: 6200
+          });
+        } else if (window.branchEngine && typeof window.branchEngine.launch === 'function') {
+          window.branchEngine.launch({
+            originX: -80,
+            originY: window.innerHeight * 0.38,
+            dir: 1,
+            branchIndex: 0,
+            trajectory: 'C',
+            duration: 5800,
+            allowPetalDetach: true
+          });
+        }
+      }, 900);
+
+      // ------------------------------------------------------------
+      // 6. CÁC HIỆU ỨNG XUNG QUANH TRỞ NÊN YÊN TĨNH (350ms)
+      // ------------------------------------------------------------
+      const restoreMusicVolume = this.duckBackgroundMusic(0.20, 1600);
+
+      // ------------------------------------------------------------
+      // HIỂN THỊ: LỜI HẸN (2100ms)
+      // ------------------------------------------------------------
+      setTimeout(() => {
+        this.displayLipbalmPromiseContent(lipbalmShaker, restoreMusicVolume);
+      }, 2100);
+    }
+
+    // Âm thanh chuông vàng pha lê ngân vang dịu ngọt
+    playPromiseGoldChimeTone() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Hợp âm E5 - G#5 - B5 - E6 ấm áp, thanh tao
+        const freqs = [659.25, 830.61, 987.77, 1318.51];
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.04);
+          gain.gain.linearRampToValueAtTime(0.016 / (idx + 1), now + idx * 0.04 + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 1.4);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 1.45);
+        });
+      } catch (_) { }
+    }
+
+    // Làm dịu âm lượng nhạc nền xuống thì thầm, sau đó trả lại bình thường
+    duckBackgroundMusic(targetVol = 0.20, durationMs = 1500) {
+      try {
+        const audio = document.getElementById('bgMusic');
+        if (!audio || audio.paused) return () => { };
+        const initialVol = typeof audio.volume === 'number' ? audio.volume : 0.6;
+        const startTime = performance.now();
+
+        const step = () => {
+          const elapsed = performance.now() - startTime;
+          const p = Math.min(1, elapsed / durationMs);
+          const ease = 1 - Math.pow(1 - p, 2);
+          audio.volume = initialVol + (targetVol - initialVol) * ease;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+
+        return () => {
+          try {
+            if (!audio || audio.paused) return;
+            const restStart = performance.now();
+            const currVol = audio.volume;
+            const restStep = () => {
+              const elapsed = performance.now() - restStart;
+              const p = Math.min(1, elapsed / 1800);
+              const ease = 1 - Math.pow(1 - p, 2);
+              audio.volume = currVol + (initialVol - currVol) * ease;
+              if (p < 1) requestAnimationFrame(restStep);
+            };
+            requestAnimationFrame(restStep);
+          } catch (_) { }
+        };
+      } catch (_) {
+        return () => { };
+      }
+    }
+
+    // Hiển thị nội dung LỜI HẸN với thiết kế cảm xúc sâu sắc nhất
+    displayLipbalmPromiseContent(lipbalmShaker, restoreMusicVolume) {
+      const existing = document.getElementById('lipbalmPromiseModal');
+      if (existing) existing.remove();
+
+      const modal = document.createElement('div');
+      modal.className = 'lipbalm-promise-modal';
+      modal.id = 'lipbalmPromiseModal';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'promiseModalTitle');
+
+      modal.innerHTML = `
+        <div class="lipbalm-promise-card" id="lipbalmPromiseCard">
+          <div class="promise-card-halo" aria-hidden="true"></div>
+
+          <div class="promise-header-ornament" aria-hidden="true">
+            <span class="promise-star-icon">✦</span>
+            <span class="promise-diamond-icon">✧</span>
+            <span class="promise-star-icon">✦</span>
+          </div>
+
+          <h2 class="promise-title" id="promiseModalTitle">LỜI HẸN</h2>
+
+          <div class="promise-divider" aria-hidden="true">
+            <span class="promise-divider-line"></span>
+            <span class="promise-divider-gem">♡</span>
+            <span class="promise-divider-line"></span>
+          </div>
+
+          <div class="promise-lines-container">
+            <p class="promise-line promise-line-1">“Không cần những lời</p>
+            <p class="promise-line promise-line-2">quá lớn lao.</p>
+            <div class="promise-line-spacer" aria-hidden="true"></div>
+            <p class="promise-line promise-line-3">Chỉ cần ngày mai</p>
+            <p class="promise-line promise-line-4">chúng ta vẫn còn</p>
+            <p class="promise-line promise-line-5">muốn ở cạnh nhau.”</p>
+          </div>
+
+          <div class="promise-lipbalm-tag">
+            <span class="lipbalm-tag-dot"></span>
+            <span class="lipbalm-tag-text">Lip Balm Nourish &amp; Glow • Lời Hẹn Tình Yêu</span>
+          </div>
+
+          <div class="promise-action-footer">
+            <button type="button" class="promise-close-btn" id="lipbalmPromiseCloseBtn" aria-label="Đóng lời hẹn">
+              <span class="promise-close-bracket">[</span>
+              <span class="promise-close-text">Đóng</span>
+              <span class="promise-close-bracket">]</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      this.container.appendChild(modal);
+
+      const card = modal.querySelector('#lipbalmPromiseCard');
+      const closeBtn = modal.querySelector('#lipbalmPromiseCloseBtn');
+
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        if (card) {
+          card.classList.add('revealed');
+        }
+        if (closeBtn) {
+          setTimeout(() => closeBtn.focus(), 4600);
+        }
+      });
+
+      // ------------------------------------------------------------
+      // NGƯỜI DÙNG TỰ ĐÓNG
+      // Khi đóng:
+      // - Một cánh hoa cuối cùng bay qua màn hình.
+      // - Background trở lại tốc độ bình thường.
+      // ------------------------------------------------------------
+      let isClosing = false;
+      const closePromiseModal = () => {
+        if (isClosing) return;
+        isClosing = true;
+
+        modal.classList.add('closing');
+        modal.classList.remove('active');
+
+        // 1. MỘT CÁNH HOA CUỐI CÙNG BAY QUA MÀN HÌNH
+        if (window.petalEngine && typeof window.petalEngine.flySinglePetalAcross === 'function') {
+          window.petalEngine.flySinglePetalAcross({
+            startX: window.innerWidth * 0.38,
+            startY: window.innerHeight * 0.46,
+            duration: 4800
+          });
+        }
+
+        // 2. BACKGROUND TRỞ LẠI TỐC ĐỘ BÌNH THƯỜNG
+        if (window.bgEngineInstance && typeof window.bgEngineInstance.setSlowMotion === 'function') {
+          window.bgEngineInstance.setSlowMotion(false);
+        } else if (typeof window.setSlowMotion === 'function') {
+          window.setSlowMotion(false);
+        }
+        this.container.classList.remove('engine-slow-motion');
+        this.container.classList.remove('engine-quiet-mode');
+
+        // Phục hồi âm lượng nhạc nền
+        if (typeof restoreMusicVolume === 'function') {
+          restoreMusicVolume();
+        }
+
+        // Làm mờ dần và xóa màn che cinematic dim
+        const dimBackdrop = document.getElementById('lipbalmCinematicDim');
+        if (dimBackdrop) {
+          dimBackdrop.classList.remove('active');
+        }
+
+        if (lipbalmShaker) {
+          lipbalmShaker.classList.add('shaker-fade-out');
+        }
+
+        setTimeout(() => {
+          modal.remove();
+          if (dimBackdrop) dimBackdrop.remove();
+          if (lipbalmShaker) lipbalmShaker.remove();
+          this.activeSequences.delete('lipbalm');
+          if (window.discoveryEngine) {
+            window.discoveryEngine.onSequenceClosed('lipbalm');
+          }
+        }, 650);
+
+        document.removeEventListener('keydown', handleKeydown);
+      };
+
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          closePromiseModal();
+        }
+      };
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closePromiseModal();
+        });
+      }
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          e.stopPropagation();
+          closePromiseModal();
+        }
+      });
+
+      document.addEventListener('keydown', handleKeydown);
     }
 
     // --- API kích hoạt tương tác chương trình (Programmatic Trigger) ---

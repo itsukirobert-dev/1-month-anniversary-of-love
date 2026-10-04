@@ -1,0 +1,611 @@
+/* ============================================================
+   BUTTERFLY PEA MEMORY GARDEN — STORY TRANSITION ENGINE CSS
+   9 Chapters Story Background System
+   Visual Identity:
+   - Pastel Pink (#ffd5e5, #fbcfe8, #f472b6)
+   - Butterfly Pea Blue (#1d4ed8, #2563eb, #3b82f6)
+   - Photorealistic & Romantic Luxury
+   - Cinematic Atmosphere & Soft Light
+   ============================================================ */
+
+:root {
+  --story-pink-pastel: #ffd5e5;
+  --story-pink-soft: #fbcfe8;
+  --story-pink-accent: #f472b6;
+  --story-blue-indigo: #1e3a8a;
+  --story-blue-vibrant: #2563eb;
+  --story-blue-sky: #60a5fa;
+  --story-gold-champagne: #fbbf24;
+  --story-gold-warm: #d97706;
+  --story-glass-bg: rgba(255, 255, 255, 0.72);
+  --story-glass-border: rgba(255, 255, 255, 0.55);
+  --story-transition-duration: 1.2s;
+}
+
+/* ============================================================
+   1. STORY CHAPTERS CONTAINER & SCENE LAYERS
+   ============================================================ */
+.story-chapters-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Khi chuyển sang các Chapter 2 -> 9, tạm ẩn các lớp động lực học riêng của Chapter 1 */
+.living-frame:not(.chapter-active-1) .engine-layer-silk,
+.living-frame:not(.chapter-active-1) .engine-layer-flora,
+.living-frame:not(.chapter-active-1) .engine-swaying-branch,
+.living-frame:not(.chapter-active-1) .engine-specular-canvas,
+.living-frame:not(.chapter-active-1) .engine-layer-table,
+.living-frame:not(.chapter-active-1) .engine-layer-backdrop,
+.living-frame:not(.chapter-active-1) .main-uncut-image.living-photo,
+.living-frame:not(.chapter-active-1) .bottle-hotspots-container,
+.living-frame:not(.chapter-active-1) .flower-touch-hint {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* Nút Bridge Khám Phá 9 Chương */
+.reward-bridge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #f472b6 100%);
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reward-bridge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.45);
+}
+
+/* Từng khung cảnh của từng Chapter */
+.story-chapter-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--story-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+              visibility var(--story-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+              transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: scale(1.025);
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
+.story-chapter-scene.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.story-chapter-scene.exiting {
+  opacity: 0;
+  transform: scale(0.985);
+  z-index: 1;
+}
+
+/* Ảnh nền Photorealistic của từng Chapter */
+.story-chapter-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform: translateZ(0);
+}
+
+/* Lớp phủ Cinematic Lighting & Soft Ambient Gradient */
+.story-chapter-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 240, 245, 0.2) 0%, rgba(30, 58, 138, 0.15) 100%);
+  transition: opacity 1.2s ease;
+}
+
+/* Lớp Vignette điện ảnh sang trọng */
+.story-chapter-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 90% 85% at 50% 50%, transparent 60%, rgba(15, 23, 42, 0.28) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* Canvas chuyên dụng cho Animation riêng của từng Chapter */
+.story-chapter-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Lớp phủ phần tử HTML/DOM riêng biệt theo từng Chapter */
+.story-chapter-env {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ============================================================
+   2. BỐ CỤC & MÔI TRƯỜNG ĐẶC TRƯNG TỪNG CHAPTER
+   ============================================================ */
+
+/* CHAPTER 01: Mỹ phẩm studio */
+.scene-ch1 .story-chapter-ambient {
+  background: radial-gradient(ellipse 70% 60% at 35% 30%, rgba(255, 235, 240, 0.35) 0%, rgba(37, 99, 235, 0.12) 100%);
+}
+
+/* CHAPTER 02: Hoa rủ / botanical composition */
+.scene-ch2 .story-chapter-ambient {
+  background: radial-gradient(ellipse 80% 50% at 50% 15%, rgba(255, 245, 230, 0.3) 0%, rgba(30, 58, 138, 0.18) 100%);
+}
+
+.scene-ch2-vines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(30, 58, 138, 0.08) 0%, transparent 100%);
+}
+
+/* CHAPTER 03: Nước / reflection / cánh hoa */
+.scene-ch3 .story-chapter-ambient {
+  background: linear-gradient(180deg, rgba(255, 220, 235, 0.2) 0%, rgba(59, 130, 246, 0.22) 60%, rgba(30, 58, 138, 0.28) 100%);
+}
+
+.scene-ch3-water-sheen {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  background: linear-gradient(to top, rgba(96, 165, 250, 0.18) 0%, rgba(255, 228, 238, 0.12) 50%, transparent 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* CHAPTER 04: Gương / luxury room */
+.scene-ch4 .story-chapter-ambient {
+  background: radial-gradient(circle at 50% 45%, rgba(255, 243, 224, 0.32) 0%, rgba(67, 56, 202, 0.15) 85%);
+}
+
+.scene-ch4-candle-glow {
+  position: absolute;
+  bottom: 22%;
+  left: 45%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(253, 230, 138, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: candleGlowPulse 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes candleGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.75; }
+  50% { transform: scale(1.05); opacity: 0.95; }
+  100% { transform: scale(0.97); opacity: 0.85; }
+}
+
+/* CHAPTER 05: Marble / glass / crystal */
+.scene-ch5 .story-chapter-ambient {
+  background: radial-gradient(ellipse at 65% 55%, rgba(255, 255, 255, 0.35) 0%, rgba(244, 114, 182, 0.15) 50%, rgba(37, 99, 235, 0.12) 100%);
+}
+
+/* CHAPTER 06: Satin / silk / flowers */
+.scene-ch6 .story-chapter-ambient {
+  background: linear-gradient(135deg, rgba(255, 215, 230, 0.32) 0%, rgba(30, 58, 138, 0.22) 100%);
+}
+
+/* CHAPTER 07: Botanical garden */
+.scene-ch7 .story-chapter-ambient {
+  background: radial-gradient(ellipse 90% 70% at 55% 20%, rgba(254, 243, 199, 0.35) 0%, rgba(52, 211, 153, 0.12) 60%, rgba(30, 58, 138, 0.18) 100%);
+}
+
+/* CHAPTER 08: Dreamy floral environment */
+.scene-ch8 .story-chapter-ambient {
+  background: radial-gradient(circle at 50% 50%, rgba(245, 208, 254, 0.32) 0%, rgba(192, 132, 252, 0.2) 45%, rgba(30, 58, 138, 0.25) 100%);
+}
+
+/* CHAPTER 09: Final romantic scene */
+.scene-ch9 .story-chapter-ambient {
+  background: radial-gradient(ellipse 95% 75% at 50% 35%, rgba(255, 228, 238, 0.35) 0%, rgba(251, 146, 60, 0.18) 40%, rgba(30, 58, 138, 0.3) 100%);
+}
+
+.scene-ch9-love-aura {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 229, 0.28) 0%, rgba(251, 191, 36, 0.16) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: loveAuraBreath 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes loveAuraBreath {
+  0% { transform: translate(-50%, -50%) scale(0.94); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+}
+
+/* ============================================================
+   3. THANH ĐIỀU HƯỚNG 9 CHAPTER (STORY CHAPTER NAVBAR)
+   ============================================================ */
+/* ============================================================
+   3. THANH ĐIỀU HƯỚNG 9 CHAPTER (STORY CHAPTER NAVBAR)
+   ============================================================ */
+.story-chapter-nav-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 4px 16px rgba(30, 58, 138, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  pointer-events: auto;
+  user-select: none;
+  max-width: calc(100% - 24px);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.story-chapter-nav-bar:hover {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 6px 20px rgba(30, 58, 138, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Nút Điều Hướng Trái / Phải */
+.story-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.5);
+  color: #1e3a8a;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+  flex-shrink: 0;
+}
+
+.story-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2563eb;
+  transform: scale(1.06);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15);
+}
+
+.story-nav-btn:active {
+  transform: scale(0.96);
+}
+
+/* Danh Sách Nút Bấm 9 Chương */
+.story-chapter-dots-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 1px 2px;
+}
+
+.story-chapter-dots-list::-webkit-scrollbar {
+  display: none;
+}
+
+.story-chapter-dot-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.story-chapter-dot-btn .dot-num {
+  font-size: 11px;
+}
+
+.story-chapter-dot-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: #1e3a8a;
+}
+
+.story-chapter-dot-btn.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e3a8a;
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  box-shadow:
+    0 2px 8px rgba(37, 99, 235, 0.18),
+    0 0 10px rgba(59, 130, 246, 0.25);
+  padding: 3px 10px;
+}
+
+/* Nút Chế Độ Trình Chiếu Tự Động (Auto-play Story Tour) */
+.story-autoplay-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 230, 0.6);
+  background: rgba(255, 240, 245, 0.6);
+  color: #e11d48;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.story-autoplay-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #f43f5e;
+  transform: scale(1.06);
+}
+
+.story-autoplay-btn.playing {
+  background: #e11d48;
+  color: #ffffff;
+  border-color: #e11d48;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.3);
+}
+
+/* ============================================================
+   4. THẺ THÔNG TIN CHƯƠNG ĐANG CHIẾU (STORY ACTIVE CHAPTER TAG)
+   Đặt ở góc trên bên phải để không che khuất hoa và mỹ phẩm
+   ============================================================ */
+.story-active-chapter-tag {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 24;
+  max-width: 250px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 8px 24px rgba(30, 58, 138, 0.06),
+    0 0 12px rgba(255, 255, 255, 0.4);
+  pointer-events: auto;
+  user-select: none;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: tagEntrance 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.story-active-chapter-tag.closed {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.96);
+  display: none !important;
+}
+
+@keyframes tagEntrance {
+  0% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tag-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #1e3a8a;
+  background: rgba(224, 242, 254, 0.7);
+  padding: 2px 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(186, 230, 253, 0.5);
+}
+
+.tag-badge .roman {
+  color: #e11d48;
+}
+
+.tag-close-btn {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.tag-close-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #e11d48;
+  border-color: rgba(251, 113, 133, 0.6);
+}
+
+.tag-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 3px 0 1px 0;
+  line-height: 1.3;
+}
+
+.tag-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #e11d48;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+.tag-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #475569;
+  margin: 0;
+  border-top: 1px dashed rgba(203, 213, 225, 0.6);
+  padding-top: 4px;
+}
+
+.story-active-chapter-tag.minimized .tag-subtitle,
+.story-active-chapter-tag.minimized .tag-desc {
+  display: none;
+}
+
+/* ============================================================
+   5. HIỆU ỨNG CHUYỂN CẢNH ĐIỆN ẢNH (CINEMATIC FLASH & CURTAIN)
+   ============================================================ */
+.story-transition-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 245, 250, 0.92) 0%, rgba(224, 242, 254, 0.6) 50%, transparent 85%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.story-transition-flash.flash-active {
+  opacity: 1;
+  animation: flashPulse 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes flashPulse {
+  0% { opacity: 0; }
+  35% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+/* ============================================================
+   6. RESPONSIVE DESIGN (TABLET & MOBILE)
+   ============================================================ */
+@media (max-width: 768px) {
+  .story-chapter-nav-bar {
+    bottom: 12px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .story-nav-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .story-chapter-dot-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .story-chapter-dot-btn.active .dot-title {
+    display: none;
+  }
+
+  .story-autoplay-btn span {
+    display: none;
+  }
+
+  .story-autoplay-btn {
+    padding: 6px 9px;
+  }
+
+  .story-active-chapter-tag {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    padding: 10px 14px;
+  }
+
+  .tag-title {
+    font-size: 15px;
+  }
+}

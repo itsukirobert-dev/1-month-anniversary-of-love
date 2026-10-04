@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //   + Háº¡t sÃ¡ng nhá», Ä‘á»‘m sao láº¥p lÃ¡nh (sparkles & stardust)
   //   + Quáº§ng sÃ¡ng glow xanh ngá»c Ä‘áº­u biáº¿c & tráº¯ng ngá»c trai
   //   + Tháº» chá»¯ bay bá»•ng:
-  //       âœ¨  Â·  âœ¨
+  //       ✨  ·  ✨
   //       Butterfly Pea
   //       A gentle floral moment...
   //   + Sau vÃ i giÃ¢y tá»± Ä‘á»™ng tan biáº¿n Ãªm Ä‘á»m vÃ o khÃ´ng khÃ­
@@ -1086,7 +1086,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Hiá»ƒn thá»‹ tháº» chá»¯ bay bá»•ng "Butterfly Pea / A gentle floral moment..."
+  // Hiá»ƒn thá»‹ tháº» chá»¯ bay bá»•ng "Butterfly Pea / A gentle floral moment..." vá»›i nÃºt [ Đóng ]
   function showFragranceCard(bottle, nozzleX, nozzleY) {
     if (!fragranceTextContainer) return;
 
@@ -1111,13 +1111,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.innerHTML = `
     <div class="fragrance-sparkle-row">
-      <span class="f-star">âœ¨</span>
-      <span class="f-dot">Â·</span>
-      <span class="f-star">âœ¨</span>
+      <span class="f-star">✨</span>
+      <span class="f-dot">·</span>
+      <span class="f-star">✨</span>
     </div>
     <div class="fragrance-title">Butterfly Pea</div>
     <div class="fragrance-subtitle">A gentle floral moment...</div>
     <div class="fragrance-product-tag">${bottle.name}</div>
+    <button type="button" class="fragrance-close-btn" aria-label="Đóng">
+      <span class="close-bracket">[</span>
+      <span class="close-text">Đóng</span>
+      <span class="close-bracket">]</span>
+    </button>
   `;
 
     fragranceTextContainer.appendChild(card);
@@ -1127,20 +1132,20 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.add('active');
     });
 
-    // Sau 3.3s báº¯t Ä‘áº§u má» tan biáº¿n
-    setTimeout(() => {
-      if (card.parentElement) {
-        card.classList.remove('active');
-        card.classList.add('dissolving');
-      }
-    }, 3300);
-
-    // Sau 4.3s gá»¡ bá» hoÃ n toÃ n khá»i DOM
-    setTimeout(() => {
-      if (card.parentElement) {
-        card.remove();
-      }
-    }, 4300);
+    // NÃºt Ä‘Ã³ng do ngÆ°á»i dÃ¹ng tá»± quyáº¿t Ä‘á»‹nh khi nÃ o Ä‘Ã³ng
+    const closeBtn = card.querySelector('.fragrance-close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.parentElement) {
+          card.classList.remove('active');
+          card.classList.add('dissolving');
+          setTimeout(() => {
+            if (card.parentElement) card.remove();
+          }, 600);
+        }
+      });
+    }
   }
 
   // ============================================================
@@ -1160,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 0. ÄÃ³ng modal hiá»‡n táº¡i náº¿u cÃ³
+    // 0. Đóng modal hiá»‡n táº¡i náº¿u cÃ³
     const currentModal = document.getElementById('productWorldModal');
     if (currentModal) {
       currentModal.remove();
@@ -1292,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Người dùng có thể bấm nút [ Lời nhắn ] trên thẻ để mở thư riêng khi muốn.
   }
 
-  // Hiá»ƒn thá»‹ tháº» thÃ´ng tin "Tháº¿ giá»›i riÃªng" vá»›i nÃºt [ ÄÃ³ng ]
+  // Hiá»ƒn thá»‹ tháº» thÃ´ng tin "Tháº¿ giá»›i riÃªng" vá»›i nÃºt [ Đóng ]
   function renderProductWorldModal(bottle) {
     if (!livingFrameEl) return;
 
@@ -1301,18 +1306,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.createElement('div');
     modal.className = 'product-world-modal';
+    // Äáº­u á»Ÿ gÃ³c Ä‘á»‘i diá»‡n Ä‘á»ƒ khÃ´ng che máº¥t chai má»¹ pháº©m vá»«a click vÃ  hoa á»Ÿ giá»¯a
+    if (bottle && bottle.nozzle && bottle.nozzle.x < 0.5) {
+      modal.classList.add('dock-right');
+    } else {
+      modal.classList.add('dock-left');
+    }
     modal.id = 'productWorldModal';
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-label', `${bottle.brand || 'Butterfly Pea'} - ${bottle.name}`);
 
-    const formattedMessage = (bottle.message || 'Má»™t khoáº£nh kháº¯c\ndá»‹u dÃ ng dÃ nh cho em.').replace(/\n/g, '<br>');
+    const formattedMessage = (bottle.message || 'Một khoảnh khắc\ndịu dàng dành cho em.').replace(/\n/g, '<br>');
 
     modal.innerHTML = `
     <div class="world-card-backdrop" id="worldCardBackdrop"></div>
     <div class="world-card-container">
       <div class="world-sparkle-top">
-        <span class="world-star">âœ¨</span>
+        <span class="world-star">✨</span>
       </div>
 
       <div class="world-brand-title">${bottle.brand || 'Butterfly Pea'}</div>
@@ -1321,15 +1332,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="world-divider">
         <span class="world-divider-line"></span>
-        <span class="world-divider-gem">âœ¦</span>
+        <span class="world-divider-gem">✦</span>
         <span class="world-divider-line"></span>
       </div>
 
       <div class="world-message">${formattedMessage}</div>
 
-      <button type="button" class="world-close-btn" id="worldCloseBtn" aria-label="ÄÃ³ng tháº¿ giá»›i riÃªng">
+      <button type="button" class="world-close-btn" id="worldCloseBtn" aria-label="Đóng">
         <span class="world-close-bracket">[</span>
-        <span class="world-close-text">ÄÃ³ng</span>
+        <span class="world-close-text">Đóng</span>
         <span class="world-close-bracket">]</span>
       </button>
     </div>
