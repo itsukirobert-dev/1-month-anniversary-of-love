@@ -470,6 +470,7 @@ body {
 
 /* Gợi ý tương tác cành hoa trên bức ảnh */
 .flower-touch-hint {
+  display: none !important;
   position: absolute;
   bottom: 24px;
   right: 24px;
@@ -3583,4 +3584,18 @@ ul {
     height: 38px;
     font-size: 17px;
   }
+}
+
+/* TẮT TOÀN BỘ BÓ HOA GIỮA KHUNG HÌNH VÀ CÁNH HOA/CÀNH HOA */
+.discovery-branches-layer,
+.discovery-centerpiece-bouquet,
+.bouquet-ambient-radiance,
+.discovery-branch-item,
+.convergence-flying-branch,
+.bouquet-inner-wrap,
+.bouquet-img {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }

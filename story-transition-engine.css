@@ -36,16 +36,24 @@
   z-index: 10;
 }
 
-/* Khi chuyển sang các Chapter 2 -> 9, tạm ẩn các lớp động lực học riêng của Chapter 1 */
-.living-frame:not(.chapter-active-1) .engine-layer-silk,
-.living-frame:not(.chapter-active-1) .engine-layer-flora,
-.living-frame:not(.chapter-active-1) .engine-swaying-branch,
-.living-frame:not(.chapter-active-1) .engine-specular-canvas,
-.living-frame:not(.chapter-active-1) .engine-layer-table,
-.living-frame:not(.chapter-active-1) .engine-layer-backdrop,
-.living-frame:not(.chapter-active-1) .main-uncut-image.living-photo,
-.living-frame:not(.chapter-active-1) .bottle-hotspots-container,
-.living-frame:not(.chapter-active-1) .flower-touch-hint {
+/* Chapter 1 là bối cảnh Căn Phòng Sống Động nguyên bản (background.jpg + living physical layers)
+   -> Ẩn ảnh backdrop riêng của Scene 1 để các tầng nền chuẩn hiển thị sắc nét 100% */
+.scene-ch1 .story-chapter-backdrop {
+  display: none !important;
+}
+
+/* Khi chuyển sang các Chapter 2 -> 9, tạm ẩn các lớp động lực học riêng của Chapter 1 để thưởng thức trọn vẹn từng bối cảnh */
+.living-frame:is(.chapter-active-2, .chapter-active-3, .chapter-active-4, .chapter-active-5, .chapter-active-6, .chapter-active-7, .chapter-active-8, .chapter-active-9) :is(
+  .engine-layer-silk,
+  .engine-layer-flora,
+  .engine-swaying-branch,
+  .engine-specular-canvas,
+  .engine-layer-table,
+  .engine-layer-backdrop,
+  .main-uncut-image.living-photo,
+  .bottle-hotspots-container,
+  .flower-touch-hint
+) {
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
@@ -87,7 +95,6 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--story-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
-              visibility var(--story-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
               transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform: scale(1.025);
   will-change: opacity, transform;
@@ -99,13 +106,15 @@
   visibility: visible;
   transform: scale(1);
   pointer-events: auto;
-  z-index: 2;
+  z-index: 3;
 }
 
 .story-chapter-scene.exiting {
   opacity: 0;
+  visibility: visible;
   transform: scale(0.985);
-  z-index: 1;
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* Ảnh nền Photorealistic của từng Chapter */
@@ -175,14 +184,22 @@
   background: radial-gradient(ellipse 80% 50% at 50% 15%, rgba(255, 245, 230, 0.3) 0%, rgba(30, 58, 138, 0.18) 100%);
 }
 
-.scene-ch2-vines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 45%;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(30, 58, 138, 0.08) 0%, transparent 100%);
+/* Tắt toàn bộ cành hoa, bông hoa giả lập, bó hoa trung tâm từ trang 1 đến 9 theo yêu cầu */
+.engine-swaying-branch,
+.engine-living-blossom,
+.flower-touch-hint,
+.scene-ch2-vines,
+.discovery-branches-layer,
+.discovery-centerpiece-bouquet,
+.bouquet-ambient-radiance,
+.discovery-branch-item,
+.convergence-flying-branch,
+.bouquet-inner-wrap,
+.bouquet-img {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 /* CHAPTER 03: Nước / reflection / cánh hoa */

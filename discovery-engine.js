@@ -321,114 +321,44 @@
         return;
       }
 
+      // Xóa sạch bộ nhớ cũ và các phần tử hoa thừa trong DOM
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
+
+      ['discoveryCenterpieceBouquet', 'bouquetAmbientRadiance', 'discoveryBranchesLayer'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+      });
+
       this.buildBranchesLayer();
       this.buildBouquetCenterpiece();
       this.renderCurrentState();
     }
 
-    // --- 1. Tạo layer chứa các cành hoa background ---
+    // --- 1. Đã tắt toàn bộ cành hoa background theo yêu cầu ---
     buildBranchesLayer() {
-      let layer = document.getElementById('discoveryBranchesLayer');
-      if (!layer) {
-        layer = document.createElement('div');
-        layer.id = 'discoveryBranchesLayer';
-        layer.className = 'discovery-branches-layer';
-        layer.setAttribute('aria-hidden', 'true');
-        this.container.appendChild(layer);
-      }
-      this.branchesLayer = layer;
-
-      // Dựng 5 phần tử cành hoa cho 5 sản phẩm
-      ALL_PRODUCT_KEYS.forEach((key) => {
-        const spec = PRODUCT_SPECS[key];
-        let branchEl = layer.querySelector(`.${spec.className}`);
-
-        if (!branchEl) {
-          branchEl = document.createElement('div');
-          branchEl.className = `discovery-branch-item ${spec.className}`;
-          branchEl.setAttribute('data-product-id', key);
-
-          const img = document.createElement('img');
-          img.src = spec.sprite;
-          img.alt = `Cành hoa ${spec.name}`;
-          img.className = 'branch-img';
-
-          // Hạt sương lấp lánh đọng trên lá
-          const dew = document.createElement('div');
-          dew.className = 'discovery-dew-drop';
-          dew.style.left = '45%';
-          dew.style.top = '48%';
-
-          branchEl.appendChild(img);
-          branchEl.appendChild(dew);
-          layer.appendChild(branchEl);
-        }
-
-        this.branchElements[key] = branchEl;
-      });
+      const layer = document.getElementById('discoveryBranchesLayer');
+      if (layer) layer.remove();
+      this.branchesLayer = null;
     }
 
-    // --- 2. Tạo phần tử bó hoa đậu biếc hoàn chỉnh & ánh sáng lung linh ---
-    // Tuyệt đối không tạo popup, không tạo achievement card hay backdrop làm tối màn hình.
+    // --- 2. Đã tắt toàn bộ bó hoa trung tâm theo yêu cầu ---
     buildBouquetCenterpiece() {
-      // (a) Hào quang ánh sáng xanh và vàng champagne dịu êm
-      let radiance = document.getElementById('bouquetAmbientRadiance');
-      if (!radiance) {
-        radiance = document.createElement('div');
-        radiance.id = 'bouquetAmbientRadiance';
-        radiance.className = 'bouquet-ambient-radiance';
-        radiance.setAttribute('aria-hidden', 'true');
-        this.container.appendChild(radiance);
-      }
-      this.bouquetRadiance = radiance;
-
-      // (b) Bó hoa đậu biếc vẹn tròn - kiệt tác đọng lại tự nhiên giữa trung tâm khu vườn
-      let centerpiece = document.getElementById('discoveryCenterpieceBouquet');
-      if (!centerpiece) {
-        centerpiece = document.createElement('div');
-        centerpiece.id = 'discoveryCenterpieceBouquet';
-        centerpiece.className = 'discovery-centerpiece-bouquet';
-        centerpiece.setAttribute('role', 'img');
-        centerpiece.setAttribute('aria-label', 'Bó hoa đậu biếc hoàn chỉnh giữa khu vườn');
-        centerpiece.innerHTML = `
-          <div class="bouquet-inner-wrap">
-            <img src="assets/images/falling_branches/bouquet_final.png" alt="Bó hoa đậu biếc vẹn tròn" class="bouquet-img">
-          </div>
-        `;
-        this.container.appendChild(centerpiece);
-
-        // Chạm nhẹ vào bó hoa: tung vài cánh hoa và ngân âm nhẹ, không mở achievement popup!
-        centerpiece.addEventListener('click', (e) => {
-          this.handleBouquetInteraction(e);
-        });
-      }
-      this.centerpieceBouquet = centerpiece;
+      const c = document.getElementById('discoveryCenterpieceBouquet');
+      if (c) c.remove();
+      const r = document.getElementById('bouquetAmbientRadiance');
+      if (r) r.remove();
+      this.centerpieceBouquet = null;
+      this.bouquetRadiance = null;
     }
 
-    // --- 3. Hiển thị trạng thái hiện tại theo bộ nhớ ---
+    // --- 3. Không hiển thị bất kỳ bó hoa hay cành hoa nào ---
     renderCurrentState() {
-      ALL_PRODUCT_KEYS.forEach((key) => {
-        const branchEl = this.branchElements[key];
-        if (!branchEl) return;
-
-        if (this.state.discovered[key]) {
-          branchEl.classList.add('discovered');
-          branchEl.classList.remove('sprouting');
-        } else {
-          branchEl.classList.remove('discovered', 'sprouting');
-        }
+      ['discoveryCenterpieceBouquet', 'bouquetAmbientRadiance', 'discoveryBranchesLayer'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.remove();
       });
-
-      // Nếu chapter đã hoàn thành trước đó: bó hoa và ánh sáng champagne-xanh tỏa rạng tự nhiên
-      if (this.state.finaleCompleted) {
-        if (this.centerpieceBouquet) {
-          this.centerpieceBouquet.classList.add('visible');
-        }
-        if (this.bouquetRadiance) {
-          this.bouquetRadiance.classList.add('active');
-        }
-        this.startAmbientGardenBreeze();
-      }
     }
 
     // --- 4. Ghi nhận khi một sản phẩm được khám phá ---
@@ -537,12 +467,11 @@
     //    - KHÔNG hiển thị achievement!
     // ============================================================
     triggerGrandConvergence() {
-      if (!this.container) return;
-
       playCelestialConvergenceChord();
-
-      const fRect = this.container.getBoundingClientRect();
-      const centerX = fRect.width * 0.50;
+      this.state.finaleCompleted = true;
+      this.saveState();
+      this.isConverging = false;
+      return;
       const centerY = fRect.height * 0.40;
 
       // 1. Tạm ẩn cành hoa tĩnh trong background với hiệu ứng tan nhẹ

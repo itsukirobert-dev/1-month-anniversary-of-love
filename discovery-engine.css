@@ -15,6 +15,20 @@
      + Để người dùng tự nhận ra khu vườn đã chuyển mình.
    ============================================================ */
 
+/* TẮT HOÀN TOÀN BÓ HOA VÀ CÁC CÀNH HOA THEO YÊU CẦU */
+.discovery-branches-layer,
+.discovery-centerpiece-bouquet,
+.bouquet-ambient-radiance,
+.discovery-branch-item,
+.convergence-flying-branch,
+.bouquet-inner-wrap,
+.bouquet-img {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* 1. LỚP CHỨA CÁC CÀNH HOA TRONG BACKGROUND & HỘI TỤ */
 .discovery-branches-layer {
   position: absolute;

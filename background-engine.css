@@ -188,6 +188,7 @@
   z-index: 6;
   will-change: transform;
   transform: translateZ(0);
+  display: none !important;
 }
 
 .engine-swaying-branch .branch-sprite {
@@ -245,6 +246,7 @@
   z-index: 7;
   will-change: transform;
   transform: translateZ(0);
+  display: none !important;
 }
 
 .engine-living-blossom .blossom-sprite {

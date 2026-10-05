@@ -128,9 +128,9 @@
       number: 'CHAPTER 09',
       roman: 'IX',
       title: 'Khúc Vĩ Thanh Lãng Mạn',
-      subtitle: 'Cổng Hoa Vĩnh Cửu & Đèn Lồng Nguyện Ước',
-      desc: 'Khoảnh khắc trọn vẹn của tình yêu đôi lứa: Cổng vòm hoa đậu biếc rực rỡ, hàng ngàn ngọn nến lung linh bên bờ biển hoàng hôn, đèn lồng bay lên trời sao và pháo hoa rực sáng mừng Cá Sudo & Khây Ti.',
-      image: 'assets/images/chapters/chapter_09.jpg',
+      subtitle: 'Bầu Trời Đêm Hoa Đăng & Ban Công Nguyện Ước',
+      desc: 'Khoảnh khắc êm đềm và riêng tư của đôi mình: Ban công hoàng hôn nhìn ra vịnh biển yên bình dưới ngàn vì sao, hai ly champagne sóng sánh, ánh nến lung linh và những ngọn hoa đăng mang theo lời nguyện ước dài lâu dành riêng cho Cá Sudo & Khây Ti.',
+      image: 'assets/images/chapters/chapter_09_romantic.jpg?v=20261005',
       moodColor: 'rgba(251, 113, 133, 0.28)',
       accentColor: '#e11d48'
     }
@@ -195,8 +195,30 @@
       this.initActiveChapterTag();
       this.bindEvents();
 
-      // Bật Chapter 1 làm mặc định
-      this.switchChapter(0, false);
+      // Bật Chapter theo URL parameter ?ch=X hoặc mặc định Chapter 1 (giữ không gian thoáng đãng thanh khiết ban đầu)
+      let startIdx = 0;
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const chParam = parseInt(urlParams.get('ch'), 10);
+        if (!isNaN(chParam) && chParam >= 1 && chParam <= 9) {
+          startIdx = chParam - 1;
+        } else {
+          const hashMatch = window.location.hash.match(/chapter-(\d+)/i);
+          if (hashMatch) {
+            const hNum = parseInt(hashMatch[1], 10);
+            if (hNum >= 1 && hNum <= 9) startIdx = hNum - 1;
+          }
+        }
+      } catch (_) {}
+
+      this.switchChapter(startIdx, false);
+      if (this.activeChapterTag) {
+        if (startIdx === 0) {
+          this.activeChapterTag.classList.add('closed');
+        } else {
+          this.activeChapterTag.classList.remove('closed');
+        }
+      }
     }
 
     // --- Khởi tạo cấu trúc DOM container bên trong #livingFrame ---
@@ -239,7 +261,7 @@
         imgEl.className = 'story-chapter-backdrop';
         imgEl.src = data.image;
         imgEl.alt = `${data.number} - ${data.title}`;
-        imgEl.loading = index === 0 ? 'eager' : 'lazy';
+        imgEl.loading = 'eager';
 
         // Lớp phủ ánh sáng Ambient
         const ambientEl = document.createElement('div');
@@ -254,11 +276,7 @@
         envEl.className = 'story-chapter-env';
 
         // Thêm các thành phần môi trường đặc thù
-        if (data.id === 2) {
-          const vines = document.createElement('div');
-          vines.className = 'scene-ch2-vines';
-          envEl.appendChild(vines);
-        } else if (data.id === 3) {
+        if (data.id === 3) {
           const sheen = document.createElement('div');
           sheen.className = 'scene-ch3-water-sheen';
           envEl.appendChild(sheen);
@@ -373,7 +391,7 @@
       if (!tag) {
         tag = document.createElement('div');
         tag.id = 'storyActiveChapterTag';
-        tag.className = 'story-active-chapter-tag';
+        tag.className = 'story-active-chapter-tag closed';
         tag.setAttribute('aria-live', 'polite');
 
         tag.innerHTML = `
@@ -406,8 +424,7 @@
 
     // --- Cập nhật nội dung Thẻ Thông Tin Chương ---
     updateActiveChapterTag(chapter) {
-      if (!this.activeChapterTag) return;
-      if (this.activeChapterTag.classList.contains('closed')) return;
+      if (!this.activeChapterTag || !chapter) return;
 
       const badge = this.activeChapterTag.querySelector('#storyTagBadge');
       const title = this.activeChapterTag.querySelector('#storyTagTitle');
@@ -420,6 +437,8 @@
       if (title) title.textContent = chapter.title;
       if (subtitle) subtitle.textContent = chapter.subtitle;
       if (desc) desc.textContent = chapter.desc;
+
+      if (this.activeChapterTag.classList.contains('closed')) return;
 
       // Hiệu ứng fade in nhẹ khi đổi thông tin
       this.activeChapterTag.style.animation = 'none';
@@ -491,21 +510,21 @@
       const originalPhoto = this.livingFrame.querySelector('.main-uncut-image.living-photo');
 
       if (targetIndex === 0) {
-        // Trở về Chapter 1: Hiện lại các Hotspot mỹ phẩm
+        // Trở về Chapter 1: Hiện lại các Hotspot mỹ phẩm và phục hồi nền sống động 100%
         if (hotspots) {
           hotspots.style.opacity = '1';
           hotspots.style.pointerEvents = 'auto';
         }
         if (touchHint) touchHint.style.display = '';
-        if (originalPhoto) originalPhoto.style.opacity = '0.01'; // Để Scene 1 làm nền chính
+        if (originalPhoto) originalPhoto.style.opacity = '1'; // Nền sống động sắc nét 100%
       } else {
-        // Các Chapter 2 - 9: Tạm ẩn Hotspots mỹ phẩm để chiêm ngưỡng trọn vẹn bối cảnh
+        // Các Chapter 2 - 9: Tạm ẩn Hotspots mỹ phẩm và nền Chapter 1 để chiêm ngưỡng trọn vẹn bối cảnh
         if (hotspots) {
           hotspots.style.opacity = '0';
           hotspots.style.pointerEvents = 'none';
         }
         if (touchHint) touchHint.style.display = 'none';
-        if (originalPhoto) originalPhoto.style.opacity = '0.01';
+        if (originalPhoto) originalPhoto.style.opacity = '0';
       }
 
       // 7. Khởi động Animation riêng biệt của Chapter được kích hoạt
@@ -519,11 +538,19 @@
     prevChapter() {
       const target = (this.currentChapterIndex - 1 + CHAPTERS_DATA.length) % CHAPTERS_DATA.length;
       this.switchChapter(target);
+      if (this.activeChapterTag && this.activeChapterTag.classList.contains('closed')) {
+        this.activeChapterTag.classList.remove('closed');
+        this.updateActiveChapterTag(CHAPTERS_DATA[target]);
+      }
     }
 
     nextChapter() {
       const target = (this.currentChapterIndex + 1) % CHAPTERS_DATA.length;
       this.switchChapter(target);
+      if (this.activeChapterTag && this.activeChapterTag.classList.contains('closed')) {
+        this.activeChapterTag.classList.remove('closed');
+        this.updateActiveChapterTag(CHAPTERS_DATA[target]);
+      }
     }
 
     // --- Chế Độ Trình Chiếu Tự Động ---
@@ -723,102 +750,34 @@
       requestAnimationFrame(loop);
     }
 
-    // --- ANIMATION CH02: Hoa Rủ / Botanical (Pendulum Sway & Spiral Petals) ---
+    // --- ANIMATION CH02: Khung Cảnh Tinh Khôi (Soft Ambient Light - Không có hoa/cánh hoa rơi) ---
     runChapter02Animation(ctx, w, h, isRunning) {
-      // Các cụm hoa rủ đung đưa theo con lắc vật lý
-      const vines = [
-        { x: w * 0.32, y: h * 0.15, len: h * 0.38, amp: 0.045, speed: 0.0011, phase: 0.2 },
-        { x: w * 0.48, y: h * 0.12, len: h * 0.52, amp: 0.065, speed: 0.0009, phase: 1.5 },
-        { x: w * 0.62, y: h * 0.16, len: h * 0.42, amp: 0.052, speed: 0.0013, phase: 2.8 },
-        { x: w * 0.76, y: h * 0.20, len: h * 0.35, amp: 0.040, speed: 0.0010, phase: 3.9 }
-      ];
-
-      // Cánh hoa rơi xoắn ốc chậm
-      const fallingPetals = Array.from({ length: 14 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        speedY: 0.35 + Math.random() * 0.45,
-        spiralAmp: 1.2 + Math.random() * 1.8,
-        spiralSpeed: 0.002 + Math.random() * 0.003,
-        size: 7 + Math.random() * 6,
-        rot: Math.random() * Math.PI * 2,
-        isBlue: Math.random() > 0.4
-      }));
-
       const loop = (t) => {
         if (!isRunning()) return;
         ctx.clearRect(0, 0, w, h);
 
-        // Vẽ hiệu ứng đung đưa của các chùm hoa buông rủ
-        vines.forEach(v => {
-          const angle = Math.sin(t * v.speed + v.phase) * v.amp;
-          ctx.save();
-          ctx.translate(v.x, v.y);
-          ctx.rotate(angle);
+        // Vệt sáng sớm mai mềm mại lướt nhẹ qua không gian
+        const sweep = (Math.sin(t * 0.0006) + 1) * 0.5;
+        const grad = ctx.createRadialGradient(w * 0.5, h * 0.25, 30, w * 0.5, h * 0.25, w * 0.65);
+        grad.addColorStop(0, `rgba(255, 248, 235, ${(0.14 + sweep * 0.08).toFixed(3)})`);
+        grad.addColorStop(0.5, `rgba(251, 207, 232, ${(0.06 + sweep * 0.04).toFixed(3)})`);
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-          // Tia sáng mềm mại dọc thân cành
-          const grad = ctx.createLinearGradient(0, 0, 0, v.len);
-          grad.addColorStop(0, 'rgba(255, 245, 230, 0.2)');
-          grad.addColorStop(0.5, 'rgba(59, 130, 246, 0.12)');
-          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.ellipse(0, v.len * 0.5, 6, v.len * 0.5, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.restore();
-        });
-
-        // Vẽ cánh hoa xoắn ốc rơi
-        fallingPetals.forEach(p => {
-          p.y += p.speedY;
-          p.x += Math.sin(t * p.spiralSpeed + p.y * 0.01) * p.spiralAmp;
-          p.rot += 0.015;
-
-          if (p.y > h + 20) {
-            p.y = -20;
-            p.x = Math.random() * w;
-          }
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-
-          ctx.fillStyle = p.isBlue ? 'rgba(37, 99, 235, 0.65)' : 'rgba(244, 114, 182, 0.65)';
-          ctx.beginPath();
-          ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.restore();
-        });
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
 
         requestAnimationFrame(loop);
       };
       requestAnimationFrame(loop);
     }
 
-    // --- ANIMATION CH03: Nước / Reflection (Interactive Ripples & Caustics) ---
+    // --- ANIMATION CH03: Nước / Reflection (Interactive Ripples & Caustics - Không có hoa/cánh hoa) ---
     runChapter03Animation(ctx, w, h, isRunning) {
       const ripples = [];
       const waterY = h * 0.38; // Nửa dưới khung cảnh là mặt nước
 
       // Tự động tạo gợn sóng chu kỳ
       let lastAutoRipple = 0;
-
-      // Cánh hoa nổi dập dềnh trên mặt nước
-      const floatingPetals = Array.from({ length: 12 }, () => ({
-        x: w * (0.2 + Math.random() * 0.65),
-        y: waterY + Math.random() * (h - waterY - 30),
-        baseY: 0,
-        bobSpeed: 0.0016 + Math.random() * 0.0012,
-        bobAmp: 3.5 + Math.random() * 2.5,
-        size: 8 + Math.random() * 7,
-        rot: Math.random() * Math.PI * 2,
-        color: Math.random() > 0.45 ? 'rgba(30, 58, 138, 0.72)' : 'rgba(251, 207, 232, 0.8)'
-      }));
-
-      floatingPetals.forEach(p => p.baseY = p.y);
 
       // Thêm gợn sóng khi rê chuột qua mặt nước
       const onMove = (e) => {
@@ -876,36 +835,6 @@
             ripples.splice(i, 1);
           }
         }
-
-        // Vẽ các cánh hoa bập bềnh theo nhịp sóng nước
-        floatingPetals.forEach(p => {
-          const bob = Math.sin(t * p.bobSpeed + p.x * 0.02) * p.bobAmp;
-          const currY = p.baseY + bob;
-
-          ctx.save();
-          ctx.translate(p.x, currY);
-          ctx.rotate(p.rot + bob * 0.02);
-
-          // Bóng mờ cánh hoa dưới đáy nước
-          ctx.fillStyle = 'rgba(15, 23, 42, 0.14)';
-          ctx.beginPath();
-          ctx.ellipse(0, 4, p.size * 0.9, p.size * 0.4, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Cánh hoa chính
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.ellipse(0, 0, p.size, p.size * 0.52, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Điểm sáng đọng nước
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.beginPath();
-          ctx.arc(p.size * 0.25, -p.size * 0.1, 1.2, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.restore();
-        });
 
         requestAnimationFrame(loop);
       };
@@ -1056,16 +985,6 @@
         ctx.fillRect(-120, -200, 240, 400);
         ctx.restore();
 
-        // Một số cánh hoa khẽ bay lướt trên bề mặt lụa
-        const floatY = Math.sin(t * 0.0015) * 4;
-        ctx.save();
-        ctx.translate(w * 0.45, h * 0.62 + floatY);
-        ctx.fillStyle = 'rgba(37, 99, 235, 0.4)';
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 14, 8, Math.PI / 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
         requestAnimationFrame(loop);
       };
       requestAnimationFrame(loop);
@@ -1130,22 +1049,8 @@
       requestAnimationFrame(loop);
     }
 
-    // --- ANIMATION CH08: Dreamy Floral (Zero-Gravity Levitation & Stardust) ---
+    // --- ANIMATION CH08: Dreamy Floral (Zero-Gravity Stardust - Không có bông hoa bay) ---
     runChapter08Animation(ctx, w, h, isRunning) {
-      // Các bông hoa bồng bềnh không trọng lực
-      const floatingBlossoms = Array.from({ length: 16 }, () => ({
-        x: w * (0.15 + Math.random() * 0.7),
-        y: h * (0.2 + Math.random() * 0.6),
-        baseY: 0,
-        bobSpeed: 0.0012 + Math.random() * 0.0016,
-        bobAmp: 8 + Math.random() * 12,
-        rotSpeed: 0.0006 + Math.random() * 0.001,
-        rot: Math.random() * Math.PI * 2,
-        size: 10 + Math.random() * 14,
-        isBlue: Math.random() > 0.45
-      }));
-      floatingBlossoms.forEach(b => b.baseY = b.y);
-
       // Bụi sao phát quang sinh học (Bioluminescent Stardust)
       const stardust = Array.from({ length: 42 }, () => ({
         x: Math.random() * w,
@@ -1184,39 +1089,12 @@
           ctx.fill();
         });
 
-        // Vẽ hoa trôi nổi không trọng lực
-        floatingBlossoms.forEach(b => {
-          const currY = b.baseY + Math.sin(t * b.bobSpeed + b.x) * b.bobAmp;
-          const currRot = b.rot + t * b.rotSpeed;
-
-          ctx.save();
-          ctx.translate(b.x, currY);
-          ctx.rotate(currRot);
-
-          // Hào quang quanh bông hoa thần tiên
-          const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, b.size * 1.8);
-          halo.addColorStop(0, b.isBlue ? 'rgba(59, 130, 246, 0.4)' : 'rgba(244, 114, 182, 0.4)');
-          halo.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          ctx.fillStyle = halo;
-          ctx.beginPath();
-          ctx.arc(0, 0, b.size * 1.8, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Cánh hoa
-          ctx.fillStyle = b.isBlue ? 'rgba(30, 58, 138, 0.85)' : 'rgba(251, 207, 232, 0.9)';
-          ctx.beginPath();
-          ctx.ellipse(0, 0, b.size, b.size * 0.6, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.restore();
-        });
-
         requestAnimationFrame(loop);
       };
       requestAnimationFrame(loop);
     }
 
-    // --- ANIMATION CH09: Final Romantic Scene (Sky Lanterns & Fireworks & Heart Petals) ---
+    // --- ANIMATION CH09: Final Romantic Scene (Sky Lanterns, Fireworks & Subtle Petals - Tém Tém Lại) ---
     runChapter09Animation(ctx, w, h, isRunning) {
       // Đèn lồng bay lên trời đêm
       const lanterns = Array.from({ length: 18 }, () => ({

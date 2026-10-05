@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+ocument.addEventListener('DOMContentLoaded', () => {
   // ============================================================
-  // 1. NHáº C Ná»€N LÃƒNG Máº N (AUDIO PLAYER TOGGLE)
+  // 1. NHẠC NỀN LÃNG MẠN (AUDIO PLAYER TOGGLE)
   // ============================================================
   const bgMusic = document.getElementById('bgMusic');
   const musicToggleBtn = document.getElementById('musicToggleBtn');
@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     musicToggleBtn.addEventListener('click', () => {
       if (isPlaying) {
         bgMusic.pause();
-        if (musicLabel) musicLabel.textContent = 'Báº­t Nháº¡c';
+        if (musicLabel) musicLabel.textContent = 'Bật Nhạc';
         if (musicIcon) musicIcon.innerHTML = '<i class="fa-solid fa-music"></i>';
         isPlaying = false;
       } else {
         bgMusic.play().then(() => {
-          if (musicLabel) musicLabel.textContent = 'Táº¯t Nháº¡c';
+          if (musicLabel) musicLabel.textContent = 'Tắt Nhạc';
           if (musicIcon) musicIcon.innerHTML = '<i class="fa-solid fa-pause"></i>';
           isPlaying = true;
         }).catch(err => {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 3. FOOTER MILESTONES DRAWER TOGGLE (Má»ž/ÄÃ“NG Cá»˜T Má»C)
+  // 3. FOOTER MILESTONES DRAWER TOGGLE (MỞ/ĐÓNG CỘT MỐC)
   // ============================================================
   const footerInfoBtn = document.getElementById('footerInfoBtn');
   const footerMilestonesDrawer = document.getElementById('footerMilestonesDrawer');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 4. Há»† THá»NG Háº T Bá»¤I Náº®NG LÆ  Lá»¬NG TRONG CÄ‚N PHÃ’NG (SUNLIGHT DUST MOTES)
+  // 4. HỆ THỐNG HẠT BỤI NẮNG LƠ LỬNG TRONG CĂN PHÒNG (SUNLIGHT DUST MOTES)
   // ============================================================
   const canvas = document.getElementById('dustCanvas');
   const livingFrame = document.getElementById('livingFrame') || (canvas ? canvas.parentElement : null);
@@ -109,10 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function initParticles() {
       particles = [];
       const colors = [
-        { r: 255, g: 248, b: 220 }, // Náº¯ng vÃ ng champagne
-        { r: 255, g: 238, b: 195 }, // Há»• phÃ¡ch dá»‹u
-        { r: 255, g: 225, b: 235 }, // Phá»›t há»“ng lá»¥a
-        { r: 240, g: 250, b: 255 }  // Ãnh sÃ¡ng pha lÃª
+        { r: 255, g: 248, b: 220 }, // Nắng vàng champagne
+        { r: 255, g: 238, b: 195 }, // Hổ phách dịu
+        { r: 255, g: 225, b: 235 }, // Phớt hồng lụa
+        { r: 240, g: 250, b: 255 }  // Ánh sáng pha lê
       ];
 
       for (let i = 0; i < particleCount; i++) {
@@ -154,13 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (p.x < -10) p.x = width + 10;
           if (p.x > width + 10) p.x = -10;
 
-          // HÃ o quang má» tá»± nhiÃªn quanh háº¡t bá»¥i
+          // Hào quang mờ tự nhiên quanh hạt bụi
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${(currentAlpha * 0.28).toFixed(3)})`;
           ctx.fill();
 
-          // TÃ¢m sÃ¡ng láº¥p lÃ¡nh cá»§a háº¡t bá»¥i
+          // Tâm sáng lấp lánh của hạt bụi
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius * 0.65, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 255, 255, ${(currentAlpha * 0.92).toFixed(3)})`;
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(renderDust);
 
     // ============================================================
-    // 5. TÆ¯Æ NG TÃC QUANG Há»ŒC KHI RÃŠ CHUá»˜T QUA Bá»¨C áº¢NH (Tá»I Æ¯U RAF)
+    // 5. TƯƠNG TÁC QUANG HỌC KHI RÊ CHUỘT QUA BỨC ẢNH (TỐI ƯU RAF)
     // ============================================================
     const bottleSheen = livingFrame.querySelector('.bottle-sheen-layer');
     const sunlightCaustic = livingFrame.querySelector('.sunlight-caustic-layer');
@@ -228,15 +228,15 @@ document.addEventListener('DOMContentLoaded', () => {
             sunlightCaustic.style.transform = `translate(${mouseNx * -10}px, ${mouseNy * -8}px)`;
           }
 
-          // Nháº­n diá»‡n hover qua chai lá» má»¹ pháº©m
+          // Nhận diện hover qua chai lọ mỹ phẩm
           if (typeof getBottleAtRel === 'function') {
             const hoveredBottle = getBottleAtRel(mouseRelX, mouseRelY);
             if (hoveredBottle) {
               livingFrame.setAttribute('data-hover-bottle', 'true');
-              livingFrame.title = `Cháº¡m Ä‘á»ƒ cáº£m nháº­n mÃ¹i hÆ°Æ¡ng ${hoveredBottle.name}`;
+              livingFrame.title = `Chạm để cảm nhận mùi hương ${hoveredBottle.name}`;
             } else {
               livingFrame.removeAttribute('data-hover-bottle');
-              livingFrame.title = 'Cháº¡m vÃ o hoa hoáº·c chai má»¹ pháº©m';
+              livingFrame.title = 'Chạm vào hoa hoặc chai mỹ phẩm';
             }
           }
           isMouseTicking = false;
@@ -252,15 +252,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 6. CÃ€NH HOA Äáº¬U BIáº¾C TÃCH KHá»ŽI Bá» Cá»¤C & RÆ I Uá»N LÆ¯á»¢N (FALLING BRANCH)
-  // - Click vÃ o hoa hoáº·c áº£nh: cÃ nh hoa tháº­t tÃ¡ch ra khá»i bá»‘ cá»¥c
-  // - Chuyá»ƒn Ä‘á»™ng khÃ­ Ä‘á»™ng há»c giá»‘ng cÃ nh cÃ¢y bá»‹ giÃ³ cuá»‘n:
-  //   + Xoay nháº¹ & uá»‘n cong theo Ä‘Æ°á»ng bay (stem flex)
-  //   + LÃºc nghiÃªng trÃ¡i, lÃºc nghiÃªng pháº£i (3D tilt & pendulum sway)
-  //   + CÃ³ quÃ¡n tÃ­nh váº­t lÃ½ (inertia, drag, velocity)
-  //   + Cuá»‘i Ä‘Æ°á»ng bay cháº­m láº¡i do sá»©c cáº£n khÃ´ng khÃ­
-  //   + VÃ i cÃ¡nh hoa nhá» tÃ¡ch khá»i cÃ nh giá»¯a Ä‘Æ°á»ng bay
-  //   + CÃ nh má» dáº§n vÃ  biáº¿n máº¥t Ãªm Ä‘á»m
+  // 6. CÀNH HOA ĐẬU BIẾC TÁCH KHỎI BỐ CỤC & RƠI UỐN LƯỢN (FALLING BRANCH)
+  // - Click vào hoa hoặc ảnh: cành hoa thật tách ra khỏi bố cục
+  // - Chuyển động khí động học giống cành cây bị gió cuốn:
+  //   + Xoay nhẹ & uốn cong theo đường bay (stem flex)
+  //   + Lúc nghiêng trái, lúc nghiêng phải (3D tilt & pendulum sway)
+  //   + Có quán tính vật lý (inertia, drag, velocity)
+  //   + Cuối đường bay chậm lại do sức cản không khí
+  //   + Vài cánh hoa nhỏ tách khỏi cành giữa đường bay
+  //   + Cành mờ dần và biến mất êm đềm
   // ============================================================
   const branchLayer = document.getElementById('flowerBranchLayer') || document.body;
   const livingFrameEl = document.getElementById('livingFrame');
@@ -285,10 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Chu ká»³ gá»£i Ã½ luÃ¢n phiÃªn: Hoa & Chai má»¹ pháº©m
+  // Chu kỳ gợi ý luân phiên: Hoa & Chai mỹ phẩm
   const hintMessages = [
-    { icon: 'ðŸŒ¿', text: 'Cháº¡m vÃ o hoa Ä‘á»ƒ Ä‘Ã³n cÃ nh rÆ¡i...' },
-    { icon: 'ðŸ§´', text: 'Cháº¡m chai má»¹ pháº©m Ä‘á»ƒ ngÃ¡t hÆ°Æ¡ng thÆ¡m...' }
+    { icon: '🌿', text: 'Chạm vào hoa để đón cành rơi...' },
+    { icon: '🧴', text: 'Chạm chai mỹ phẩm để ngát hương thơm...' }
   ];
   let hintIdx = 0;
 
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4200);
   }
 
-  // --- Danh má»¥c hÃ¬nh áº£nh cÃ nh hoa tháº­t (cÃ nh + lÃ¡ + hoa lÃ  má»™t khá»‘i thá»±c táº¿) ---
+  // --- Danh mục hình ảnh cành hoa thật (cành + lá + hoa là một khối thực tế) ---
   const branchConfigs = [
     {
       id: 'branch-1',
@@ -337,13 +337,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  // Táº£i trÆ°á»›c toÃ n bá»™ áº£nh cÃ nh hoa vÃ o bá»™ nhá»› Ä‘á»‡m
+  // Tải trước toàn bộ ảnh cành hoa vào bộ nhớ đệm
   branchConfigs.forEach(b => {
     const preImg = new Image();
     preImg.src = b.src;
   });
 
-  // --- SVG Äá»‘m sÃ¡ng náº¯ng láº¥p lÃ¡nh (Sparkle) táº¡i Ä‘iá»ƒm tÃ¡ch cÃ nh ---
+  // --- SVG Đốm sáng nắng lấp lánh (Sparkle) tại điểm tách cành ---
   const sparkleSvg = `
     <svg viewBox="0 0 30 30" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <path d="M 15 0 Q 15 15 30 15 Q 15 15 15 30 Q 15 15 0 15 Q 15 15 15 0 Z" fill="#fff9db"/>
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ensureBranchPhysicsLoop();
   }
 
-  // Ã‚m thanh giÃ³ thoáº£ng lÆ°á»›t nháº¹ khi cÃ nh hoa tÃ¡ch ra bay (Web Audio API)
+  // Âm thanh gió thoảng lướt nhẹ khi cành hoa tách ra bay (Web Audio API)
   function playBranchFlightSound() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -411,57 +411,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // CÃC QUá»¸ Äáº O BAY NGHá»† THUáº¬T Cá»¦A CÃ€NH HOA (BRANCH TRAJECTORIES)
-  // Má»—i quá»¹ Ä‘áº¡o lÃ  má»™t cáº¥u trÃºc toÃ¡n há»c Catmull-Rom Spline mÆ°á»£t mÃ .
-  // CÃ nh + LÃ¡ + Hoa lÃ  Má»˜T OBJECT DUY NHáº¤T (khÃ´ng tÃ¡ch rá»i thÃ nh particles).
+  // CÁC QUỸ ĐẠO BAY NGHỆ THUẬT CỦA CÀNH HOA (BRANCH TRAJECTORIES)
+  // Mỗi quỹ đạo là một cấu trúc toán học Catmull-Rom Spline mượt mà.
+  // Cành + Lá + Hoa là MỘT OBJECT DUY NHẤT (không tách rời thành particles).
   // ============================================================
   const branchTrajectories = [
     {
       id: 0,
-      name: 'CÃ nh 01: VÃºt lÃªn rá»“i háº¡ cÃ¡nh Ãªm Ä‘á»m',
+      name: 'Cành 01: Vút lên rồi hạ cánh êm đềm',
       symbol: 'â†— â†— â†˜ â†˜',
       durationFrames: 280,
-      // Quá»¹ Ä‘áº¡o CÃ nh 01:
+      // Quỹ đạo Cành 01:
       //   â†—
       //     â†—
       //       â†˜
       //         â†˜
       points: [
-        { x: -50, y: 50 },    // P0: Ä‘iá»ƒm dáº«n tiáº¿p tuyáº¿n ban Ä‘áº§u
-        { x: 0, y: 0 },       // P1: Báº¯t Ä‘áº§u táº¡i Ä‘iá»ƒm click
-        { x: 120, y: -110 },  // P2: [â†—] VÃºt nhanh lÃªn cao sang pháº£i
-        { x: 230, y: -145 },  // P3: [â†—] Äá»‰nh cua vÃºt lÃªn
-        { x: 350, y: -45 },   // P4: [â†˜] Chuyá»ƒn hÆ°á»›ng dá»‘c xuá»‘ng sang pháº£i
-        { x: 470, y: 105 },   // P5: [â†˜] LÆ°á»›t lÃ  Ä‘Ã  háº¡ cÃ¡nh sang pháº£i
-        { x: 560, y: 220 }    // P6: Ä‘iá»ƒm dáº«n tiáº¿p tuyáº¿n káº¿t thÃºc
+        { x: -50, y: 50 },    // P0: điểm dẫn tiếp tuyến ban đầu
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 120, y: -110 },  // P2: [↗] Vút nhanh lên cao sang phải
+        { x: 230, y: -145 },  // P3: [↗] Đỉnh cua vút lên
+        { x: 350, y: -45 },   // P4: [↘] Chuyển hướng dốc xuống sang phải
+        { x: 470, y: 105 },   // P5: [↘] Lướt là đà hạ cánh sang phải
+        { x: 560, y: 220 }    // P6: điểm dẫn tiếp tuyến kết thúc
       ]
     },
     {
       id: 1,
-      name: 'CÃ nh 02: RÆ¡i nháº¹ rá»“i lá»™ng giÃ³ bá»‘c cao',
+      name: 'Cành 02: Rơi nhẹ rồi lộng gió bốc cao',
       symbol: 'â†“ â†˜ â†— â†—',
       durationFrames: 290,
-      // Quá»¹ Ä‘áº¡o CÃ nh 02:
+      // Quỹ đạo Cành 02:
       //   â†“
       //    â†˜
       //      â†—
       //        â†—
       points: [
         { x: -5, y: -60 },    // P0
-        { x: 0, y: 0 },       // P1: Báº¯t Ä‘áº§u táº¡i Ä‘iá»ƒm click
-        { x: 15, y: 95 },     // P2: [â†“] RÆ¡i tháº³ng xuá»‘ng nháº¹ nhÃ ng
-        { x: 110, y: 175 },   // P3: [â†˜] Chao vÃµng chÃ©o xuá»‘ng sang pháº£i
-        { x: 245, y: 45 },    // P4: [â†—] GiÃ³ cuá»™n háº¥t tung bá»‘c ngÆ°á»£c lÃªn
-        { x: 385, y: -125 },  // P5: [â†—] VÃºt tháº³ng bay cao lÃªn trá»i
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 15, y: 95 },     // P2: [↓] Rơi thẳng xuống nhẹ nhàng
+        { x: 110, y: 175 },   // P3: [↘] Chao võng chéo xuống sang phải
+        { x: 245, y: 45 },    // P4: [↗] Gió cuộn hất tung bốc ngược lên
+        { x: 385, y: -125 },  // P5: [↗] Vút thẳng bay cao lên trời
         { x: 470, y: -220 }   // P6
       ]
     },
     {
       id: 2,
-      name: 'CÃ nh 03: SÃ³ng lÆ°á»£n dáº­p dá»nh & trÃ´i lá»¯ng lá»',
+      name: 'Cành 03: Sóng lượn dập dềnh & trôi lững lờ',
       symbol: 'â†’ â†˜ â†˜ â†— â†’',
       durationFrames: 310,
-      // Quá»¹ Ä‘áº¡o CÃ nh 03:
+      // Quỹ đạo Cành 03:
       //   â†’
       //    â†˜
       //      â†˜
@@ -469,38 +469,38 @@ document.addEventListener('DOMContentLoaded', () => {
       //          â†’
       points: [
         { x: -50, y: 0 },     // P0
-        { x: 0, y: 0 },       // P1: Báº¯t Ä‘áº§u táº¡i Ä‘iá»ƒm click
-        { x: 95, y: 8 },      // P2: [â†’] TrÃ´i ngang ban Ä‘áº§u
-        { x: 190, y: 85 },    // P3: [â†˜] LÆ°á»£n dá»‘c xuá»‘ng dÆ°á»›i
-        { x: 285, y: 155 },   // P4: [â†˜] ÄÃ¡y trÅ©ng vÃµng sÃ³ng
-        { x: 390, y: 70 },    // P5: [â†—] Uá»‘n cong ngÃ³c Ä‘áº§u bay lÃªn
-        { x: 495, y: 65 },    // P6: [â†’] San pháº³ng trÃ´i ngang lá»¯ng lá»
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: 95, y: 8 },      // P2: [→] Trôi ngang ban đầu
+        { x: 190, y: 85 },    // P3: [↘] Lượn dốc xuống dưới
+        { x: 285, y: 155 },   // P4: [↘] Đáy trũng võng sóng
+        { x: 390, y: 70 },    // P5: [↗] Uốn cong ngóc đầu bay lên
+        { x: 495, y: 65 },    // P6: [→] San phẳng trôi ngang lững lờ
         { x: 580, y: 65 }     // P7
       ]
     },
     {
       id: 3,
-      name: 'CÃ nh 04: VÃ²ng xoÃ¡y lá»‘c cuá»™n 3D',
+      name: 'Cành 04: Vòng xoáy lốc cuộn 3D',
       symbol: 'â†™ â†˜ â†— â†–',
       durationFrames: 320,
-      // Quá»¹ Ä‘áº¡o CÃ nh 04:
+      // Quỹ đạo Cành 04:
       //   â†™
       //     â†˜
       //       â†—
       //         â†–
       points: [
         { x: 45, y: -45 },    // P0
-        { x: 0, y: 0 },       // P1: Báº¯t Ä‘áº§u táº¡i Ä‘iá»ƒm click
-        { x: -90, y: 105 },   // P2: [â†™] Chao cháº¿ch xuá»‘ng sang trÃ¡i
-        { x: 45, y: 175 },    // P3: [â†˜] Cua vÃ²ng Ä‘Ã¡y lÆ°á»£n sang pháº£i
-        { x: 185, y: -25 },   // P4: [â†—] Cuá»™n vÃºt lÃªn cao sang pháº£i
-        { x: 65, y: -135 },   // P5: [â†–] VÃ²ng cua ngÆ°á»£c Ä‘áº§u vá» trÃ¡i lÃªn cao
+        { x: 0, y: 0 },       // P1: Bắt đầu tại điểm click
+        { x: -90, y: 105 },   // P2: [↙] Chao chếch xuống sang trái
+        { x: 45, y: 175 },    // P3: [↘] Cua vòng đáy lượn sang phải
+        { x: 185, y: -25 },   // P4: [↗] Cuộn vút lên cao sang phải
+        { x: 65, y: -135 },   // P5: [↖] Vòng cua ngược đầu về trái lên cao
         { x: -25, y: -170 }   // P6
       ]
     }
   ];
 
-  // TÃ­nh toÃ¡n vá»‹ trÃ­ vÃ  Ä‘áº¡o hÃ m váº­n tá»‘c trÃªn Ä‘Æ°á»ng cong Catmull-Rom Spline
+  // Tính toán vị trí và đạo hàm vận tốc trên đường cong Catmull-Rom Spline
   function sampleCatmullRomSpline(points, u) {
     const numSegments = points.length - 3;
     const clampedU = Math.max(0, Math.min(1, u));
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return { x, y, dx, dy };
   }
 
-  // Lá»±a chá»n ngáº«u nhiÃªn má»™t quá»¹ Ä‘áº¡o (khÃ´ng láº·p láº¡i quá»¹ Ä‘áº¡o vá»«a bay)
+  // Lựa chọn ngẫu nhiên một quỹ đạo (không lặp lại quỹ đạo vừa bay)
   let lastTrajectoryIdx = -1;
   function pickRandomTrajectory() {
     const choices = [0, 1, 2, 3].filter(idx => idx !== lastTrajectoryIdx);
@@ -576,19 +576,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     playBranchFlightSound();
 
-    // Giá»›i háº¡n sá»‘ lÆ°á»£ng cÃ nh Ä‘ang bay cÃ¹ng lÃºc Ä‘á»ƒ luÃ´n mÆ°á»£t mÃ  60fps
+    // Giới hạn số lượng cành đang bay cùng lúc để luôn mượt mà 60fps
     if (activeBranches.length >= 5) {
       activeBranches[0].maxLife = activeBranches[0].life + 20;
     }
 
-    // 1. Chá»n cáº¥u hÃ¬nh cÃ nh hoa tháº­t (chá»©a Ä‘áº§y Ä‘á»§ cÃ nh, lÃ¡, hoa káº¿t liá»n vá»›i nhau)
+    // 1. Chọn cấu hình cành hoa thật (chứa đầy đủ cành, lá, hoa kết liền với nhau)
     const bIdx = Math.floor(Math.random() * branchConfigs.length);
     const bCfg = branchConfigs[bIdx];
     const isMobile = window.innerWidth < 768;
     const bWidth = Math.round(bCfg.width * (isMobile ? 0.72 : 1));
     const bHeight = Math.round(bCfg.height * (isMobile ? 0.72 : 1));
 
-    // 2. Chá»n ngáº«u nhiÃªn quá»¹ Ä‘áº¡o khÃ­ Ä‘á»™ng há»c (khÃ´ng trÃ¹ng láº§n click trÆ°á»›c)
+    // 2. Chọn ngẫu nhiên quỹ đạo khí động học (không trùng lần click trước)
     let trajectory = null;
     if (typeof forcedTrajectoryIdx === 'number' && branchTrajectories[forcedTrajectoryIdx]) {
       trajectory = branchTrajectories[forcedTrajectoryIdx];
@@ -597,19 +597,19 @@ document.addEventListener('DOMContentLoaded', () => {
       trajectory = pickRandomTrajectory();
     }
 
-    // 3. XÃ¡c Ä‘á»‹nh hÆ°á»›ng bay ngang (dir: +1 bay pháº£i, -1 Ä‘á»‘i xá»©ng bay trÃ¡i)
+    // 3. Xác định hướng bay ngang (dir: +1 bay phải, -1 đối xứng bay trái)
     let dir = 1;
     if (targetDirX !== 0) {
       dir = targetDirX < 0 ? -1 : 1;
     } else if (originX > window.innerWidth * 0.58) {
-      dir = -1; // Click bÃªn pháº£i -> bay hÆ°á»›ng vÃ o giá»¯a/trÃ¡i
+      dir = -1; // Click bên phải -> bay hướng vào giữa/trái
     } else if (originX < window.innerWidth * 0.42) {
-      dir = 1;  // Click bÃªn trÃ¡i -> bay hÆ°á»›ng vÃ o giá»¯a/pháº£i
+      dir = 1;  // Click bên trái -> bay hướng vào giữa/phải
     } else {
       dir = Math.random() < 0.5 ? -1 : 1;
     }
 
-    // 4. Táº¡o element DOM: CÃ nh + LÃ¡ + Hoa lÃ  Má»˜T OBJECT DUY NHáº¤T
+    // 4. Tạo element DOM: Cành + Lá + Hoa là MỘT OBJECT DUY NHẤT
     const branchEl = document.createElement('div');
     branchEl.className = 'falling-branch';
     branchEl.style.width = bWidth + 'px';
@@ -621,19 +621,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const imgEl = document.createElement('img');
     imgEl.src = bCfg.src;
-    imgEl.alt = 'CÃ nh hoa Ä‘áº­u biáº¿c bay nghá»‡ thuáº­t';
+    imgEl.alt = 'Cành hoa đậu biếc bay nghệ thuật';
     imgEl.className = 'branch-img';
     innerEl.appendChild(imgEl);
     branchEl.appendChild(innerEl);
 
     branchLayer.appendChild(branchEl);
 
-    // Háº¡t náº¯ng lÃ³e sÃ¡ng táº¡i Ä‘iá»ƒm cÃ nh hoa tÃ¡ch ra
+    // Hạt nắng lóe sáng tại điểm cành hoa tách ra
     for (let s = 0; s < 3; s++) {
       createSparkle(originX + (Math.random() - 0.5) * 20, originY + (Math.random() - 0.5) * 20);
     }
 
-    // Tá»‰ lá»‡ khoáº£ng cÃ¡ch co giÃ£n theo thiáº¿t bá»‹ (responsive distance scale)
+    // Tỉ lệ khoảng cách co giãn theo thiết bị (responsive distance scale)
     const baseDistScale = isMobile ? (0.68 + Math.random() * 0.08) : (0.96 + Math.random() * 0.12);
 
     const branch = {
@@ -661,9 +661,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ensureBranchPhysicsLoop();
   }
 
-  // --- Bá»™ láº¯ng nghe tÆ°Æ¡ng tÃ¡c click / cháº¡m ---
+  // --- Bộ lắng nghe tương tác click / chạm ---
   function handleSceneInteraction(e) {
-    // 0. Bá» qua náº¿u click vÃ o bÃªn trong modal hoáº·c nÃºt hotspot (hotspot Ä‘Ã£ cÃ³ listener riÃªng)
+    // 0. Bỏ qua nếu click vào bên trong modal hoặc nút hotspot (hotspot đã có listener riêng)
     if (e.target.closest('#productWorldModal') || e.target.closest('.bottle-hotspot')) {
       return;
     }
@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (clientX === undefined || clientY === undefined) return;
 
-    // XÃ¡c Ä‘á»‹nh vá»‹ trÃ­ tÆ°Æ¡ng quan vá»›i bá»©c áº£nh
+    // Xác định vị trí tương quan với bức ảnh
     const targetImg = livingPhotoEl || (livingFrameEl ? livingFrameEl.querySelector('img') : null);
     if (!targetImg) return;
 
@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const relX = (clientX - rect.left) / rect.width;
       const relY = (clientY - rect.top) / rect.height;
 
-      // 1. Kiá»ƒm tra trá»±c tiáº¿p xem cÃ³ click trÃºng chai lá» má»¹ pháº©m nÃ o khÃ´ng
+      // 1. Kiểm tra trực tiếp xem có click trúng chai lọ mỹ phẩm nào không
       if (typeof getBottleAtRel === 'function') {
         const clickedBottle = getBottleAtRel(relX, relY);
         if (clickedBottle) {
@@ -705,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // 2. Cháº¡m vÃ o chÃ¹m hoa Ä‘áº­u biáº¿c á»Ÿ ná»­a trÃªn (loáº¡i trá»« vÃ¹ng chai lá»)
+      // 2. Chạm vào chùm hoa đậu biếc ở nửa trên (loại trừ vùng chai lọ)
       if (relY <= 0.48 && relX >= 0.22 && relX <= 0.78) {
         const startX = clientX;
         const startY = clientY;
@@ -717,8 +717,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 3. Cháº¡m vÃ o ná»­a dÆ°á»›i (máº·t bÃ n Ä‘Ã¡ hoa cÆ°Æ¡ng, cáº¡nh chai lá», lá»¥a há»“ng)
-      // Má»Ÿ tháº¿ giá»›i tá»« chai má»¹ pháº©m gáº§n nháº¥t!
+      // 3. Chạm vào nửa dưới (mặt bàn đá hoa cương, cạnh chai lọ, lụa hồng)
+      // Mở thế giới từ chai mỹ phẩm gần nhất!
       if (relY >= 0.38 && typeof getNearestBottle === 'function') {
         const nearestBottle = getNearestBottle(relX, relY);
         if (nearestBottle) {
@@ -731,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // 4. CÃ¡c gÃ³c ná»n cÃ²n láº¡i: cÃ nh tÃ¡ch tá»« chÃ¹m hoa trÃªn bÃ¬nh vÃ  bay xuá»‘ng Ä‘iá»ƒm click
+      // 4. Các góc nền còn lại: cành tách từ chùm hoa trên bình và bay xuống điểm click
       const startX = rect.left + rect.width * (0.42 + (Math.random() - 0.5) * 0.24);
       const startY = rect.top + rect.height * (0.16 + Math.random() * 0.18);
       const dirX = (clientX - startX) > 0 ? 0.9 : -0.9;
@@ -740,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.petalEngine.toss({ x: startX, y: startY, count: 4, force: 1.1, spread: 0.55 });
       }
     } else {
-      // Báº¥m ra ngoÃ i khÃ´ng gian xung quanh: tÃ¡ch tá»« bÃ¬nh hoa rá»“i bay theo hÆ°á»›ng con trá»
+      // Bấm ra ngoài không gian xung quanh: tách từ bình hoa rồi bay theo hướng con trỏ
       const startX = rect.left + rect.width * (0.45 + (Math.random() - 0.5) * 0.2);
       const startY = rect.top + rect.height * 0.22;
       const dirX = (clientX - startX) > 0 ? 1.0 : -1.0;
@@ -771,9 +771,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- VÃ²ng láº·p váº­t lÃ½ há»c khÃ­ Ä‘á»™ng há»c cho cÃ nh hoa (60fps) ---
+  // --- Vòng lặp vật lý học khí động học cho cành hoa (60fps) ---
   function updateFlowerBranchPhysics() {
-    // 1. Cáº­p nháº­t Ä‘á»‘m sÃ¡ng náº¯ng láº¥p lÃ¡nh (Sparkles)
+    // 1. Cập nhật đốm sáng nắng lấp lánh (Sparkles)
     for (let i = activeSparkles.length - 1; i >= 0; i--) {
       const sp = activeSparkles[i];
       sp.life++;
@@ -794,40 +794,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 2. Cáº­p nháº­t cÃ nh hoa bay chÃ­nh (Unified Falling Branches - CÃ nh + LÃ¡ + Hoa lÃ  má»™t Object duy nháº¥t)
+    // 2. Cập nhật cành hoa bay chính (Unified Falling Branches - Cành + Lá + Hoa là một Object duy nhất)
     for (let i = activeBranches.length - 1; i >= 0; i--) {
       const br = activeBranches[i];
       br.life++;
       const u = Math.min(1, Math.max(0, br.life / br.maxLife));
 
-      // Láº¥y tá»a Ä‘á»™ vÃ  Ä‘áº¡o hÃ m váº­n tá»‘c tá»« quá»¹ Ä‘áº¡o Spline
+      // Lấy tọa độ và đạo hàm vận tốc từ quỹ đạo Spline
       const sample = sampleCatmullRomSpline(br.trajectory.points, u);
       const curX = br.originX + sample.x * br.dir * br.scaleFactor;
       const curY = br.originY + sample.y * br.scaleFactor;
 
-      // TÃ­nh gÃ³c tiáº¿p tuyáº¿n hÆ°á»›ng bay
+      // Tính góc tiếp tuyến hướng bay
       const vx = sample.dx * br.dir;
       const vy = sample.dy;
       const headingRad = Math.atan2(vy, vx);
       const headingDeg = headingRad * (180 / Math.PI);
 
-      // Dao Ä‘á»™ng con láº¯c khÃ­ Ä‘á»™ng há»c tá»± nhiÃªn
+      // Dao động con lắc khí động học tự nhiên
       br.swayPhase += br.swaySpeed;
       const sway = Math.sin(br.swayPhase) * br.swayAmp;
 
-      // HÆ°á»›ng Ä‘áº§u cÃ nh uá»‘n lÆ°á»£n theo tiáº¿p tuyáº¿n Ä‘Æ°á»ng bay, káº¿t há»£p Ä‘ung Ä‘Æ°a tá»± nhiÃªn
+      // Hướng đầu cành uốn lượn theo tiếp tuyến đường bay, kết hợp đung đưa tự nhiên
       const targetTiltZ = br.baseRot + headingDeg * 0.46 + sway * 12;
       br.currentTiltZ += (targetTiltZ - br.currentTiltZ) * 0.14;
 
-      // Äá»™ uá»‘n cong khÃ­ Ä‘á»™ng há»c cá»§a thÃ¢n cÃ nh khi Ä‘Ã³n giÃ³ ráº½ hÆ°á»›ng (Stem Flex)
+      // Độ uốn cong khí động học của thân cành khi đón gió rẽ hướng (Stem Flex)
       const targetSkew = -Math.sin(headingRad) * 7.2 * br.dir + sway * 3.2;
       br.currentSkew += (targetSkew - br.currentSkew) * 0.12;
 
-      // GÃ³c nghiÃªng 3D trong khÃ´ng gian (3D perspective tilt & roll)
+      // Góc nghiêng 3D trong không gian (3D perspective tilt & roll)
       const tiltY = Math.cos(br.swayPhase * 0.85) * (br.trajectory.id === 3 ? 34 : 22);
       const tiltX = Math.sin(br.swayPhase * 0.68) * 16;
 
-      // ÄÆ°á»ng cong Ä‘á»™ trong suá»‘t: hiá»‡n Ãªm Ã¡i Ä‘áº§u Ä‘Æ°á»ng bay, vá»¯ng vÃ ng giá»¯a khÃ´ng trung, má» dáº§n cuá»‘i Ä‘Æ°á»ng
+      // Đường cong độ trong suốt: hiện êm ái đầu đường bay, vững vàng giữa không trung, mờ dần cuối đường
       let alpha = 1;
       if (u < 0.08) {
         alpha = Math.sin((u / 0.08) * Math.PI * 0.5);
@@ -835,11 +835,11 @@ document.addEventListener('DOMContentLoaded', () => {
         alpha = 1 - (u - 0.74) / 0.26;
       }
 
-      // KÃ­ch thÆ°á»›c cÃ nh hoa co giÃ£n nháº¹ theo nhá»‹p thá»Ÿ cá»§a luá»“ng giÃ³
+      // Kích thước cành hoa co giãn nhẹ theo nhịp thở của luồng gió
       const scaleBreathe = 0.95 + 0.09 * Math.sin(u * Math.PI);
       const renderScale = br.baseScale * scaleBreathe;
 
-      // Render cÃ nh hoa nhÆ° má»™t object thá»‘ng nháº¥t (CÃ nh + LÃ¡ + Hoa)
+      // Render cành hoa như một object thống nhất (Cành + Lá + Hoa)
       br.el.style.transform = `translate3d(${(curX - br.width * 0.5).toFixed(1)}px, ${(curY - br.height * 0.5).toFixed(1)}px, 0) scale(${renderScale.toFixed(3)}) rotateZ(${br.currentTiltZ.toFixed(1)}deg) rotateY(${tiltY.toFixed(1)}deg) rotateX(${tiltX.toFixed(1)}deg)`;
       br.innerEl.style.transform = `skewX(${br.currentSkew.toFixed(1)}deg) scaleY(${(1 - Math.abs(br.currentSkew) * 0.007).toFixed(3)})`;
       br.el.style.opacity = Math.max(0, Math.min(1, alpha)).toFixed(3);
@@ -858,18 +858,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 7. HIá»†U á»¨NG THá»Š GIÃC "MÃ™I HÆ¯Æ NG" (FRAGRANCE MIST & RIBBON)
-  // - Diá»…n Ä‘áº¡t mÃ¹i hÆ°Æ¡ng hoa Ä‘áº­u biáº¿c báº±ng hÃ¬nh áº£nh thá»‹ giÃ¡c lung linh
-  // - Khi ngÆ°á»i dÃ¹ng click vÃ o chai nÆ°á»›c hoa/má»¹ pháº©m:
-  //   + Lá»›p sÆ°Æ¡ng cá»±c má»‹n bay lÃªn vá»›i Ä‘á»™ má» dá»‹u (opacity tháº¥p)
-  //   + Chuyá»ƒn Ä‘á»™ng dáº¡ng ribbon uá»‘n lÆ°á»£n hÃ¬nh sÃ³ng sin má»m máº¡i
-  //   + Háº¡t sÃ¡ng nhá», Ä‘á»‘m sao láº¥p lÃ¡nh (sparkles & stardust)
-  //   + Quáº§ng sÃ¡ng glow xanh ngá»c Ä‘áº­u biáº¿c & tráº¯ng ngá»c trai
-  //   + Tháº» chá»¯ bay bá»•ng:
+  // 7. HIỆU ỨNG THỊ GIÁC "MÙI HƯƠNG" (FRAGRANCE MIST & RIBBON)
+  // - Diễn đạt mùi hương hoa đậu biếc bằng hình ảnh thị giác lung linh
+  // - Khi người dùng click vào chai nước hoa/mỹ phẩm:
+  //   + Lớp sương cực mịn bay lên với độ mờ dịu (opacity thấp)
+  //   + Chuyển động dạng ribbon uốn lượn hình sóng sin mềm mại
+  //   + Hạt sáng nhỏ, đốm sao lấp lánh (sparkles & stardust)
+  //   + Quầng sáng glow xanh ngọc đậu biếc & trắng ngọc trai
+  //   + Thẻ chữ bay bổng:
   //       ✨  ·  ✨
   //       Butterfly Pea
   //       A gentle floral moment...
-  //   + Sau vÃ i giÃ¢y tá»± Ä‘á»™ng tan biáº¿n Ãªm Ä‘á»m vÃ o khÃ´ng khÃ­
+  //   + Sau vài giây tự động tan biến êm đềm vào không khí
   // ============================================================
   const fragranceCanvas = document.getElementById('fragranceCanvas');
   const fragranceTextContainer = document.getElementById('fragranceTextContainer');
@@ -921,9 +921,9 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'essence',
       brand: 'Butterfly Pea',
       name: 'Soothing Essence',
-      subtitle: 'LÃ n sÆ°Æ¡ng thÆ¡m dá»‹u ngá»t váº¥n vÆ°Æ¡ng...',
-      tag: 'NÆ°á»›c Hoa & Tinh Cháº¥t Xá»‹t',
-      message: 'LÃ n sÆ°Æ¡ng thÆ¡m dá»‹u ngá»t,\nváº¥n vÆ°Æ¡ng chá»Ÿ che em qua tá»«ng ngÃ y dÃ i.',
+      subtitle: 'Làn sương thơm dịu ngọt vấn vương...',
+      tag: 'Nước Hoa & Tinh Chất Xịt',
+      message: 'Làn sương thơm dịu ngọt,\nvấn vương chở che em qua từng ngày dài.',
       nozzle: { x: 0.729, y: 0.430 },
       bounds: { minX: 0.68, maxX: 0.79, minY: 0.38, maxY: 0.86 },
       ribbonColor: { r: 125, g: 211, b: 252 }, // Sky blue mist
@@ -933,9 +933,9 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'lipbalm',
       brand: 'Butterfly Pea',
       name: 'Lip Balm Nourish & Glow',
-      subtitle: 'Gá»­i chÃºt ngá»t ngÃ o vÆ°Æ¡ng nháº¹...',
-      tag: 'Son DÆ°á»¡ng CÄƒng Má»ng',
-      message: 'Gá»­i chÃºt ngá»t ngÃ o vÆ°Æ¡ng nháº¹,\ncho Ä‘Ã´i mÃ´i em luÃ´n hÃ© ná»¥ cÆ°á»i tÆ°Æ¡i.',
+      subtitle: 'Gửi chút ngọt ngào vương nhẹ...',
+      tag: 'Son Dưỡng Căng Mọng',
+      message: 'Gửi chút ngọt ngào vương nhẹ,\ncho đôi môi em luôn hé nụ cười tươi.',
       nozzle: { x: 0.667, y: 0.758 },
       bounds: { minX: 0.60, maxX: 0.74, minY: 0.71, maxY: 0.93 },
       ribbonColor: { r: 244, g: 208, b: 234 }, // Pink-violet
@@ -945,9 +945,9 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'liptube',
       brand: 'Butterfly Pea',
       name: 'Lip Balm Tube',
-      subtitle: 'Sá»± chÄƒm sÃ³c Ã¢n cáº§n bÃªn em...',
-      tag: 'TuÃ½p Son Äáº­u Biáº¿c',
-      message: 'Sá»± chÄƒm sÃ³c Ã¢n cáº§n,\nluÃ´n bÃªn em tá»« nhá»¯ng Ä‘iá»u nhá» bÃ© nháº¥t.',
+      subtitle: 'Sự chăm sóc ân cần bên em...',
+      tag: 'Tuýp Son Đậu Biếc',
+      message: 'Sự chăm sóc ân cần,\nluôn bên em từ những điều nhỏ bé nhất.',
       nozzle: { x: 0.813, y: 0.583 },
       bounds: { minX: 0.77, maxX: 0.88, minY: 0.51, maxY: 0.91 },
       ribbonColor: { r: 249, g: 168, b: 212 },
@@ -957,9 +957,9 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'flower_vase',
       brand: 'Butterfly Pea',
       name: 'Botanical Blossom',
-      subtitle: 'Sáº¯c biáº¿c hoa thá»§y chung...',
-      tag: 'BÃ¬nh Hoa Äáº­u Biáº¿c',
-      message: 'Sáº¯c biáº¿c hoa thá»§y chung,\nthay ngÃ n lá»i yÃªu gá»­i trá»n Ä‘áº¿n em.',
+      subtitle: 'Sắc biếc hoa thủy chung...',
+      tag: 'Bình Hoa Đậu Biếc',
+      message: 'Sắc biếc hoa thủy chung,\nthay ngàn lời yêu gửi trọn đến em.',
       nozzle: { x: 0.500, y: 0.220 },
       bounds: { minX: 0.28, maxX: 0.72, minY: 0.04, maxY: 0.38 },
       ribbonColor: { r: 147, g: 197, b: 253 },
@@ -970,7 +970,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.fragranceBottles = fragranceBottles;
 
   function getBottleAtRel(relX, relY) {
-    // Chá»‰ cÃ¡c chai lá» má»¹ pháº©m má»›i má»Ÿ tháº¿ giá»›i riÃªng (khÃ´ng cháº·n click vÃ o hoa)
+    // Chỉ các chai lọ mỹ phẩm mới mở thế giới riêng (không chặn click vào hoa)
     for (let i = 0; i < fragranceBottles.length; i++) {
       const b = fragranceBottles[i];
       if (b.id === 'flower_vase') continue;
@@ -1032,7 +1032,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Ã‚m thanh xá»‹t sÆ°Æ¡ng dá»‹u Ãªm qua Web Audio API (thanh khiáº¿t, khÃ´ng chÃ³i tai)
+  // Âm thanh xịt sương dịu êm qua Web Audio API (thanh khiết, không chói tai)
   function playFragranceSound() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1082,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
       noise.stop(actx.currentTime + 0.40);
       osc.stop(actx.currentTime + 0.44);
     } catch (e) {
-      // Bá» qua náº¿u audio bá»‹ cháº·n
+      // Bỏ qua nếu audio bị chặn
     }
   }
 
@@ -1090,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showFragranceCard(bottle, nozzleX, nozzleY) {
     if (!fragranceTextContainer) return;
 
-    // XÃ³a tháº» cÅ© cá»§a cÃ¹ng chai lá» náº¿u Ä‘ang hiá»ƒn thá»‹
+    // Xóa thẻ cũ của cùng chai lọ nếu đang hiển thị
     const existing = fragranceTextContainer.querySelector(`[data-bottle-id="${bottle.id}"]`);
     if (existing) {
       existing.classList.remove('active');
@@ -1102,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     card.className = 'fragrance-moment-card';
     card.setAttribute('data-bottle-id', bottle.id);
 
-    // Canh chá»‰nh vá»‹ trÃ­ tháº» chá»¯: náº±m ngay phÃ­a trÃªn chai, giá»›i háº¡n khÃ´ng trÃ n khung hÃ¬nh
+    // Canh chỉnh vị trí thẻ chữ: nằm ngay phía trên chai, giới hạn không tràn khung hình
     const cardX = Math.max(110, Math.min(fWidth - 110, nozzleX));
     const cardY = Math.max(65, nozzleY - 60);
 
@@ -1127,12 +1127,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fragranceTextContainer.appendChild(card);
 
-    // KÃ­ch hoáº¡t animation xuáº¥t hiá»‡n
+    // Kích hoạt animation xuất hiện
     requestAnimationFrame(() => {
       card.classList.add('active');
     });
 
-    // NÃºt Ä‘Ã³ng do ngÆ°á»i dÃ¹ng tá»± quyáº¿t Ä‘á»‹nh khi nÃ o Ä‘Ã³ng
+    // Nút đóng do người dùng tự quyết định khi nào đóng
     const closeBtn = card.querySelector('.fragrance-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', (e) => {
@@ -1149,12 +1149,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // THáº¾ GIá»šI RIÃŠNG KHI CLICK VÃ€O Tá»ªNG MÃ“N Má»¸ PHáº¨M (PRODUCT WORLDS)
-  // 1ï¸âƒ£ Chai rung nháº¹ (haptic shake + focus aura)
-  // 2ï¸âƒ£ CÃ nh hoa xung quanh báº¯t Ä‘áº§u bay
-  // 3ï¸âƒ£ Ãnh sÃ¡ng lÃ³e nháº¹ trÃªn chai
-  // 4ï¸âƒ£ HÆ°Æ¡ng thÆ¡m xuáº¥t hiá»‡n (lÃ n sÆ°Æ¡ng ribbon & Ã¢m thanh)
-  // 5ï¸âƒ£ ThÃ´ng tin hiá»‡n ra (ngÆ°á»i dÃ¹ng tá»± Ä‘Ã³ng, khÃ´ng timeout)
+  // THẾ GIỚI RIÊNG KHI CLICK VÀO TỪNG MÓN MỸ PHẨM (PRODUCT WORLDS)
+  // 1️⃣ Chai rung nhẹ (haptic shake + focus aura)
+  // 2️⃣ Cành hoa xung quanh bắt đầu bay
+  // 3️⃣ Ánh sáng lóe nhẹ trên chai
+  // 4️⃣ Hương thơm xuất hiện (làn sương ribbon & âm thanh)
+  // 5️⃣ Thông tin hiện ra (người dùng tự đóng, không timeout)
   // ============================================================
   function activateProductWorld(bottle) {
     if (!bottle) return;
@@ -1194,16 +1194,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const absNozzleY = fRect.top + nozzleY;
 
     // ==========================================
-    // 1ï¸âƒ£ CHAI RUNG NHáº¸ (0ms)
+    // 1️⃣ CHAI RUNG NHẸ (0ms)
     // ==========================================
-    // Haptic vibration cho thiáº¿t bá»‹ di Ä‘á»™ng
+    // Haptic vibration cho thiết bị di động
     if (window.navigator && window.navigator.vibrate) {
       try {
         window.navigator.vibrate([28, 35, 28]);
       } catch (err) { }
     }
 
-    // TÃ¡ch lá»›p pháº§n tá»­ chai thá»±c táº¿ vÃ  rung nháº¹ tá»± nhiÃªn
+    // Tách lớp phần tử chai thực tế và rung nhẹ tự nhiên
     if (targetImg && targetImg.complete && targetImg.naturalWidth > 0 && livingFrameEl && bottle.id !== 'flower_vase') {
       const shakerEl = document.createElement('div');
       shakerEl.className = 'bottle-shaker-element bottle-shaking';
@@ -1243,10 +1243,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 2ï¸âƒ£ CÃ€NH HOA XUNG QUANH Báº®T Äáº¦U BAY (60ms)
+    // 2️⃣ CÀNH HOA XUNG QUANH BẮT ĐẦU BAY (60ms)
     // ==========================================
     setTimeout(() => {
-      // 2 cÃ nh hoa bay tá»« 2 hÆ°á»›ng trÃ¡i pháº£i xung quanh chai
+      // 2 cành hoa bay từ 2 hướng trái phải xung quanh chai
       const bOriginX1 = fRect.left + bottleBox.left + bottleBox.width * 0.15;
       const bOriginY1 = fRect.top + bottleBox.top + bottleBox.height * 0.2;
       launchFlowerBranch(bOriginX1, bOriginY1, -1.1);
@@ -1259,7 +1259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 60);
 
     // ==========================================
-    // 3ï¸âƒ£ ÃNH SÃNG LÃ“E NHáº¸ TRÃŠN CHAI (140ms)
+    // 3️⃣ ÁNH SÁNG LÓE NHẸ TRÊN CHAI (140ms)
     // ==========================================
     setTimeout(() => {
       const flashEl = document.createElement('div');
@@ -1279,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 140);
 
     // ==========================================
-    // 4ï¸âƒ£ HÆ¯Æ NG THÆ M XUáº¤T HIá»†N (220ms)
+    // 4️⃣ HƯƠNG THƠM XUẤT HIỆN (220ms)
     // ==========================================
     setTimeout(() => {
       if (window.scentEngine) {
@@ -1290,8 +1290,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200);
 
     // ==========================================
-    // 5ï¸âƒ£ THÃ”NG TIN HIá»†N RA (480ms)
-    // (NgÆ°á»i dÃ¹ng tá»± Ä‘Ã³ng, khÃ´ng Ã©p timeout)
+    // 5️⃣ THÔNG TIN HIỆN RA (480ms)
+    // (Người dùng tự đóng, không ép timeout)
     // ==========================================
     // Thẻ thi vị Scent Engine đã xuất hiện mang hương thơm và lời thơ dịu dàng.
     // Người dùng có thể bấm nút [ Lời nhắn ] trên thẻ để mở thư riêng khi muốn.
@@ -1306,7 +1306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.createElement('div');
     modal.className = 'product-world-modal';
-    // Äáº­u á»Ÿ gÃ³c Ä‘á»‘i diá»‡n Ä‘á»ƒ khÃ´ng che máº¥t chai má»¹ pháº©m vá»«a click vÃ  hoa á»Ÿ giá»¯a
+    // Đậu ở góc đối diện để không che mất chai mỹ phẩm vừa click và hoa ở giữa
     if (bottle && bottle.nozzle && bottle.nozzle.x < 0.5) {
       modal.classList.add('dock-right');
     } else {
@@ -1415,7 +1415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nozzleX = bottle.nozzle.x * fWidth;
     const nozzleY = bottle.nozzle.y * fHeight;
 
-    // 1. Äá»‘m sÃ¡ng aura lÃ³e lÃªn ngay miá»‡ng chai/vÃ²i xá»‹t
+    // 1. Đốm sáng aura lóe lên ngay miệng chai/vòi xịt
     const flashEl = document.createElement('div');
     flashEl.className = 'bottle-spray-flash';
     flashEl.style.left = `${nozzleX}px`;
@@ -1425,19 +1425,19 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => flashEl.remove(), 700);
     }
 
-    // 2. Tháº» chá»¯ nghá»‡ thuáº­t ná»•i lÃªn (náº¿u khÃ´ng dÃ¹ng modal tháº¿ giá»›i riÃªng)
+    // 2. Thẻ chữ nghệ thuật nổi lên (nếu không dùng modal thế giới riêng)
     if (showCard) {
       showFragranceCard(bottle, nozzleX, nozzleY);
     }
 
-    // 3. Khá»Ÿi táº¡o chÃ¹m sÆ°Æ¡ng (Fragrance Burst)
+    // 3. Khởi tạo chùm sương (Fragrance Burst)
     if (activeFragranceBursts.length >= 4) {
       activeFragranceBursts[0].maxLife = activeFragranceBursts[0].life + 25;
     }
 
     const maxRise = Math.min(300, fHeight * 0.44);
 
-    // A. CÃ¡c dáº£i lá»¥a sÆ°Æ¡ng Ribbon
+    // A. Các dải lụa sương Ribbon
     const ribbons = [
       {
         originX: nozzleX,
@@ -1517,7 +1517,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     ];
 
-    // B. Lá»›p sÆ°Æ¡ng cá»±c má»‹n (Micro-mist cloud particles)
+    // B. Lớp sương cực mịn (Micro-mist cloud particles)
     const mistParticles = [];
     const mistCount = 26;
     for (let i = 0; i < mistCount; i++) {
@@ -1542,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // C. Háº¡t sÃ¡ng nhá» & Ä‘á»‘m sao láº¥p lÃ¡nh (Sparkles & Stardust)
+    // C. Hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
     const sparkles = [];
     const sparkleCount = 18;
     for (let i = 0; i < sparkleCount; i++) {
@@ -1567,7 +1567,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // D. VÃ²ng sÃ³ng aura lan tá»a á»Ÿ miá»‡ng chai
+    // D. Vòng sóng aura lan tỏa ở miệng chai
     const rings = [
       { x: nozzleX, y: nozzleY, startR: 4, maxR: 30, baseAlpha: 0.65, life: 0, maxLife: 32 },
       { x: nozzleX, y: nozzleY, startR: 2, maxR: 22, baseAlpha: 0.45, life: -6, maxLife: 30 }
@@ -1587,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // VÃ²ng láº·p váº½ lÃ n sÆ°Æ¡ng hÆ°Æ¡ng thÆ¡m (Fragrance Mist Canvas Render Loop)
+  // Vòng lặp vẽ làn sương hương thơm (Fragrance Mist Canvas Render Loop)
   function renderFragranceMist() {
     if (!fCtx || fWidth === 0 || fHeight === 0) {
       if (activeFragranceBursts.length > 0) {
@@ -1605,7 +1605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let b = activeFragranceBursts.length - 1; b >= 0; b--) {
       const burst = activeFragranceBursts[b];
 
-      // 1. Váº½ vÃ²ng sÃ³ng aura miá»‡ng chai
+      // 1. Vẽ vòng sóng aura miệng chai
       for (let i = burst.rings.length - 1; i >= 0; i--) {
         const ring = burst.rings[i];
         ring.life++;
@@ -1629,7 +1629,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.restore();
       }
 
-      // 2. Váº½ cÃ¡c dáº£i lá»¥a sÆ°Æ¡ng Ribbon
+      // 2. Vẽ các dải lụa sương Ribbon
       for (let i = 0; i < burst.ribbons.length; i++) {
         const strand = burst.ribbons[i];
         strand.life++;
@@ -1732,7 +1732,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.fillStyle = grad;
         fCtx.fill();
 
-        // ÄÆ°á»ng sá»‘ng lá»¥a Ã³ng Ã¡nh phÃ¡t sÃ¡ng á»Ÿ giá»¯a
+        // Đường sống lụa óng ánh phát sáng ở giữa
         fCtx.beginPath();
         fCtx.moveTo(spinePts[0].x, spinePts[0].y);
         for (let k = 1; k < spinePts.length - 1; k++) {
@@ -1748,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.restore();
       }
 
-      // 3. Váº½ lá»›p háº¡t sÆ°Æ¡ng cá»±c má»‹n (Micro-mist cloud particles)
+      // 3. Vẽ lớp hạt sương cực mịn (Micro-mist cloud particles)
       for (let i = burst.mistParticles.length - 1; i >= 0; i--) {
         const p = burst.mistParticles[i];
         p.life++;
@@ -1785,7 +1785,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.restore();
       }
 
-      // 4. Váº½ háº¡t sÃ¡ng nhá» & Ä‘á»‘m sao láº¥p lÃ¡nh (Sparkles & Stardust)
+      // 4. Vẽ hạt sáng nhỏ & đốm sao lấp lánh (Sparkles & Stardust)
       for (let i = burst.sparkles.length - 1; i >= 0; i--) {
         const sp = burst.sparkles[i];
         sp.life++;
@@ -1812,13 +1812,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sp.type === 'star') {
           const r = sp.size;
-          // HÃ o quang tá»a sÃ¡ng má»m xung quanh ngÃ´i sao
+          // Hào quang tỏa sáng mềm xung quanh ngôi sao
           fCtx.beginPath();
           fCtx.arc(0, 0, r * 1.5, 0, Math.PI * 2);
           fCtx.fillStyle = `rgba(147, 197, 253, ${(alpha * 0.35).toFixed(3)})`;
           fCtx.fill();
 
-          // HÃ¬nh ngÃ´i sao 4 cÃ¡nh
+          // Hình ngôi sao 4 cánh
           fCtx.beginPath();
           fCtx.moveTo(0, -r);
           fCtx.quadraticCurveTo(0, 0, r, 0);
@@ -1829,13 +1829,13 @@ document.addEventListener('DOMContentLoaded', () => {
           fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${alpha.toFixed(3)})`;
           fCtx.fill();
 
-          // TÃ¢m ngá»c trai sÃ¡ng láº¥p lÃ¡nh
+          // Tâm ngọc trai sáng lấp lánh
           fCtx.beginPath();
           fCtx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
           fCtx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`;
           fCtx.fill();
         } else {
-          // Háº¡t Ä‘á»‘m sÃ¡ng trÃ²n
+          // Hạt đốm sáng tròn
           fCtx.beginPath();
           fCtx.arc(0, 0, sp.size * 1.6, 0, Math.PI * 2);
           fCtx.fillStyle = `rgba(${sp.color.r}, ${sp.color.g}, ${sp.color.b}, ${(alpha * 0.3).toFixed(3)})`;
@@ -1850,7 +1850,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.restore();
       }
 
-      // XÃ³a burst khi toÃ n bá»™ thÃ nh pháº§n Ä‘Ã£ tan biáº¿n
+      // Xóa burst khi toàn bộ thành phần đã tan biến
       const hasRibbonsAlive = burst.ribbons.some(r => r.life < r.maxLife);
       if (!hasRibbonsAlive && burst.mistParticles.length === 0 && burst.sparkles.length === 0 && burst.rings.length === 0) {
         activeFragranceBursts.splice(b, 1);
@@ -1866,7 +1866,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // 9. Láº®NG NGHE TÆ¯Æ NG TÃC CHO CÃC NÃšT HOTSPOT Tá»ªNG MÃ“N
+  // 9. LẮNG NGHE TƯƠNG TÁC CHO CÁC NÚT HOTSPOT TỪNG MÓN
   // ============================================================
   const bottleHotspots = document.querySelectorAll('.bottle-hotspot');
   bottleHotspots.forEach(btn => {

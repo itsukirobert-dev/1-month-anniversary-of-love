@@ -167,8 +167,8 @@
       this.options = Object.assign({
         maxConcurrentPetals: 45,
         defaultClusterCount: 6,
-        ambientInterval: 14000, // Tự động thả 1-2 cánh hoa mỗi 14 giây khi rảnh rỗi
-        enableAmbientBreeze: true,
+        ambientInterval: 14000,
+        enableAmbientBreeze: false, // Tắt tự động thả cánh hoa từ trang 1 đến 8 theo yêu cầu
         enablePointerFlick: true
       }, options);
 
