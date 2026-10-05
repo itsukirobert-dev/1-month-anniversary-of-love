@@ -36,28 +36,46 @@
   z-index: 10;
 }
 
-/* Chapter 1 là bối cảnh Căn Phòng Sống Động nguyên bản (background.jpg + living physical layers)
-   -> Ẩn ảnh backdrop riêng của Scene 1 để các tầng nền chuẩn hiển thị sắc nét 100% */
-.scene-ch1 .story-chapter-backdrop {
-  display: none !important;
-}
-
-/* Khi chuyển sang các Chapter 2 -> 9, tạm ẩn các lớp động lực học riêng của Chapter 1 để thưởng thức trọn vẹn từng bối cảnh */
-.living-frame:is(.chapter-active-2, .chapter-active-3, .chapter-active-4, .chapter-active-5, .chapter-active-6, .chapter-active-7, .chapter-active-8, .chapter-active-9) :is(
+/* Khi chuyển sang các Chapter 1 -> 9, ẩn ảnh nền gốc và các lớp động lực học cũ để chiêm ngưỡng trọn vẹn từng bức ảnh nghệ thuật */
+.living-frame:is(.chapter-active-1, .chapter-active-2, .chapter-active-3, .chapter-active-4, .chapter-active-5, .chapter-active-6, .chapter-active-7, .chapter-active-8, .chapter-active-9) :is(
   .engine-layer-silk,
   .engine-layer-flora,
   .engine-swaying-branch,
+  .engine-living-blossom,
   .engine-specular-canvas,
   .engine-layer-table,
   .engine-layer-backdrop,
   .main-uncut-image.living-photo,
   .bottle-hotspots-container,
-  .flower-touch-hint
+  .flower-touch-hint,
+  .flower-root-halo
 ) {
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
   transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* Khi ở Nền Gốc (Root Living Scene): Phục hồi hiển thị và tương tác 100% cho ảnh gốc, mỹ phẩm & hoa */
+.living-frame.scene-root-active :is(
+  .engine-layer-silk,
+  .engine-layer-table,
+  .engine-layer-backdrop,
+  .main-uncut-image.living-photo,
+  .bottle-hotspots-container,
+  .flower-root-halo
+) {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.living-frame.scene-root-active .flower-touch-hint {
+  display: inline-flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
 /* Nút Bridge Khám Phá 9 Chương */
@@ -323,6 +341,13 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
+.story-chapter-nav-bar.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(-50%) translateY(24px) scale(0.96) !important;
+  display: none !important;
+}
+
 /* Nút Điều Hướng Trái / Phải */
 .story-nav-btn {
   display: inline-flex;
@@ -350,6 +375,84 @@
 
 .story-nav-btn:active {
   transform: scale(0.96);
+}
+
+/* Nút Nổi Thoát Nhanh Về Nền Gốc khi đang xem các Chương (1 - 9) */
+.story-exit-chapter-btn {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 35;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  color: #1e3a8a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 4px 16px rgba(30, 58, 138, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: exitBtnEntrance 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.story-exit-chapter-btn:hover {
+  background: #ffffff;
+  color: #2563eb;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+}
+
+.story-exit-chapter-btn.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+@keyframes exitBtnEntrance {
+  0% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Nút Quay Lại Nền Gốc trên Navbar */
+.story-nav-root-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
+  color: #1e3a8a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+}
+
+.story-nav-root-btn:hover {
+  background: #ffffff;
+  color: #2563eb;
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.story-nav-root-btn.active {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
 }
 
 /* Danh Sách Nút Bấm 9 Chương */
@@ -626,3 +729,474 @@
     font-size: 15px;
   }
 }
+
+/* ============================================================
+   7. BÔNG HOA GỐC & HÀNH TRÌNH PHẢN CHIẾU 9 MÀN HÌNH
+   ============================================================ */
+
+/* Vầng hào quang ánh sáng bao quanh Bông Hoa Gốc ở Chapter 1 */
+.flower-root-halo {
+  position: absolute;
+  left: 28%;
+  top: 4%;
+  width: 44%;
+  height: 34%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.45) 0%, rgba(244, 114, 182, 0.25) 45%, transparent 72%);
+  filter: blur(10px);
+  animation: flowerRootHaloPulse 3s ease-in-out infinite;
+  z-index: 12;
+  transition: opacity 0.6s ease;
+}
+
+@keyframes flowerRootHaloPulse {
+  0%, 100% {
+    transform: scale(0.94);
+    opacity: 0.6;
+    filter: blur(10px) drop-shadow(0 0 16px rgba(59, 130, 246, 0.4));
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.95;
+    filter: blur(14px) drop-shadow(0 0 28px rgba(244, 114, 182, 0.7));
+  }
+}
+
+/* Nút Hotspot Bông Hoa Gốc */
+.bottle-hotspot[data-bottle-id="flower_vase"] {
+  cursor: pointer !important;
+  z-index: 16 !important;
+}
+
+.bottle-hotspot[data-bottle-id="flower_vase"]:hover {
+  filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.65));
+}
+
+/* Nút Bông Hoa Gốc trên Navbar Điều Hướng 9 Chương */
+.story-nav-flower-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 230, 242, 0.92) 100%);
+  color: #1e3a8a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.18), 0 0 12px rgba(244, 114, 182, 0.25);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.story-nav-flower-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.32), 0 0 18px rgba(244, 114, 182, 0.45);
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.story-nav-flower-btn.active-journey {
+  background: linear-gradient(135deg, #2563eb 0%, #ec4899 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 18px rgba(236, 72, 153, 0.6);
+  animation: pulseFlowerNavBtn 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseFlowerNavBtn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Sóng xung kích phản chiếu pha lê tỏa ra từ Bông Hoa Gốc */
+.story-reflection-shockwave {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 3px solid rgba(147, 197, 253, 0.9);
+  box-shadow:
+    0 0 40px rgba(59, 130, 246, 0.7),
+    inset 0 0 30px rgba(244, 114, 182, 0.6);
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 1;
+  animation: shockwaveExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+  z-index: 30;
+}
+
+@keyframes shockwaveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3.5);
+    opacity: 0;
+  }
+}
+
+/* Vệt sáng phản chiếu lướt qua màn hình khi chuyển cảnh */
+.story-scene-reflection-sheen {
+  position: absolute;
+  inset: -30%;
+  pointer-events: none;
+  background: linear-gradient(115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(147, 197, 253, 0.5) 50%,
+    rgba(251, 207, 232, 0.4) 55%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  animation: reflectionSheenSweep 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  z-index: 26;
+}
+
+@keyframes reflectionSheenSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   HUD ĐIỀU KHIỂN HÀNH TRÌNH PHẢN CHIẾU 9 MÀN HÌNH
+   ============================================================ */
+.story-reflection-hud {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  width: min(94%, 640px);
+  padding: 14px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 14px 40px rgba(30, 58, 138, 0.16),
+    0 0 24px rgba(244, 114, 182, 0.28),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  z-index: 38;
+  pointer-events: auto;
+  user-select: none;
+  animation: hudEntrance 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.story-reflection-hud.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-16px) scale(0.96);
+  display: none !important;
+}
+
+@keyframes hudEntrance {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.hud-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.hud-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-pulse-flower {
+  font-size: 16px;
+  animation: pulseFlowerIcon 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes pulseFlowerIcon {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.25) rotate(10deg); }
+}
+
+.hud-main-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #1e3a8a;
+  text-transform: uppercase;
+}
+
+.hud-controls-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.7);
+  color: #475569;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.98);
+  color: #1e3a8a;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.hud-close-btn {
+  padding: 4px 8px;
+  color: #94a3b8;
+}
+
+.hud-close-btn:hover {
+  color: #e11d48;
+}
+
+/* Thông tin từng chặng phản chiếu */
+.hud-chapter-info {
+  margin-bottom: 10px;
+}
+
+.hud-ch-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.hud-ch-badge {
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #2563eb;
+  background: rgba(219, 234, 254, 0.85);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(147, 197, 253, 0.6);
+}
+
+.hud-ch-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.hud-reflection-narrative {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #475569;
+  margin: 4px 0 0 0;
+  font-style: italic;
+}
+
+/* Thanh Tiến Trình Tia Sáng 9 Màn Hình (Timeline Beam) */
+.hud-timeline-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px 2px 4px;
+}
+
+.hud-beam-line-bg {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 3px;
+  background: rgba(226, 232, 240, 0.85);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.hud-beam-line-fill {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #3b82f6 0%, #ec4899 50%, #fbbf24 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 2;
+}
+
+.hud-nodes-list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 3;
+}
+
+.hud-node-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: #cbd5e1;
+  color: #64748b;
+  font-family: 'Playfair Display', serif;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+}
+
+.hud-node-dot:hover {
+  transform: scale(1.15);
+  border-color: #3b82f6;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.hud-node-dot.passed {
+  background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+}
+
+.hud-node-dot.active {
+  background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: scale(1.22);
+  box-shadow: 0 0 16px rgba(225, 29, 72, 0.75), 0 0 24px rgba(251, 191, 36, 0.5);
+  animation: activeNodeGlow 1.8s ease-in-out infinite;
+}
+
+@keyframes activeNodeGlow {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(225, 29, 72, 0.6), 0 0 20px rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.9), 0 0 32px rgba(251, 191, 36, 0.7);
+  }
+}
+
+/* Các nút hành động khi kết thúc phản chiếu ở Chương 9 */
+.hud-finale-actions {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(244, 114, 182, 0.45);
+}
+
+.hud-finale-actions.visible {
+  display: flex;
+}
+
+.hud-finale-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.hud-replay-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #ec4899 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.hud-replay-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+}
+
+.hud-explore-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #1e3a8a;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+}
+
+.hud-explore-btn:hover {
+  background: #ffffff;
+  border-color: #93c5fd;
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .story-exit-chapter-btn {
+    top: 10px;
+    left: 10px;
+    padding: 5px 11px;
+    font-size: 10.5px;
+  }
+  .story-reflection-hud {
+    top: 8px;
+    width: 96%;
+    padding: 10px 14px;
+  }
+  .hud-main-title {
+    font-size: 11px;
+  }
+  .hud-ch-title {
+    font-size: 14px;
+  }
+  .hud-reflection-narrative {
+    font-size: 11px;
+  }
+  .hud-node-dot {
+    width: 20px;
+    height: 20px;
+    font-size: 9px;
+  }
+  .hud-timeline-track {
+    padding: 4px 2px;
+  }
+}
+

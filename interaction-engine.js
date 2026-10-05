@@ -319,6 +319,7 @@
           e.target.closest('#creamMilestoneModal') ||
           e.target.closest('#lipbalmPromiseModal') ||
           e.target.closest('#storyChapterNavBar') ||
+          e.target.closest('#storyReflectionHUD') ||
           e.target.closest('#storyActiveChapterTag') ||
           e.target.closest('#storyChapterCardBridge') ||
           e.target.closest('.site-header') ||
@@ -811,6 +812,14 @@
       if (bottle.id === 'lipbalm' || bottle.id === 'liptube') {
         this.triggerLipbalmPromiseChoreography(bottle, clientX, clientY);
         if (window.discoveryEngine) window.discoveryEngine.onProductDiscovered('lipbalm');
+        return;
+      }
+
+      // ============================================================
+      // FLOWER VASE = BÔNG HOA GỐC (PHẢN CHIẾU ĐI QUA 9 MÀN HÌNH)
+      // ============================================================
+      if (bottle.id === 'flower_vase') {
+        this.triggerFlowerRootReflectionChoreography(bottle, clientX, clientY);
         return;
       }
 
@@ -3466,12 +3475,19 @@
           window.petalEngine.toss({
             x: clientX,
             y: clientY,
-            count: 6,
-            force: 1.25,
-            spread: 0.55
+            count: 12,
+            force: 1.35,
+            spread: 0.65
           });
         }
       }, 180);
+
+      // Kích hoạt phản chiếu 9 màn hình từ cành hoa gốc
+      if (window.storyEngineInstance && typeof window.storyEngineInstance.startReflectionJourney === 'function') {
+        window.storyEngineInstance.startReflectionJourney();
+      } else if (window.storyTransitionEngine && typeof window.storyTransitionEngine.startReflectionJourney === 'function') {
+        window.storyTransitionEngine.startReflectionJourney();
+      }
     }
 
     handleAmbientTouch(clientX, clientY) {
@@ -3554,6 +3570,44 @@
     // - Một cánh hoa cuối cùng bay qua màn hình.
     // - Background trở lại tốc độ bình thường.
     // ============================================================
+    // BÔNG HOA GỐC = KHỞI ĐẦU HÀNH TRÌNH PHẢN CHIẾU 9 MÀN HÌNH
+    // ============================================================
+    triggerFlowerRootReflectionChoreography(bottle, clientX, clientY) {
+      if (this.options.enableAudio) playCrystalTouchTone();
+      const clickX = clientX !== undefined ? clientX : window.innerWidth * 0.5;
+      const clickY = clientY !== undefined ? clientY : window.innerHeight * 0.22;
+      this.createTouchWaveVisual(clickX, clickY);
+
+      // Cành đung đưa nở rộ
+      const canopy = document.getElementById('engineFloraCanopy') || document.getElementById('engineFloraLayer');
+      if (canopy) {
+        canopy.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1)';
+        canopy.style.transform = 'scale(1.05) rotate(-1.5deg)';
+        setTimeout(() => {
+          canopy.style.transform = '';
+        }, 500);
+      }
+
+      // Bung cánh hoa
+      if (window.petalEngine) {
+        window.petalEngine.toss({
+          x: clickX,
+          y: clickY,
+          count: 16,
+          force: 1.45,
+          angle: -Math.PI * 0.5 + (Math.random() - 0.5) * 0.5,
+          spread: 0.75
+        });
+      }
+
+      // Kích hoạt phản chiếu 9 màn hình
+      if (window.storyEngineInstance && typeof window.storyEngineInstance.startReflectionJourney === 'function') {
+        window.storyEngineInstance.startReflectionJourney();
+      } else if (window.storyTransitionEngine && typeof window.storyTransitionEngine.startReflectionJourney === 'function') {
+        window.storyTransitionEngine.startReflectionJourney();
+      }
+    }
+
     triggerLipbalmPromiseChoreography(bottle, clientX, clientY) {
       if (!bottle || !this.container) return;
 
@@ -3950,6 +4004,20 @@
 
     // --- API kích hoạt tương tác chương trình (Programmatic Trigger) ---
     trigger(bottleId) {
+      if (bottleId === 'flower_vase') {
+        const bottle = {
+          id: 'flower_vase',
+          brand: 'Butterfly Pea',
+          name: 'Botanical Blossom',
+          tag: 'Bình Hoa Đậu Biếc',
+          nozzle: { x: 0.5, y: 0.22 },
+          bounds: { minX: 0.28, maxX: 0.72, minY: 0.04, maxY: 0.38 }
+        };
+        const rect = this.container ? this.container.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+        this.triggerFlowerRootReflectionChoreography(bottle, rect.left + rect.width * 0.5, rect.top + rect.height * 0.22);
+        return;
+      }
+
       const bottles = window.fragranceBottles || [];
       const bottle = bottles.find((b) => b.id === bottleId);
       if (!bottle || !this.container) return;

@@ -347,14 +347,20 @@
         const originX = rect.left + rect.width * (0.3 + Math.random() * 0.4);
         const originY = rect.top + rect.height * (0.3 + Math.random() * 0.4);
 
-        // Hất bung chùm 6-8 cánh hoa rực rỡ từ cành hoa
+        // Hất bung chùm 12-16 cánh hoa rực rỡ từ cành hoa
         this.toss({
           x: originX,
           y: originY,
-          count: 6 + Math.floor(Math.random() * 3),
-          force: 1.25,
+          count: 12 + Math.floor(Math.random() * 4),
+          force: 1.35,
           angle: -Math.PI * 0.5 + (Math.random() - 0.5) * 0.8 // Vút lên cao rồi tỏa ra
         });
+
+        if (window.storyEngineInstance && typeof window.storyEngineInstance.startReflectionJourney === 'function') {
+          window.storyEngineInstance.startReflectionJourney();
+        } else if (window.storyTransitionEngine && typeof window.storyTransitionEngine.startReflectionJourney === 'function') {
+          window.storyTransitionEngine.startReflectionJourney();
+        }
       };
 
       if (flowerHotspot) flowerHotspot.addEventListener('click', triggerFlowerToss);

@@ -1,4 +1,4 @@
-ocument.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // 1. NHẠC NỀN LÃNG MẠN (AUDIO PLAYER TOGGLE)
   // ============================================================
@@ -1874,6 +1874,15 @@ ocument.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       e.preventDefault();
       const bottleId = btn.getAttribute('data-bottle-id');
+      if (bottleId === 'flower_vase') {
+        if (window.storyEngineInstance && typeof window.storyEngineInstance.startReflectionJourney === 'function') {
+          window.storyEngineInstance.startReflectionJourney();
+          return;
+        } else if (window.storyTransitionEngine && typeof window.storyTransitionEngine.startReflectionJourney === 'function') {
+          window.storyTransitionEngine.startReflectionJourney();
+          return;
+        }
+      }
       if (window.interactionEngine) {
         window.interactionEngine.trigger(bottleId);
         return;

@@ -34,7 +34,8 @@
       title: 'Mỹ Phẩm Studio',
       subtitle: 'Ký Ức Ban Đầu & Hương Sắc Tinh Khôi',
       desc: 'Căn phòng studio sang trọng ngập tràn ánh nắng sớm mai. Những lọ mỹ phẩm hoa đậu biếc cao cấp, lụa hồng pastel và mặt bàn cẩm thạch Carrara phản chiếu nét kiêu sa.',
-      image: 'assets/images/chapters/chapter_01.jpg',
+      reflectionNarrative: '🌸 Khởi nguồn từ Bông Hoa Gốc: Ánh hoa biếc tinh khôi soi bóng trên mặt bàn cẩm thạch Carrara và những lọ mỹ phẩm tình yêu.',
+      image: 'assets/images/chapters/chapter_01.jpg?v=20261005_v3',
       moodColor: 'rgba(255, 182, 193, 0.25)',
       accentColor: '#3b82f6'
     },
@@ -46,6 +47,7 @@
       title: 'Hoa Rủ & Vũ Điệu Màn Thơ',
       subtitle: 'Thác Hoa Đậu Biếc & Nhành Hồng Đung Đưa',
       desc: 'Vòm trần cổ điển buông rủ những chùm hoa đậu biếc biếc xanh và hoa hồng pastel như bức màn hoa sống động. Từng nhánh hoa đung đưa êm dịu trong làn gió thoảng.',
+      reflectionNarrative: '🌿 Vũ điệu hoa rủ: Luồng sáng phản chiếu lay động thác hoa biếc và nhành hồng đung đưa êm dịu trong làn gió thoảng.',
       image: 'assets/images/chapters/chapter_02.jpg',
       moodColor: 'rgba(59, 130, 246, 0.22)',
       accentColor: '#1d4ed8'
@@ -58,6 +60,7 @@
       title: 'Mặt Nước & Phản Chiếu',
       subtitle: 'Gợn Sóng Pha Lê & Cánh Hoa Trôi Lững Lờ',
       desc: 'Làn nước trong vắt phẳng lặng như gương phản chiếu bầu trời hoàng hôn tím hồng. Những cánh hoa đậu biếc bồng bềnh dập dềnh theo từng gợn sóng đồng tâm.',
+      reflectionNarrative: '💧 Mặt nước phản chiếu: Làn nước pha lê bừng sáng với những vòng sóng đồng tâm phản chiếu ảo ảnh hoa đậu biếc lung linh.',
       image: 'assets/images/chapters/chapter_03.jpg',
       moodColor: 'rgba(96, 165, 250, 0.25)',
       accentColor: '#2563eb'
@@ -70,6 +73,7 @@
       title: 'Gương Soi & Phòng Quý Tộc',
       subtitle: 'Khung Gương Mạ Vàng & Chiều Sâu Vô Tận',
       desc: 'Chiếc gương Baroque mạ vàng chạm khắc tỉ mỉ phản chiếu căn phòng boudoir lãng mạn. Ánh nến ấm áp lung linh chập chờn, hoa đậu biếc cắm trong bình pha lê kiêu hãnh.',
+      reflectionNarrative: '🪞 Gương soi Boudoir: Khung gương Baroque mạ vàng phản chiếu ánh hoa vào chiều sâu vô tận cùng ánh nến ấm áp.',
       image: 'assets/images/chapters/chapter_04.jpg',
       moodColor: 'rgba(251, 191, 36, 0.22)',
       accentColor: '#d97706'
@@ -82,6 +86,7 @@
       title: 'Đá Marble & Pha Lê Tinh Khiết',
       subtitle: 'Hình Khối Kiệt Tác & Khúc Xạ Cầu Vồng',
       desc: 'Các bục đá hoa cương Carrara đa tầng kết hợp khối pha lê vát cạnh và bình nước hoa trong suốt. Ánh sáng xuyên qua tán sắc thành dải cầu vồng rực rỡ.',
+      reflectionNarrative: '💎 Pha lê & Marble: Ánh hoa tán sắc qua các lăng kính pha lê vát cạnh thành dải cầu vồng 7 màu rực rỡ.',
       image: 'assets/images/chapters/chapter_05.jpg',
       moodColor: 'rgba(236, 72, 153, 0.22)',
       accentColor: '#db2777'
@@ -94,6 +99,7 @@
       title: 'Lụa Satin & Cánh Hoa Tình Ái',
       subtitle: 'Dòng Sông Lụa Hồng & Sắc Biếc Kiêu Sa',
       desc: 'Những nếp gấp lụa satin hồng pastel và xanh hoa đậu biếc uốn lượn mềm mại như suối mây, nâng niu những bông hoa tươi và sợi chỉ vàng champagne óng ánh.',
+      reflectionNarrative: '🎀 Dòng sông lụa satin: Dải phản chiếu mềm mại lướt trên những nếp gấp lụa hồng pastel và xanh hoa đậu biếc óng ả.',
       image: 'assets/images/chapters/chapter_06.jpg',
       moodColor: 'rgba(244, 114, 182, 0.26)',
       accentColor: '#ec4899'
@@ -106,6 +112,7 @@
       title: 'Vườn Địa Đàng Trong Nhà Kính',
       subtitle: 'Vòm Kính Victorian & Suối Nắng Ban Mai',
       desc: 'Nhà kính thực vật hoàng gia với vòm sắt cổ kính đón ánh nắng ban mai rọi xiên qua làn sương mờ ảo. Những giàn hoa đậu biếc leo quấn quýt quanh cột trụ lãng mạn.',
+      reflectionNarrative: '🌿 Vườn địa đàng Victorian: Suối ánh sáng phản chiếu hòa cùng god rays và làn sương sớm vút qua vòm kính hoàng gia.',
       image: 'assets/images/chapters/chapter_07.jpg',
       moodColor: 'rgba(52, 211, 153, 0.22)',
       accentColor: '#059669'
@@ -118,6 +125,7 @@
       title: 'Miền Cổ Tích Mộng Mơ',
       subtitle: 'Không Trọng Lực & Bụi Sao Phát Quang',
       desc: 'Không gian siêu thực mộng mơ, nơi những bông hoa đậu biếc và cánh hoa trôi nổi bồng bềnh không trọng lực giữa màn sương hồng lam và những đốm bụi sao phát sáng kỳ ảo.',
+      reflectionNarrative: '✨ Miền cổ tích siêu thực: Bông hoa lơ lửng không trọng lực giữa màn đêm huyền ảo và bụi sao phát quang nhiệm màu.',
       image: 'assets/images/chapters/chapter_08.jpg',
       moodColor: 'rgba(168, 85, 247, 0.25)',
       accentColor: '#8b5cf6'
@@ -130,7 +138,8 @@
       title: 'Khúc Vĩ Thanh Lãng Mạn',
       subtitle: 'Bầu Trời Đêm Hoa Đăng & Ban Công Nguyện Ước',
       desc: 'Khoảnh khắc êm đềm và riêng tư của đôi mình: Ban công hoàng hôn nhìn ra vịnh biển yên bình dưới ngàn vì sao, hai ly champagne sóng sánh, ánh nến lung linh và những ngọn hoa đăng mang theo lời nguyện ước dài lâu dành riêng cho Cá Sudo & Khây Ti.',
-      image: 'assets/images/chapters/chapter_09_romantic.jpg?v=20261005',
+      reflectionNarrative: '💖 Khúc vĩ thanh lãng mạn: Đích đến tuyệt mỹ nơi ban công ngàn sao, hoa đăng nguyện ước thắp sáng tình yêu dài lâu của Cá Sudo ♡ Khây Ti!',
+      image: 'assets/images/chapters/chapter_09_romantic.jpg?v=20261005_v3',
       moodColor: 'rgba(251, 113, 133, 0.28)',
       accentColor: '#e11d48'
     }
@@ -171,17 +180,53 @@
     }
   }
 
+  // --- ÂM THANH BỪNG NỞ PHA LÊ KHI BẤM BÔNG HOA GỐC (CRYSTALLINE AWAKENING CHORD) ---
+  function playReflectionAwakeningChord() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+
+      const now = audioCtx.currentTime;
+      // Crystalline Major 9th Harmonic Bloom (E, B, E', G#', D#'', F#'')
+      const freqs = [329.63, 493.88, 659.25, 830.61, 1174.66, 1479.98];
+      freqs.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+        gain.gain.setValueAtTime(0.0001, now + idx * 0.05);
+        gain.gain.linearRampToValueAtTime(0.035 / (idx + 1), now + idx * 0.05 + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.05 + 2.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 2.6);
+      });
+    } catch (_) {}
+  }
+
   // ============================================================
   // CLASS STORY TRANSITION ENGINE
   // ============================================================
   class StoryTransitionEngine {
     constructor() {
-      this.currentChapterIndex = 0; // 0-based: 0 -> Chapter 1, ..., 8 -> Chapter 9
+      this.currentChapterIndex = -1; // -1: Nền Gốc (Root living scene), 0..8: Chapter 1..9
       this.isTransitioning = false;
       this.autoPlayInterval = null;
       this.autoPlayDuration = 9000; // 9 giây mỗi chương khi tự động chiếu
       this.isAutoPlaying = false;
       this.activeAnimationCancel = null;
+
+      // Trạng thái Hành Trình Phản Chiếu 9 Màn Hình từ Bông Hoa Gốc
+      this.isReflectionJourneyActive = false;
+      this.isReflectionPaused = false;
+      this.reflectionStepIndex = 0;
+      this.reflectionTimer = null;
+      this.reflectionHUD = null;
 
       this.livingFrame = document.getElementById('livingFrame');
       if (!this.livingFrame) {
@@ -192,11 +237,18 @@
       this.initDOMElements();
       this.initScenes();
       this.initNavbar();
+      this.initExitChapterPill();
       this.initActiveChapterTag();
+      this.initReflectionHUD();
       this.bindEvents();
+      this.bindRootFlowerInteractions();
 
-      // Bật Chapter theo URL parameter ?ch=X hoặc mặc định Chapter 1 (giữ không gian thoáng đãng thanh khiết ban đầu)
-      let startIdx = 0;
+      // Gắn Singleton toàn cục sớm
+      window.storyEngineInstance = this;
+      window.storyTransitionEngine = this;
+
+      // Bật Chapter theo URL parameter ?ch=X hoặc mặc định Nền Gốc ban đầu
+      let startIdx = -1;
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const chParam = parseInt(urlParams.get('ch'), 10);
@@ -211,13 +263,11 @@
         }
       } catch (_) {}
 
-      this.switchChapter(startIdx, false);
-      if (this.activeChapterTag) {
-        if (startIdx === 0) {
-          this.activeChapterTag.classList.add('closed');
-        } else {
-          this.activeChapterTag.classList.remove('closed');
-        }
+      if (startIdx >= 0) {
+        this.switchChapter(startIdx, false);
+      } else {
+        // Mặc định ban đầu: Nền Gốc (Root Living Scene) với đầy đủ mỹ phẩm và bông hoa tương tác
+        this.returnToRootScene(false);
       }
     }
 
@@ -316,6 +366,18 @@
         navBar.className = 'story-chapter-nav-bar';
         navBar.setAttribute('aria-label', 'Điều hướng 9 chương câu chuyện');
 
+        // Nút Quay Lại Nền Gốc (Root Living Scene)
+        const rootBtn = document.createElement('button');
+        rootBtn.type = 'button';
+        rootBtn.className = 'story-nav-root-btn active';
+        rootBtn.id = 'storyNavRootBtn';
+        rootBtn.title = 'Quay lại nền phòng gốc với mỹ phẩm & hoa tương tác';
+        rootBtn.innerHTML = '<i class="fa-solid fa-house"></i> <span>Nền Gốc</span>';
+        rootBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.returnToRootScene();
+        });
+
         // Nút lùi (Prev)
         const prevBtn = document.createElement('button');
         prevBtn.type = 'button';
@@ -342,7 +404,7 @@
           dotBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this.switchChapter(index);
-            // Nếu thẻ đang đóng, cho phép mở lại khi người dùng bấm vào chương
+            // Mở thẻ thông tin chương khi bấm vào chương
             if (this.activeChapterTag && this.activeChapterTag.classList.contains('closed')) {
               this.activeChapterTag.classList.remove('closed');
               this.updateActiveChapterTag(CHAPTERS_DATA[index]);
@@ -375,14 +437,47 @@
           this.toggleAutoPlay();
         });
 
+        // Nút Bông Hoa Gốc Phản Chiếu 9 Màn Hình
+        const flowerReflectBtn = document.createElement('button');
+        flowerReflectBtn.type = 'button';
+        flowerReflectBtn.className = 'story-nav-flower-btn';
+        flowerReflectBtn.id = 'storyNavFlowerReflectBtn';
+        flowerReflectBtn.title = 'Bấm hoa gốc và phản chiếu qua 9 màn hình';
+        flowerReflectBtn.innerHTML = '<span>🌸</span> <span>Phản Chiếu 9 Màn Hình</span>';
+        flowerReflectBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.startReflectionJourney();
+        });
+
+        navBar.appendChild(rootBtn);
         navBar.appendChild(prevBtn);
         navBar.appendChild(dotsList);
         navBar.appendChild(nextBtn);
         navBar.appendChild(autoPlayBtn);
+        navBar.appendChild(flowerReflectBtn);
 
         this.livingFrame.appendChild(navBar);
       }
       this.navBar = navBar;
+    }
+
+    // --- Nút Nổi Thoát Nhanh Về Nền Gốc khi đang ở trong các Chương ---
+    initExitChapterPill() {
+      let pill = document.getElementById('storyExitChapterBtn');
+      if (!pill) {
+        pill = document.createElement('button');
+        pill.type = 'button';
+        pill.id = 'storyExitChapterBtn';
+        pill.className = 'story-exit-chapter-btn hidden';
+        pill.title = 'Tắt chế độ chương và quay lại nền phòng gốc';
+        pill.innerHTML = '<i class="fa-solid fa-arrow-left"></i> <span>Quay lại Nền Gốc</span>';
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.returnToRootScene();
+        });
+        this.livingFrame.appendChild(pill);
+      }
+      this.exitChapterBtn = pill;
     }
 
     // --- Khởi tạo Thẻ Thông Tin Chương Đang Chiếu ---
@@ -400,8 +495,8 @@
               <span class="ch-text">CHƯƠNG 01</span>
               <span class="roman">I</span>
             </span>
-            <button type="button" class="tag-close-btn" id="storyTagCloseBtn" title="Đóng thẻ chương" aria-label="Đóng">
-              <i class="fa-solid fa-xmark"></i> <span class="btn-text">Đóng</span>
+            <button type="button" class="tag-close-btn" id="storyTagCloseBtn" title="Tắt chương &amp; Quay lại nền gốc" aria-label="Tắt chương &amp; Quay lại nền gốc">
+              <i class="fa-solid fa-xmark"></i> <span class="btn-text">Về Nền Gốc</span>
             </button>
           </div>
           <h3 class="tag-title" id="storyTagTitle">Mỹ Phẩm Studio</h3>
@@ -415,7 +510,7 @@
         if (closeBtn) {
           closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            tag.classList.add('closed');
+            this.returnToRootScene();
           });
         }
       }
@@ -446,6 +541,85 @@
       this.activeChapterTag.style.animation = 'tagEntrance 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
     }
 
+    // --- Quay Lại Nền Gốc (Exit Chapter Mode -> Restore Root Living Scene) ---
+    returnToRootScene(playSound = true) {
+      this.stopAutoPlay();
+      this.stopReflectionJourney();
+
+      this.currentChapterIndex = -1;
+
+      // Hủy bỏ animation riêng của chapter đang chạy (nếu có)
+      if (this.activeAnimationCancel) {
+        try { this.activeAnimationCancel(); } catch (_) {}
+        this.activeAnimationCancel = null;
+      }
+
+      // Ẩn toàn bộ 9 chapter scenes
+      if (this.scenes) {
+        this.scenes.forEach((scene) => {
+          scene.classList.remove('active', 'exiting');
+        });
+      }
+
+      // Xóa các class chapter trên livingFrame và kích hoạt class scene-root-active
+      for (let c = 1; c <= 9; c++) {
+        this.livingFrame.classList.remove(`chapter-active-${c}`);
+      }
+      this.livingFrame.classList.add('scene-root-active');
+
+      // Cập nhật trạng thái các nút trong Navbar
+      if (this.dotButtons) {
+        this.dotButtons.forEach(btn => btn.classList.remove('active'));
+      }
+      const rootNavBtn = document.getElementById('storyNavRootBtn');
+      if (rootNavBtn) rootNavBtn.classList.add('active');
+
+      const autoPlayBtn = document.getElementById('storyAutoplayBtn');
+      if (autoPlayBtn) {
+        autoPlayBtn.classList.remove('playing');
+        autoPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      }
+
+      const navFlowerBtn = document.getElementById('storyNavFlowerReflectBtn');
+      if (navFlowerBtn) navFlowerBtn.classList.remove('active-journey');
+
+      // Đóng thẻ chương & ẩn pill thoát & ẩn reflection HUD
+      if (this.activeChapterTag) this.activeChapterTag.classList.add('closed');
+      if (this.exitChapterBtn) this.exitChapterBtn.classList.add('hidden');
+      this.hideReflectionHUD();
+
+      // Phục hồi lại hoàn toàn hiển thị và tương tác của nền gốc
+      const hotspots = document.getElementById('bottleHotspotsContainer');
+      const touchHint = document.getElementById('flowerTouchHint');
+      const originalPhoto = this.livingFrame.querySelector('.main-uncut-image.living-photo');
+      const flowerHalo = this.livingFrame.querySelector('.flower-root-halo');
+
+      if (hotspots) {
+        hotspots.style.opacity = '1';
+        hotspots.style.pointerEvents = 'auto';
+        hotspots.style.visibility = 'visible';
+      }
+      if (touchHint) {
+        touchHint.style.display = 'flex';
+        touchHint.style.opacity = '1';
+        touchHint.style.pointerEvents = 'auto';
+        touchHint.style.visibility = 'visible';
+      }
+      if (originalPhoto) {
+        originalPhoto.style.opacity = '1';
+        originalPhoto.style.visibility = 'visible';
+      }
+      if (flowerHalo) {
+        flowerHalo.style.opacity = '1';
+        flowerHalo.style.visibility = 'visible';
+      }
+
+      // Âm thanh chuông ngân êm dịu khi trở về phòng gốc
+      if (playSound) {
+        playChapterTransitionChime(0);
+      }
+    }
+
     // --- Chuyển Đổi Sang Chương Mục Tiêu ---
     switchChapter(targetIndex, playSound = true) {
       if (targetIndex < 0 || targetIndex >= CHAPTERS_DATA.length) return;
@@ -455,6 +629,29 @@
       const prevIndex = this.currentChapterIndex;
       this.currentChapterIndex = targetIndex;
       const currentData = CHAPTERS_DATA[targetIndex];
+
+      // Bỏ trạng thái nền gốc, tắt active trên nút Nền Gốc
+      this.livingFrame.classList.remove('scene-root-active');
+      const rootNavBtn = document.getElementById('storyNavRootBtn');
+      if (rootNavBtn) rootNavBtn.classList.remove('active');
+
+      // Hiển thị nút thoát nhanh về nền gốc (chỉ khi không trong hành trình phản chiếu)
+      if (this.exitChapterBtn) {
+        if (this.isReflectionJourneyActive) {
+          this.exitChapterBtn.classList.add('hidden');
+        } else {
+          this.exitChapterBtn.classList.remove('hidden');
+        }
+      }
+
+      // Đảm bảo ẩn thanh navbar dưới nếu đang trong hành trình phản chiếu
+      if (this.navBar) {
+        if (this.isReflectionJourneyActive) {
+          this.navBar.classList.add('hidden');
+        } else {
+          this.navBar.classList.remove('hidden');
+        }
+      }
 
       // 1. Chớp sáng chuyển cảnh điện ảnh
       if (playSound && this.transitionFlash) {
@@ -502,30 +699,29 @@
         this.livingFrame.classList.remove(`chapter-active-${c}`);
       }
       this.livingFrame.classList.add(`chapter-active-${targetIndex + 1}`);
+
+      // Nếu không trong hành trình phản chiếu, mở thẻ chương
+      if (!this.isReflectionJourneyActive && this.activeChapterTag) {
+        this.activeChapterTag.classList.remove('closed');
+      }
       this.updateActiveChapterTag(currentData);
 
-      // 6. Điều phối các phần tử tương tác của Chapter 1 (Hotspots & Silk Layer)
+      // 6. Ẩn hoàn toàn các phần tử của nền gốc để chiêm ngưỡng tác phẩm nghệ thuật từng chương
       const hotspots = document.getElementById('bottleHotspotsContainer');
       const touchHint = document.getElementById('flowerTouchHint');
       const originalPhoto = this.livingFrame.querySelector('.main-uncut-image.living-photo');
+      const flowerHalo = this.livingFrame.querySelector('.flower-root-halo');
 
-      if (targetIndex === 0) {
-        // Trở về Chapter 1: Hiện lại các Hotspot mỹ phẩm và phục hồi nền sống động 100%
-        if (hotspots) {
-          hotspots.style.opacity = '1';
-          hotspots.style.pointerEvents = 'auto';
-        }
-        if (touchHint) touchHint.style.display = '';
-        if (originalPhoto) originalPhoto.style.opacity = '1'; // Nền sống động sắc nét 100%
-      } else {
-        // Các Chapter 2 - 9: Tạm ẩn Hotspots mỹ phẩm và nền Chapter 1 để chiêm ngưỡng trọn vẹn bối cảnh
-        if (hotspots) {
-          hotspots.style.opacity = '0';
-          hotspots.style.pointerEvents = 'none';
-        }
-        if (touchHint) touchHint.style.display = 'none';
-        if (originalPhoto) originalPhoto.style.opacity = '0';
+      if (hotspots) {
+        hotspots.style.opacity = '0';
+        hotspots.style.pointerEvents = 'none';
       }
+      if (touchHint) {
+        touchHint.style.opacity = '0';
+        touchHint.style.pointerEvents = 'none';
+      }
+      if (originalPhoto) originalPhoto.style.opacity = '0';
+      if (flowerHalo) flowerHalo.style.opacity = '0';
 
       // 7. Khởi động Animation riêng biệt của Chapter được kích hoạt
       this.startChapterAnimation(targetIndex);
@@ -536,21 +732,23 @@
     }
 
     prevChapter() {
-      const target = (this.currentChapterIndex - 1 + CHAPTERS_DATA.length) % CHAPTERS_DATA.length;
-      this.switchChapter(target);
-      if (this.activeChapterTag && this.activeChapterTag.classList.contains('closed')) {
-        this.activeChapterTag.classList.remove('closed');
-        this.updateActiveChapterTag(CHAPTERS_DATA[target]);
+      let target;
+      if (this.currentChapterIndex < 0) {
+        target = CHAPTERS_DATA.length - 1;
+      } else {
+        target = (this.currentChapterIndex - 1 + CHAPTERS_DATA.length) % CHAPTERS_DATA.length;
       }
+      this.switchChapter(target);
     }
 
     nextChapter() {
-      const target = (this.currentChapterIndex + 1) % CHAPTERS_DATA.length;
-      this.switchChapter(target);
-      if (this.activeChapterTag && this.activeChapterTag.classList.contains('closed')) {
-        this.activeChapterTag.classList.remove('closed');
-        this.updateActiveChapterTag(CHAPTERS_DATA[target]);
+      let target;
+      if (this.currentChapterIndex < 0) {
+        target = 0;
+      } else {
+        target = (this.currentChapterIndex + 1) % CHAPTERS_DATA.length;
       }
+      this.switchChapter(target);
     }
 
     // --- Chế Độ Trình Chiếu Tự Động ---
@@ -589,13 +787,15 @@
 
     // --- Lắng nghe sự kiện bàn phím & vuốt chạm ---
     bindEvents() {
-      // Phím mũi tên Trái / Phải để chuyển chương
+      // Phím mũi tên Trái / Phải để chuyển chương, phím Escape để về Nền Gốc
       window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         if (e.key === 'ArrowLeft') {
           this.prevChapter();
         } else if (e.key === 'ArrowRight') {
           this.nextChapter();
+        } else if (e.key === 'Escape') {
+          this.returnToRootScene();
         }
       });
 
@@ -636,6 +836,414 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+    }
+
+    // --- Lắng nghe sự kiện click trực tiếp vào Bông Hoa Gốc ---
+    bindRootFlowerInteractions() {
+      // 1. Hotspot Bông Hoa Gốc [data-bottle-id="flower_vase"]
+      const flowerHotspot = this.livingFrame.querySelector('.bottle-hotspot[data-bottle-id="flower_vase"]');
+      if (flowerHotspot) {
+        flowerHotspot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.startReflectionJourney();
+        });
+      }
+
+      // 2. Thẻ gợi ý chạm bông hoa gốc (#flowerTouchHint)
+      const touchHint = document.getElementById('flowerTouchHint');
+      if (touchHint) {
+        touchHint.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.startReflectionJourney();
+        });
+      }
+
+      // 3. Các đầu hoa & cành hoa đung đưa
+      ['blossomHead1', 'blossomHead2', 'branchTop', 'branchLeft', 'branchRight'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.startReflectionJourney();
+          });
+        }
+      });
+    }
+
+    // --- Khởi tạo HUD Điều Khiển Hành Trình Phản Chiếu 9 Màn Hình ---
+    initReflectionHUD() {
+      let hud = document.getElementById('storyReflectionHUD');
+      if (!hud) {
+        hud = document.createElement('div');
+        hud.id = 'storyReflectionHUD';
+        hud.className = 'story-reflection-hud hidden';
+        hud.setAttribute('aria-live', 'polite');
+
+        hud.innerHTML = `
+          <div class="hud-top-bar">
+            <div class="hud-title-wrap">
+              <span class="hud-pulse-flower">🌸</span>
+              <span class="hud-main-title">Ánh Hoa Gốc Phản Chiếu Qua 9 Màn Hình</span>
+            </div>
+            <div class="hud-controls-wrap">
+              <button type="button" class="hud-ctrl-btn hud-pause-btn" id="hudPauseBtn" title="Tạm dừng / Tiếp tục">
+                <i class="fa-solid fa-pause"></i> <span class="pause-text">Tạm dừng</span>
+              </button>
+              <button type="button" class="hud-ctrl-btn hud-root-btn" id="hudRootBtn" title="Quay lại Nền Gốc">
+                <i class="fa-solid fa-house"></i> <span>Nền Gốc</span>
+              </button>
+              <button type="button" class="hud-ctrl-btn hud-close-btn" id="hudCloseBtn" title="Dừng &amp; Quay lại nền gốc" aria-label="Đóng &amp; Quay lại nền gốc">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hud-chapter-info">
+            <div class="hud-ch-badge-row">
+              <span class="hud-ch-badge" id="hudChBadge">CHƯƠNG 01 / 09</span>
+              <h4 class="hud-ch-title" id="hudChTitle">Mỹ Phẩm Studio</h4>
+            </div>
+            <p class="hud-reflection-narrative" id="hudReflectionNarrative">Khởi nguồn từ Bông Hoa Gốc...</p>
+          </div>
+          <div class="hud-timeline-track">
+            <div class="hud-beam-line-bg"></div>
+            <div class="hud-beam-line-fill" id="hudBeamLineFill"></div>
+            <div class="hud-nodes-list" id="hudNodesList">
+              ${CHAPTERS_DATA.map((ch, idx) => `
+                <button type="button" class="hud-node-dot" data-step="${idx}" title="${ch.number}: ${ch.title}">
+                  ${ch.roman}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+          <div class="hud-finale-actions" id="hudFinaleActions">
+            <button type="button" class="hud-finale-btn hud-replay-btn" id="hudReplayBtn">
+              <i class="fa-solid fa-rotate-left"></i> <span>Chiêm ngưỡng lại từ đầu</span>
+            </button>
+            <button type="button" class="hud-finale-btn hud-root-btn" id="hudFinaleRootBtn">
+              <i class="fa-solid fa-house"></i> <span>Quay về Nền Gốc</span>
+            </button>
+            <button type="button" class="hud-finale-btn hud-explore-btn" id="hudExploreBtn">
+              <i class="fa-solid fa-compass"></i> <span>Tự do khám phá 9 chương</span>
+            </button>
+          </div>
+        `;
+
+        this.livingFrame.appendChild(hud);
+
+        // Bắt sự kiện các nút điều khiển
+        const pauseBtn = hud.querySelector('#hudPauseBtn');
+        if (pauseBtn) {
+          pauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleReflectionPause();
+          });
+        }
+
+        const rootBtn = hud.querySelector('#hudRootBtn');
+        if (rootBtn) {
+          rootBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.returnToRootScene();
+          });
+        }
+
+        const closeBtn = hud.querySelector('#hudCloseBtn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.returnToRootScene();
+          });
+        }
+
+        const replayBtn = hud.querySelector('#hudReplayBtn');
+        if (replayBtn) {
+          replayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.startReflectionJourney();
+          });
+        }
+
+        const finaleRootBtn = hud.querySelector('#hudFinaleRootBtn');
+        if (finaleRootBtn) {
+          finaleRootBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.returnToRootScene();
+          });
+        }
+
+        const exploreBtn = hud.querySelector('#hudExploreBtn');
+        if (exploreBtn) {
+          exploreBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.stopReflectionJourney();
+            if (this.activeChapterTag) this.activeChapterTag.classList.remove('closed');
+          });
+        }
+
+        // Bấm vào bất kỳ node I - IX nào trên thanh tiến trình
+        const dots = hud.querySelectorAll('.hud-node-dot');
+        dots.forEach((dot) => {
+          dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const step = parseInt(dot.getAttribute('data-step'), 10);
+            if (!isNaN(step)) {
+              this.reflectionStepIndex = step;
+              this.switchChapter(step, true);
+              this.triggerSceneReflectionSheen();
+              this.updateReflectionHUD(step);
+              if (!this.isReflectionPaused) {
+                this.scheduleNextReflectionStep();
+              }
+            }
+          });
+        });
+      }
+      this.reflectionHUD = hud;
+    }
+
+    showReflectionHUD() {
+      if (!this.reflectionHUD) this.initReflectionHUD();
+      if (this.reflectionHUD) {
+        this.reflectionHUD.classList.remove('hidden');
+      }
+      // Tạm ẩn thẻ chương cố định & nút thoát góc trên để nhường không gian cho HUD phản chiếu
+      if (this.activeChapterTag) {
+        this.activeChapterTag.classList.add('closed');
+      }
+      if (this.exitChapterBtn) {
+        this.exitChapterBtn.classList.add('hidden');
+      }
+      // Ẩn thanh điều hướng ở đáy màn hình để giao diện chỉ hiển thị duy nhất 1 thanh HUD điều khiển
+      if (this.navBar) {
+        this.navBar.classList.add('hidden');
+      }
+    }
+
+    hideReflectionHUD() {
+      if (this.reflectionHUD) {
+        this.reflectionHUD.classList.add('hidden');
+      }
+      // Khôi phục thanh điều hướng ở đáy màn hình
+      if (this.navBar) {
+        this.navBar.classList.remove('hidden');
+      }
+    }
+
+    // --- Khởi động Hành Trình Ánh Hoa Gốc Phản Chiếu Qua 9 Màn Hình ---
+    startReflectionJourney() {
+      this.stopAutoPlay();
+      this.isReflectionJourneyActive = true;
+      this.isReflectionPaused = false;
+      this.reflectionStepIndex = 0;
+
+      const navFlowerBtn = document.getElementById('storyNavFlowerReflectBtn');
+      if (navFlowerBtn) navFlowerBtn.classList.add('active-journey');
+
+      // 1. Chuyển ngay về Chapter 1 (nơi chứa Bông Hoa Gốc)
+      this.switchChapter(0, false);
+
+      // 2. Âm thanh bừng nở pha lê & haptic
+      playReflectionAwakeningChord();
+      if (window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate([24, 40, 30]); } catch (_) {}
+      }
+
+      // 3. Hiệu ứng sóng phản chiếu bung tỏa từ Bông Hoa Gốc
+      const rect = this.livingFrame.getBoundingClientRect();
+      const originX = rect.width * 0.5;
+      const originY = rect.height * 0.22;
+      this.createReflectionShockwave(originX, originY);
+      this.triggerSceneReflectionSheen();
+
+      // Rung cành hoa gốc
+      const canopy = document.getElementById('engineFloraCanopy') || document.getElementById('engineFloraLayer');
+      if (canopy) {
+        canopy.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1)';
+        canopy.style.transform = 'scale(1.06) rotate(-1.5deg)';
+        setTimeout(() => { canopy.style.transform = ''; }, 500);
+      }
+
+      // Tung chùm cánh hoa rực rỡ từ bông hoa gốc
+      if (window.petalEngine) {
+        window.petalEngine.toss({
+          x: rect.left + originX,
+          y: rect.top + originY,
+          count: 18,
+          force: 1.5,
+          angle: -Math.PI * 0.5,
+          spread: 0.85
+        });
+      }
+
+      // 4. Mở HUD Phản Chiếu và cập nhật chặng 0
+      this.showReflectionHUD();
+      this.updateReflectionHUD(0);
+
+      const finaleActions = document.getElementById('hudFinaleActions');
+      if (finaleActions) finaleActions.classList.remove('visible');
+
+      const pauseBtn = document.getElementById('hudPauseBtn');
+      if (pauseBtn) {
+        pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="pause-text">Tạm dừng</span>';
+      }
+
+      // 5. Bắt đầu tự động chuyển tiếp qua từng màn hình
+      this.scheduleNextReflectionStep();
+    }
+
+    scheduleNextReflectionStep() {
+      if (this.reflectionTimer) clearTimeout(this.reflectionTimer);
+      if (!this.isReflectionJourneyActive || this.isReflectionPaused) return;
+
+      // Mỗi màn hình dừng 3.2 giây để người dùng thưởng thức trọn vẹn cảnh sắc phản chiếu
+      const dwellTime = 3200;
+
+      this.reflectionTimer = setTimeout(() => {
+        if (!this.isReflectionJourneyActive || this.isReflectionPaused) return;
+
+        const nextStep = this.reflectionStepIndex + 1;
+        if (nextStep < CHAPTERS_DATA.length) {
+          this.reflectionStepIndex = nextStep;
+          this.switchChapter(nextStep, true);
+          this.triggerSceneReflectionSheen();
+          this.updateReflectionHUD(nextStep);
+
+          // Cánh hoa rơi hòa theo từng cảnh
+          if (window.petalEngine) {
+            window.petalEngine.toss({
+              x: window.innerWidth * (0.35 + Math.random() * 0.3),
+              y: window.innerHeight * 0.22,
+              count: 8,
+              force: 1.15,
+              angle: -Math.PI * 0.5 + (Math.random() - 0.5) * 0.6,
+              spread: 0.6
+            });
+          }
+
+          this.scheduleNextReflectionStep();
+        } else {
+          // Đến đích: Chapter 9 - Khúc Vĩ Thanh Lãng Mạn
+          this.onReflectionJourneyCompleted();
+        }
+      }, dwellTime);
+    }
+
+    toggleReflectionPause() {
+      if (this.isReflectionPaused) {
+        this.resumeReflectionJourney();
+      } else {
+        this.pauseReflectionJourney();
+      }
+    }
+
+    pauseReflectionJourney() {
+      this.isReflectionPaused = true;
+      if (this.reflectionTimer) {
+        clearTimeout(this.reflectionTimer);
+        this.reflectionTimer = null;
+      }
+      const btn = document.getElementById('hudPauseBtn');
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-play"></i> <span class="pause-text">Tiếp tục</span>';
+      }
+    }
+
+    resumeReflectionJourney() {
+      this.isReflectionPaused = false;
+      const btn = document.getElementById('hudPauseBtn');
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="pause-text">Tạm dừng</span>';
+      }
+      this.scheduleNextReflectionStep();
+    }
+
+    stopReflectionJourney() {
+      this.isReflectionJourneyActive = false;
+      this.isReflectionPaused = false;
+      if (this.reflectionTimer) {
+        clearTimeout(this.reflectionTimer);
+        this.reflectionTimer = null;
+      }
+      this.hideReflectionHUD();
+      const navFlowerBtn = document.getElementById('storyNavFlowerReflectBtn');
+      if (navFlowerBtn) navFlowerBtn.classList.remove('active-journey');
+    }
+
+    updateReflectionHUD(stepIndex) {
+      if (!this.reflectionHUD) return;
+      const data = CHAPTERS_DATA[stepIndex];
+      if (!data) return;
+
+      const badge = document.getElementById('hudChBadge');
+      const title = document.getElementById('hudChTitle');
+      const narrative = document.getElementById('hudReflectionNarrative');
+      const fill = document.getElementById('hudBeamLineFill');
+
+      if (badge) badge.textContent = `${data.number} / 09`;
+      if (title) title.textContent = data.title;
+      if (narrative) narrative.textContent = data.reflectionNarrative || data.subtitle;
+
+      // Cập nhật thanh tia sáng
+      if (fill) {
+        const pct = (stepIndex / (CHAPTERS_DATA.length - 1)) * 100;
+        fill.style.width = `${pct}%`;
+      }
+
+      // Cập nhật các node I đến IX
+      const dots = this.reflectionHUD.querySelectorAll('.hud-node-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.remove('active', 'passed');
+        if (idx === stepIndex) {
+          dot.classList.add('active');
+        } else if (idx < stepIndex) {
+          dot.classList.add('passed');
+        }
+      });
+    }
+
+    onReflectionJourneyCompleted() {
+      this.updateReflectionHUD(8);
+      const finaleActions = document.getElementById('hudFinaleActions');
+      if (finaleActions) finaleActions.classList.add('visible');
+
+      const narrative = document.getElementById('hudReflectionNarrative');
+      if (narrative) {
+        narrative.innerHTML = '💖 <strong>Đích đến trọn vẹn:</strong> Ánh hoa gốc đã phản chiếu trọn vẹn qua 9 miền ký ức & tình yêu của Cá Sudo ♡ Khây Ti!';
+      }
+
+      // Bung chùm cánh hoa trái tim & pháo hoa chúc mừng
+      if (window.petalEngine) {
+        window.petalEngine.toss({
+          x: window.innerWidth * 0.5,
+          y: window.innerHeight * 0.35,
+          count: 22,
+          force: 1.6,
+          spread: 1.0
+        });
+      }
+    }
+
+    createReflectionShockwave(x, y) {
+      const wave = document.createElement('div');
+      wave.className = 'story-reflection-shockwave';
+      wave.style.left = `${x}px`;
+      wave.style.top = `${y}px`;
+      wave.style.width = '120px';
+      wave.style.height = '120px';
+      this.livingFrame.appendChild(wave);
+      setTimeout(() => wave.remove(), 1600);
+    }
+
+    triggerSceneReflectionSheen() {
+      const old = this.livingFrame.querySelectorAll('.story-scene-reflection-sheen');
+      old.forEach(el => el.remove());
+
+      const sheen = document.createElement('div');
+      sheen.className = 'story-scene-reflection-sheen';
+      this.livingFrame.appendChild(sheen);
+      setTimeout(() => sheen.remove(), 1800);
     }
 
     // ============================================================
