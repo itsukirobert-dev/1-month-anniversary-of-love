@@ -130,6 +130,9 @@
     }
   }
 
+  // Xuất hàm âm thanh ra window cho các engine khác sử dụng an toàn
+  window.playPetalFlutterSound = playPetalFlutterSound;
+
   // ============================================================
   // LỚP TOÁN HỌC QUỸ ĐẠO: COMPOSITE BÉZIER / SPLINE
   // ============================================================

@@ -59,6 +59,10 @@
 /* Khi ở Nền Gốc (Root Living Scene): Phục hồi hiển thị và tương tác 100% cho ảnh gốc, mỹ phẩm & hoa */
 .living-frame.scene-root-active :is(
   .engine-layer-silk,
+  .engine-layer-flora,
+  .engine-swaying-branch,
+  .engine-living-blossom,
+  .engine-specular-canvas,
   .engine-layer-table,
   .engine-layer-backdrop,
   .main-uncut-image.living-photo,

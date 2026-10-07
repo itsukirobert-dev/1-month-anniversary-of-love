@@ -1844,7 +1844,11 @@
     // 2. Một vài cánh hoa rơi xuống mặt bàn
     dropPetalsOntoTable(bottleBox) {
       if (!this.container) return [];
-      playPetalFlutterSound();
+      if (typeof window.playPetalFlutterSound === 'function') {
+        window.playPetalFlutterSound();
+      } else if (typeof playPetalFlutterSound === 'function') {
+        playPetalFlutterSound();
+      }
 
       const fRect = this.container.getBoundingClientRect();
       const petals = [];

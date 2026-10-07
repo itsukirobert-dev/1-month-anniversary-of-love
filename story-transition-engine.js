@@ -1033,6 +1033,12 @@
 
     // --- Khởi động Hành Trình Ánh Hoa Gốc Phản Chiếu Qua 9 Màn Hình ---
     startReflectionJourney() {
+      const now = performance.now();
+      if (this.lastReflectionStartTime && now - this.lastReflectionStartTime < 600) {
+        return;
+      }
+      this.lastReflectionStartTime = now;
+
       this.stopAutoPlay();
       this.isReflectionJourneyActive = true;
       this.isReflectionPaused = false;
